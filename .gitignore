@@ -1,0 +1,18 @@
+# Packaged builds
+dist/
+build/
+*.spec.bak
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+# Editor / OS
+.vscode/
+.idea/
+Thumbs.db
+# Logs and scratch
+*.log
+tmp/
+# Real LayOut/SketchUp test masters (large, local only - never commit)
+tests/fixtures/

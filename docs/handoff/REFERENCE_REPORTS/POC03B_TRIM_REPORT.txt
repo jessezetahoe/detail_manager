@@ -1,0 +1,49 @@
+POC 03B - Conservative Disposable Staging Trim
+
+Source:
+POC03A_20260817_140306__03_FLR_TO_FLR_HYD_EXT_SJ_STD_New_Details__PARA_WALL_ABV_BLW_RFTR_SJ__TJI_Pa2Pe_Roof_-_Hyd.layout
+
+Output:
+POC03B_TRIMMED_TJI_Pa2Pe_Roof_Hyd.layout
+
+BEFORE SIZE
+39,462,466 bytes
+37.63 MiB
+
+AFTER SIZE
+12,190,518 bytes
+11.63 MiB
+
+SIZE REDUCTION
+69.1%
+
+UNUSED IMAGE/VECTOR REFERENCE RECORDS REMOVED
+58
+
+UNUSED CACHE FILES REMOVED
+29
+
+SKP REFERENCE COUNT BEFORE / AFTER
+1 / 1
+
+EMBEDDED SKP COUNT BEFORE / AFTER
+1 / 1
+
+EXTERNAL SKP PATH BEFORE
+['Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp']
+
+EXTERNAL SKP PATH AFTER
+['Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp']
+
+EMBEDDED SKP SHA-256 BEFORE
+{'ref/3234524399_(03) FLR TO FLR SJ_5221.skp': '6389fef96c358619c15a5fbef1afac51ecd82a2348afb8335c2be2bae45aea4b'}
+
+EMBEDDED SKP SHA-256 AFTER
+{'ref/3234524399_(03) FLR TO FLR SJ_5221.skp': '6389fef96c358619c15a5fbef1afac51ecd82a2348afb8335c2be2bae45aea4b'}
+
+REMAINING VIEWPORT CACHE PNG FILES
+['ref/imageFileReference11747.png']
+
+NOTE
+This operation only prunes unused image/vector cache references from a LOCAL DISPOSABLE staging package.
+It does not alter the master LayOut file, the SKP reference, external path, embedded SKP, or styles.

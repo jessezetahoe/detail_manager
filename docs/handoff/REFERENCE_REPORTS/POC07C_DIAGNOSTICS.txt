@@ -1,0 +1,218 @@
+DETAIL MANAGER POC 07C - API BOUNDS DIAGNOSTICS
+==========================================================
+
+App data: C:\Users\ZacMaster\AppData\Local\ZE Detail Manager POC 07A
+Queue:    C:\Users\ZacMaster\AppData\Local\ZE Detail Manager POC 07A\thumbnail_jobs\queue.json
+Renders:  C:\Users\ZacMaster\AppData\Local\ZE Detail Manager POC 07A\thumbnail_renders
+
+Queue POC version: 07C
+Queued masters:    4
+Hidden layers:     ['GUIDES']
+
+------------------------------------------------------------------------------------------
+[1/4] (02) FLR TO RET CONC TRAD TJ (New Details!).layout
+Source: C:\Users\ZacMaster\Desktop\Layout Test 2\(02) FLR TO RET CONC TRAD TJ (New Details!).layout
+Expected indexed details: 42
+Manifest: C:\Users\ZacMaster\AppData\Local\ZE Detail Manager POC 07A\thumbnail_renders\77fcffda78194642\render_manifest.json
+Manifest POC:               07C
+Hidden layers requested:    ['GUIDES']
+Hidden layers actually hit: ['Guides']
+Matched detail records:     42/42
+Visible-leaf bounds:        42/42
+API drawing bounds:         42/42
+API group bounds:           42/42
+Unmatched detail keys:      0
+Match methods:              {'nearest_center': 42}
+
+Sample bound comparison (up to 5):
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(02) FLR TO RET CONC TRAD TJ (New Details!).layout|id3709|id13373
+    scenes:          ['Pa Hang Ret']
+    legacy XML:      [0.4167, 2.0967, 8.4195, 7.7968]
+    visible leaf:    [0.4167, 2.0967, 6.0688, 7.0770]
+    API drawing:     [0.4167, 2.0967, 8.4195, 7.7968]
+    API group:       [0.4167, 2.0967, 8.4195, 7.7968]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(02) FLR TO RET CONC TRAD TJ (New Details!).layout|id3709|id13468
+    scenes:          ['Pa Hang Slab Ret']
+    legacy XML:      [8.4195, 2.0967, 16.4224, 7.7968]
+    visible leaf:    [1.1418, 7.1082, 6.0688, 7.4277]
+    API drawing:     [0.4167, 2.0967, 8.4195, 7.7968]
+    API group:       [0.4167, 2.0967, 8.4195, 7.7968]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(02) FLR TO RET CONC TRAD TJ (New Details!).layout|id5221|id13563
+    scenes:          ['Pa Hang Ins Ret']
+    legacy XML:      [0.4167, 2.0967, 8.4195, 7.7968]
+    visible leaf:    [0.4167, 2.0967, 6.0688, 7.0770]
+    API drawing:     [0.4167, 2.0967, 8.4195, 7.7968]
+    API group:       [0.4167, 2.0967, 8.4195, 7.7968]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(02) FLR TO RET CONC TRAD TJ (New Details!).layout|id5221|id13667
+    scenes:          ['Pa Hang Slab Ins Ret']
+    legacy XML:      [8.4195, 2.0967, 16.4224, 7.7968]
+    visible leaf:    [1.1418, 7.1082, 6.0688, 7.4277]
+    API drawing:     [0.4167, 2.0967, 8.4195, 7.7968]
+    API group:       [0.4167, 2.0967, 8.4195, 7.7968]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(02) FLR TO RET CONC TRAD TJ (New Details!).layout|id5222|id13814
+    scenes:          ['Pa Top Pony Ret']
+    legacy XML:      [0.4167, 2.0967, 8.4195, 7.8058]
+    visible leaf:    [0.4167, 2.0967, 6.0688, 7.0770]
+    API drawing:     [0.4167, 2.0967, 8.4195, 7.8058]
+    API group:       [0.4167, 2.0967, 8.4195, 7.8058]
+    match method:    nearest_center
+
+------------------------------------------------------------------------------------------
+[2/4] (04) FLR TO SOLD BEAM HYD FLSH EXT TJI (New Details!).layout
+Source: C:\Users\ZacMaster\Desktop\Layout Test 2\(04) FLR TO SOLD BEAM HYD FLSH EXT TJI (New Details!).layout
+Expected indexed details: 74
+Manifest: C:\Users\ZacMaster\AppData\Local\ZE Detail Manager POC 07A\thumbnail_renders\eb41c67dc3f7a154\render_manifest.json
+Manifest POC:               07C
+Hidden layers requested:    ['GUIDES']
+Hidden layers actually hit: ['Guides']
+Matched detail records:     74/74
+Visible-leaf bounds:        74/74
+API drawing bounds:         74/74
+API group bounds:           74/74
+Unmatched detail keys:      0
+Match methods:              {'nearest_center': 74}
+
+Sample bound comparison (up to 5):
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(04) FLR TO SOLD BEAM HYD FLSH EXT TJI (New Details!).layout|id17896|id23009
+    scenes:          ['Pa Wd Bm Hyd']
+    legacy XML:      [0.4167, 2.0967, 8.4195, 7.8058]
+    visible leaf:    [0.4167, 2.0967, 6.0688, 7.0841]
+    API drawing:     [0.4167, 2.0967, 8.4195, 7.8058]
+    API group:       [0.4167, 2.0967, 8.4195, 7.8058]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(04) FLR TO SOLD BEAM HYD FLSH EXT TJI (New Details!).layout|id17896|id23085
+    scenes:          ['Pa Wd Bm Wall Abv Hyd']
+    legacy XML:      [0.4167, 10.4771, 8.4195, 16.1862]
+    visible leaf:    [3.9740, 6.1501, 4.3249, 6.5011]
+    API drawing:     [0.4167, 2.0967, 8.4195, 7.8058]
+    API group:       [0.4167, 2.0967, 8.4195, 7.8058]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(04) FLR TO SOLD BEAM HYD FLSH EXT TJI (New Details!).layout|id17896|id23166
+    scenes:          ['Pa Wd Bm Hang Wall Abv Shear Hyd']
+    legacy XML:      [8.4195, 2.0967, 16.4224, 7.8058]
+    visible leaf:    [4.0231, 6.2426, 4.2731, 6.3988]
+    API drawing:     [0.4167, 2.0967, 8.4195, 7.8058]
+    API group:       [0.4167, 2.0967, 8.4195, 7.8058]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(04) FLR TO SOLD BEAM HYD FLSH EXT TJI (New Details!).layout|id17896|id29675
+    scenes:          ['Pa Wd Bm Wall Abv Blw Shear Hyd']
+    legacy XML:      [8.4195, 10.4771, 16.4224, 16.1862]
+    visible leaf:    [3.6189, 5.7717, 3.9740, 6.3256]
+    API drawing:     [0.4167, 2.0967, 8.4195, 7.8058]
+    API group:       [0.4167, 2.0967, 8.4195, 7.8058]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(04) FLR TO SOLD BEAM HYD FLSH EXT TJI (New Details!).layout|id17896|id29772
+    scenes:          ['Pa Wd Bm Int Wall Abv Blw Shear Hyd']
+    legacy XML:      [0.4167, 18.8575, 8.4195, 24.5666]
+    visible leaf:    [1.2529, 5.1579, 1.6039, 5.5088]
+    API drawing:     [0.4167, 2.0967, 8.4195, 7.8058]
+    API group:       [0.4167, 2.0967, 8.4195, 7.8058]
+    match method:    nearest_center
+
+------------------------------------------------------------------------------------------
+[3/4] (13) ZE STD KING STUD.layout
+Source: C:\Users\ZacMaster\Desktop\Layout Test 2\(13) ZE STD KING STUD.layout
+Expected indexed details: 2
+Manifest: C:\Users\ZacMaster\AppData\Local\ZE Detail Manager POC 07A\thumbnail_renders\516d4e1ec018f8a6\render_manifest.json
+Manifest POC:               07C
+Hidden layers requested:    ['GUIDES']
+Hidden layers actually hit: ['Guides']
+Matched detail records:     2/2
+Visible-leaf bounds:        2/2
+API drawing bounds:         2/2
+API group bounds:           2/2
+Unmatched detail keys:      0
+Match methods:              {'nearest_center': 2}
+
+Sample bound comparison (up to 5):
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(13) ZE STD KING STUD.layout|id6900|id7163
+    scenes:          ['King Stud Blw', 'King Stud Abv']
+    legacy XML:      [0.4167, 2.0967, 8.4195, 13.5023]
+    visible leaf:    [0.4167, 7.1690, 3.7785, 12.7377]
+    API drawing:     [0.4167, 2.0967, 8.4195, 13.5023]
+    API group:       [0.4167, 2.0967, 8.4195, 13.5023]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(13) ZE STD KING STUD.layout|id6900|id7397
+    scenes:          ['LVL King Stud Blw', 'LVL King Stud Abv']
+    legacy XML:      [8.4195, 2.0967, 16.4224, 13.5023]
+    visible leaf:    [0.4167, 2.0967, 4.0081, 6.9080]
+    API drawing:     [0.4167, 2.0967, 8.4195, 13.5023]
+    API group:       [0.4167, 2.0967, 8.4195, 13.5023]
+    match method:    nearest_center
+
+------------------------------------------------------------------------------------------
+[4/4] (14) CONN BEAM PKT.layout
+Source: C:\Users\ZacMaster\Desktop\Layout Test 2\(14) CONN BEAM PKT.layout
+Expected indexed details: 11
+Manifest: C:\Users\ZacMaster\AppData\Local\ZE Detail Manager POC 07A\thumbnail_renders\a676c65927695f1d\render_manifest.json
+Manifest POC:               07C
+Hidden layers requested:    ['GUIDES']
+Hidden layers actually hit: ['Guides']
+Matched detail records:     11/11
+Visible-leaf bounds:        11/11
+API drawing bounds:         11/11
+API group bounds:           11/11
+Unmatched detail keys:      0
+Match methods:              {'nearest_center': 11}
+
+Sample bound comparison (up to 5):
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(14) CONN BEAM PKT.layout|id3709|id5412
+    scenes:          ['Bm Pkt Filler and Strap']
+    legacy XML:      [8.4195, 2.0967, 16.4224, 7.7883]
+    visible leaf:    [14.2336, 2.1477, 14.5846, 2.4987]
+    API drawing:     [8.4195, 2.0967, 16.4224, 7.7883]
+    API group:       [8.4195, 2.0967, 16.4224, 7.7883]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(14) CONN BEAM PKT.layout|id3709|id5504
+    scenes:          ['Bm Pkt Flush One Side']
+    legacy XML:      [0.4167, 2.0967, 8.4195, 7.7902]
+    visible leaf:    [14.5846, 2.3232, 14.6847, 2.3232]
+    API drawing:     [8.4195, 2.0967, 16.4224, 7.7883]
+    API group:       [8.4195, 2.0967, 16.4224, 7.7883]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(14) CONN BEAM PKT.layout|id3709|id5451
+    scenes:          ['Bm Pkt Flush Ea Side']
+    legacy XML:      [0.4167, 10.4771, 8.4195, 16.1706]
+    visible leaf:    [14.2790, 2.2402, 14.5402, 2.4062]
+    API drawing:     [8.4195, 2.0967, 16.4224, 7.7883]
+    API group:       [8.4195, 2.0967, 16.4224, 7.7883]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(14) CONN BEAM PKT.layout|id4179|id5913
+    scenes:          ['Bm Pkt Flush One Side', 'Bm Pkt Filler']
+    legacy XML:      [0.4167, 2.0967, 8.4195, 13.5023]
+    visible leaf:    [0.4167, 2.0967, 6.0688, 7.0841]
+    API drawing:     [0.4167, 2.0967, 8.4195, 13.5023]
+    API group:       [0.4167, 2.0967, 8.4195, 13.5023]
+    match method:    nearest_center
+  C:\Users\ZacMaster\Desktop\Layout Test 2\(14) CONN BEAM PKT.layout|id4179|id5986
+    scenes:          ['Bm Pkt Flush Ea Side', 'Bm Pkt Filler']
+    legacy XML:      [0.4167, 14.8863, 8.4195, 26.2919]
+    visible leaf:    [3.9573, 3.1538, 4.3083, 3.5048]
+    API drawing:     [0.4167, 2.0967, 8.4195, 13.5023]
+    API group:       [0.4167, 2.0967, 8.4195, 13.5023]
+    match method:    nearest_center
+
+==========================================================================================
+OVERALL
+Expected details:         129
+Matched API records:      129
+Visible-leaf bounds:      129
+API drawing bounds:       129
+API group bounds:         129
+Unmatched:                0
+Match methods:            {'nearest_center': 129}
+
+No structural matching problems were detected.
+
+INTERPRETATION
+- If 'Visible-leaf bounds' is much lower than 'Expected details', POC 07C
+  fell back to another bound type, explaining why crops may look unchanged.
+- If visible bounds exist for every detail but are nearly identical to legacy XML
+  bounds, the crop problem is not the matching fallback; we need to inspect what
+  LayOut considers part of those groups.
+- If GUIDES was requested but not matched, the worker did not find the exact
+  layer name in that master.

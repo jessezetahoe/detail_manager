@@ -1,0 +1,240 @@
+DETAIL MANAGER PROTOTYPE 0.1
+PRESENTATION COMPUTER SETUP
+===========================================
+
+PURPOSE
+-------
+This package is the clean presentation-computer build based on the stable
+07A prototype. The indexing, staging, and thumbnail crop logic are unchanged
+from the stable version you already tested against the full company library.
+
+For the presentation computer, use the existing DISTRIBUTION LIBRARY on C:.
+Its LayOut and SketchUp reference paths are already correct on that computer.
+
+This presentation computer does NOT need access to the company server.
+
+
+WHAT YOU NEED
+-------------
+Already on the presentation computer:
+  [ ] The Distribution Library, at its normal C: location
+  [ ] SketchUp / LayOut (use the version you normally use for the library;
+      LayOut 2025 is the conservative choice for the current workflow)
+  [ ] A normal web browser
+
+Install if not already present:
+  [ ] 64-bit Python 3.12 or newer from python.org
+      During Python installation enable:
+        - Add python.exe to PATH
+        - pip
+        - Tcl/Tk and IDLE
+
+This package installs the only additional Python dependency:
+  [ ] PyMuPDF
+
+No server connection is required after the local Distribution Library exists.
+
+
+FILES IN THIS PACKAGE
+---------------------
+SETUP_THIS_COMPUTER.bat
+    Run once. Checks Python/Tkinter, installs PyMuPDF, and creates a desktop
+    shortcut.
+
+START_DETAIL_MANAGER.vbs
+    Normal no-console launcher.
+
+START_DETAIL_MANAGER_CONSOLE.bat
+    Troubleshooting launcher. Use only if the normal launcher does not start.
+
+VERIFY_THIS_COMPUTER.bat
+    Quick prerequisite check.
+
+detail_manager.py
+    Stable Detail Manager application.
+
+thumbnail_worker.rb
+    Stable LayOut thumbnail render worker.
+
+abbreviations.json
+    Search/title abbreviation mapping.
+
+requirements.txt
+    Python dependency list.
+
+
+STEP 1 — COPY / EXTRACT
+-----------------------
+Create a simple local folder, for example:
+
+    C:\Detail Manager Prototype\
+
+Extract ALL files in this ZIP into that folder.
+
+Do not run directly from inside the ZIP.
+
+
+STEP 2 — INSTALL / VERIFY PREREQUISITES
+---------------------------------------
+Double-click:
+
+    SETUP_THIS_COMPUTER.bat
+
+If Python is not installed, the setup will stop and tell you.
+
+Install 64-bit Python 3.12 or newer, then run SETUP_THIS_COMPUTER.bat again.
+
+The setup script:
+  - verifies Python
+  - verifies pip
+  - installs PyMuPDF
+  - verifies Tkinter
+  - creates a Desktop shortcut:
+        Detail Manager Prototype 0.1
+
+SketchUp/LayOut are NOT installed by this package.
+
+
+STEP 3 — FIRST LAUNCH
+---------------------
+Use either:
+    Desktop shortcut: Detail Manager Prototype 0.1
+
+or:
+    START_DETAIL_MANAGER.vbs
+
+The application should open its browser interface automatically.
+
+If nothing happens, run:
+    START_DETAIL_MANAGER_CONSOLE.bat
+
+That leaves the console visible so an error can be read.
+
+
+STEP 4 — SELECT THE DISTRIBUTION LIBRARY
+----------------------------------------
+In Detail Manager:
+
+1. Click the library/folder selection control.
+2. Select the TOP-LEVEL folder containing the Distribution Library.
+3. Confirm the displayed path is the correct existing C: path.
+
+The indexer searches subfolders recursively, so choose the library root rather
+than an individual scrapbook folder.
+
+
+STEP 5 — INDEX THE DISTRIBUTION LIBRARY
+---------------------------------------
+Click:
+
+    Refresh Index
+
+Let the entire Distribution Library finish.
+
+When complete:
+  - confirm detail counts populate
+  - search several known terms
+  - open several result cards
+  - confirm source/master paths point to C:
+
+Local application data is stored at:
+
+    %LOCALAPPDATA%\ZE Detail Manager Prototype 0.1\
+
+
+STEP 6 — BUILD FULL-DETAIL THUMBNAILS
+-------------------------------------
+In Detail Manager's Full Thumbnails section:
+
+1. Confirm the hidden layer is:
+       GUIDES
+
+2. Click:
+       1. Prepare Render Queue
+
+3. Open SketchUp.
+
+4. Open:
+       Window > Ruby Console
+
+5. Run this command, adjusting only the folder if you placed the package
+   somewhere else:
+
+       load 'C:/Detail Manager Prototype/thumbnail_worker.rb'
+
+6. Let the worker process the Distribution Library.
+
+The worker:
+  - opens each master LayOut file through the LayOut API
+  - temporarily hides GUIDES in memory
+  - exports local PDFs for thumbnail creation
+  - restores visibility in memory
+  - DOES NOT save the master LayOut files
+
+7. When the worker says rendering is complete, return to Detail Manager.
+
+8. Click:
+       3. Process Rendered Thumbnails
+
+9. Spot-check thumbnails across several different scrapbook files.
+
+
+STEP 7 — PRESENTATION ACCEPTANCE TEST
+-------------------------------------
+Before relying on the machine for the presentation:
+
+[ ] Close Detail Manager.
+[ ] Restart Windows.
+[ ] Launch from the Desktop shortcut.
+[ ] Search immediately WITHOUT rebuilding the index.
+[ ] Confirm thumbnails appear.
+[ ] Search at least 5 different detail types.
+[ ] Open at least 5 details from different master LayOut files.
+[ ] Copy/paste at least 2 details into a scratch LayOut project.
+[ ] Test at least 1 multi-viewport detail.
+[ ] Test Open Master LayOut.
+[ ] Test Open SketchUp Source.
+[ ] Confirm all opened library paths are on the expected C: Distribution path.
+[ ] Close and reopen Detail Manager one more time.
+
+
+WHAT NOT TO DO BEFORE THE PRESENTATION
+--------------------------------------
+Do not:
+  - change thumbnail crop logic
+  - use the 07B/07C/07D/07E experimental workers
+  - rewrite or relink master LayOut references
+  - move the Distribution Library after indexing
+  - regenerate the index unless necessary
+
+This presentation build is intentionally frozen on the stable baseline.
+
+
+IF SOMETHING GOES WRONG
+-----------------------
+App will not launch:
+    Run START_DETAIL_MANAGER_CONSOLE.bat and capture the error.
+
+No thumbnails:
+    Re-run Prepare Render Queue, load thumbnail_worker.rb in the SketchUp
+    Ruby Console, then Process Rendered Thumbnails.
+
+Library paths are wrong:
+    Do not edit the master files. Verify that you selected the correct
+    Distribution Library root on C:.
+
+A master file fails:
+    Note the filename and continue. One bad file should not require rebuilding
+    the rest of the library.
+
+
+AFTER THE PRESENTATION
+----------------------
+This installation should become the model for the eventual company installer.
+
+Planned company deployment direction:
+  - one authoritative company library on mirrored server drives
+  - one centrally published Detail Manager index + thumbnail cache
+  - local application/database/cache copies on each workstation
+  - normal users search locally and open the shared master detail files
+  - indexing/rendering becomes an administrator/library-maintenance task

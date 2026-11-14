@@ -1,0 +1,51 @@
+POC 03C — 2025-Native Direct Staging Validation
+
+SOURCE
+(03) FLR TO FLR HYD EXT SJ STD (New Details!) 2025 Version.layout
+
+OUTPUT
+POC03C_2025_NATIVE_TJI_Pa2Pe_Roof_Hyd.layout
+
+TARGET
+Page: id8808
+Scene: TJI Pa2Pe Roof - Hyd
+
+LAYOUT VERSION
+Source:  LayOut 25.0.660
+Staging: LayOut 25.0.660
+Source current compatibility:  25.0.660
+Staging current compatibility: 25.0.660
+Staging fullCompatible: 25.0.0
+Staging partialCompatible: 23.0.0
+
+PAGE / DETAIL
+Source page files: 10
+Staging page files: 1
+Staging pageCount property: 1
+Staging page manager refs: ['id8808']
+Top-level page entities: 1
+Retained scene(s): ['TJI Pa2Pe Roof - Hyd']
+Retained entity IDs: 114
+Retained connection records: 13
+
+SKETCHUP REFERENCE
+Staging SKP reference count: 1
+Exact external SKP path preserved: True
+External path: ['Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp']
+Embedded SKP SHA-256 preserved: True
+Embedded SKP SHA-256: {'ref/3234524399_(03) FLR TO FLR SJ_5221.skp': '6389fef96c358619c15a5fbef1afac51ecd82a2348afb8335c2be2bae45aea4b'}
+
+VIEWPORT CACHE
+Image references retained: 1
+Vector references retained: 1
+
+SIZE
+Source:  34,807,416 bytes (33.19 MiB)
+Staging: 12,192,436 bytes (11.63 MiB)
+Reduction: 65.0%
+
+SAFETY
+The source master was read only.
+No master path was rewritten.
+The LayOut 2025 generator/version metadata was preserved.
+Only the disposable output package was modified.
