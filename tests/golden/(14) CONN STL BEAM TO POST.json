@@ -1,0 +1,191 @@
+{
+ "layout_filename": "(14) CONN STL BEAM TO POST.layout",
+ "page_count": 2,
+ "detail_count": 5,
+ "skp_reference_count": 2,
+ "skp_references": {
+  "id6858": {
+   "externalTarget": "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(14) CONN/(14) CONN BEAM TO POST.skp",
+   "internalTarget": "ref/3068245322_(14) CONN BEAM TO POST_6858.skp"
+  },
+  "id7342": {
+   "externalTarget": "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(14) CONN/(14) CONN STL FRME.skp",
+   "internalTarget": "ref/3266806649_(14) CONN STL FRME_7342.skp"
+  }
+ },
+ "details": [
+  {
+   "key_tail": "|id6853|id6933",
+   "page_index": 1,
+   "group_index": 1,
+   "page_name": "WDP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id6933",
+     "scene_name": "W2S (2) Bolt",
+     "scene_pid": "157339",
+     "skp_ref_id": "id6858",
+     "image_ref_id": "id6843",
+     "vector_ref_id": "id6844",
+     "has_preview": true
+    }
+   ],
+   "display_title": "W2S (2) Bolt",
+   "expanded_title": "W2S (2) Bolted",
+   "master_title": "Connection Steel Beam TO Post or Column",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(14) CONN/(14) CONN BEAM TO POST.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7834
+   ],
+   "searchable_text_sha1": "49ea7debe9dd2731477fcd18b1358fdeb7d844c4"
+  },
+  {
+   "key_tail": "|id6853|id7065",
+   "page_index": 1,
+   "group_index": 2,
+   "page_name": "WDP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id7065",
+     "scene_name": "W2S TSP",
+     "scene_pid": "166684",
+     "skp_ref_id": "id6858",
+     "image_ref_id": "id6851",
+     "vector_ref_id": "id6852",
+     "has_preview": true
+    }
+   ],
+   "display_title": "W2S TSP",
+   "expanded_title": "W2S TSP",
+   "master_title": "Connection Steel Beam TO Post or Column",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(14) CONN/(14) CONN BEAM TO POST.skp"
+   ],
+   "bounds": [
+    0.4459,
+    2.0967,
+    12.032,
+    7.7793
+   ],
+   "searchable_text_sha1": "ccacf19f341244fe40fd7cc61d57f27e7e7df667"
+  },
+  {
+   "key_tail": "|id6853|id7131",
+   "page_index": 1,
+   "group_index": 3,
+   "page_name": "WDP",
+   "viewport_count": 3,
+   "viewports": [
+    {
+     "viewport_id": "id7131",
+     "scene_name": "W2S (7) SDS",
+     "scene_pid": "134000",
+     "skp_ref_id": "id6858",
+     "image_ref_id": "id6847",
+     "vector_ref_id": "id6848",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id7187",
+     "scene_name": "W2S (7) SDS",
+     "scene_pid": "134000",
+     "skp_ref_id": "id6858",
+     "image_ref_id": "id6849",
+     "vector_ref_id": "id6850",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id7244",
+     "scene_name": "W2S (7) SDS",
+     "scene_pid": "134000",
+     "skp_ref_id": "id6858",
+     "image_ref_id": "id6845",
+     "vector_ref_id": "id6846",
+     "has_preview": true
+    }
+   ],
+   "display_title": "W2S (7) SDS",
+   "expanded_title": "W2S (7) SDS Screws",
+   "master_title": "Connection Steel Beam TO Post or Column",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(14) CONN/(14) CONN BEAM TO POST.skp"
+   ],
+   "bounds": [
+    0.4449,
+    10.4771,
+    28.9342,
+    21.5807
+   ],
+   "searchable_text_sha1": "6c9bd7269381d2069e6accd3fc10cc24618a8339"
+  },
+  {
+   "key_tail": "|id5622|id7332",
+   "page_index": 2,
+   "group_index": 1,
+   "page_name": "STLP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id7332",
+     "scene_name": "Stl2Stl",
+     "scene_pid": "157340",
+     "skp_ref_id": "id6858",
+     "image_ref_id": "id6854",
+     "vector_ref_id": "id6855",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Stl2Stl",
+   "expanded_title": "Stl2Stl",
+   "master_title": "Connection Steel Beam TO Post or Column",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(14) CONN/(14) CONN BEAM TO POST.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7834
+   ],
+   "searchable_text_sha1": "6a5e274d3704a4e735dbdb8135b419a097702695"
+  },
+  {
+   "key_tail": "|id5622|id7494",
+   "page_index": 2,
+   "group_index": 2,
+   "page_name": "STLP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id7494",
+     "scene_name": "HSS Abv / Blw",
+     "scene_pid": "123959",
+     "skp_ref_id": "id7342",
+     "image_ref_id": "id7343",
+     "vector_ref_id": "id7344",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS Abv / Blw",
+   "expanded_title": "HSS Abv / Blw",
+   "master_title": "Connection Steel Beam TO Post or Column",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(14) CONN/(14) CONN STL FRME.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    25.2859,
+    11.9659
+   ],
+   "searchable_text_sha1": "b89d074bb6a5daf08c1091e280196161a42d7c54"
+  }
+ ]
+}

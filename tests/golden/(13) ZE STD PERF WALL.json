@@ -1,0 +1,130 @@
+{
+ "layout_filename": "(13) ZE STD PERF WALL.layout",
+ "page_count": 1,
+ "detail_count": 2,
+ "skp_reference_count": 1,
+ "skp_references": {
+  "id5286": {
+   "externalTarget": "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(13) ZE STD/(13) ZE STD.skp",
+   "internalTarget": "ref/2197337574_(13) ZE STD_5286.skp"
+  }
+ },
+ "details": [
+  {
+   "key_tail": "|id7489|id7754",
+   "page_index": 1,
+   "group_index": 1,
+   "page_name": "PERF WALL",
+   "viewport_count": 4,
+   "viewports": [
+    {
+     "viewport_id": "id7754",
+     "scene_name": "Hdr Wall Ext",
+     "scene_pid": "12398",
+     "skp_ref_id": "id5286",
+     "image_ref_id": "id7492",
+     "vector_ref_id": "id7493",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id7755",
+     "scene_name": "Hdr Wall Int",
+     "scene_pid": "12397",
+     "skp_ref_id": "id5286",
+     "image_ref_id": "id7494",
+     "vector_ref_id": "id7495",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id7756",
+     "scene_name": "Hdr Flush Int",
+     "scene_pid": "8253",
+     "skp_ref_id": "id5286",
+     "image_ref_id": "id7496",
+     "vector_ref_id": "id7497",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id7757",
+     "scene_name": "Hdr Flush Ext",
+     "scene_pid": "8254",
+     "skp_ref_id": "id5286",
+     "image_ref_id": "id7498",
+     "vector_ref_id": "id7499",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Hdr Wall Ext",
+   "expanded_title": "Hdr Wall Exterior",
+   "master_title": "ZE Standard Perforated Wall WALL",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(13) ZE STD/(13) ZE STD.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4792,
+    13.526
+   ],
+   "searchable_text_sha1": "e907725c3a6f739bda838733bcd5496bb688a53e"
+  },
+  {
+   "key_tail": "|id7489|id8013",
+   "page_index": 1,
+   "group_index": 2,
+   "page_name": "PERF WALL",
+   "viewport_count": 4,
+   "viewports": [
+    {
+     "viewport_id": "id8013",
+     "scene_name": "Hdr Wall Ext",
+     "scene_pid": "12398",
+     "skp_ref_id": "id5286",
+     "image_ref_id": "id7500",
+     "vector_ref_id": "id7501",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id8014",
+     "scene_name": "LVL Hdr Wall Int",
+     "scene_pid": "35046",
+     "skp_ref_id": "id5286",
+     "image_ref_id": "id7502",
+     "vector_ref_id": "id7503",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id8015",
+     "scene_name": "LVL Hdr Flush Int",
+     "scene_pid": "53946",
+     "skp_ref_id": "id5286",
+     "image_ref_id": "id7504",
+     "vector_ref_id": "id7505",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id8016",
+     "scene_name": "Hdr Flush Ext",
+     "scene_pid": "8254",
+     "skp_ref_id": "id5286",
+     "image_ref_id": "id7506",
+     "vector_ref_id": "id7507",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Hdr Wall Ext",
+   "expanded_title": "Hdr Wall Exterior",
+   "master_title": "ZE Standard Perforated Wall WALL",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(13) ZE STD/(13) ZE STD.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.482,
+    13.526
+   ],
+   "searchable_text_sha1": "2b9beca2aa172a8abb8f266d89d4c133567f7d2e"
+  }
+ ]
+}

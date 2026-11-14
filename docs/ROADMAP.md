@@ -15,7 +15,10 @@
 1. Regression tests on real fixtures (detection, multi-viewport, staging, search, read-only masters).
 2. Persistent diagnostics log in %LOCALAPPDATA%.
 3. Collapsed sidebar, slim cards (thumbnail + title + one descriptor), fuller inspector.
-4. Raw / clean / display metadata; filter bubble numbers; fix title inference.
+4. Raw / clean / display metadata; filter bubble numbers and "N.T.S." (not to scale) from
+   clean/display text; fix title inference (title and N.T.S. sit in separate text boxes,
+   so use N.T.S. as the anchor to find the title, then drop it). Isolated numbers are
+   also table cells (e.g. King Stud quantity table) - fine to drop from search, keep raw.
 5. Open SketchUp to exact scene.
 
 ## 0.3 - standalone + deployment/admin

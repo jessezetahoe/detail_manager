@@ -1,0 +1,1361 @@
+{
+ "layout_filename": "(02) FLR TO RET CONC HYD SJ (New Details!).layout",
+ "page_count": 17,
+ "detail_count": 42,
+ "skp_reference_count": 1,
+ "skp_references": {
+  "id6024": {
+   "externalTarget": "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp",
+   "internalTarget": "ref/231551257_(02) FLR TO FND CONC SJ_6024.skp"
+  }
+ },
+ "details": [
+  {
+   "key_tail": "|id3709|id13373",
+   "page_index": 1,
+   "group_index": 1,
+   "page_name": "PARA FLSH",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id13373",
+     "scene_name": "Pa Hang Hyd Ret",
+     "scene_pid": "175019",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id13273",
+     "vector_ref_id": "id13274",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang Hyd Ret",
+   "expanded_title": "Pa Hang Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "f7a86d84d0f5d02c43cc22ffd9ae844652a285fa"
+  },
+  {
+   "key_tail": "|id3709|id13468",
+   "page_index": 1,
+   "group_index": 2,
+   "page_name": "PARA FLSH",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id13468",
+     "scene_name": "Pa Hang Slab Hyd Ret",
+     "scene_pid": "175023",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id13275",
+     "vector_ref_id": "id13276",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang Slab Hyd Ret",
+   "expanded_title": "Pa Hang Slab Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "3f3a1aac334082e1aa264d720eeede1727d96a09"
+  },
+  {
+   "key_tail": "|id5221|id13563",
+   "page_index": 2,
+   "group_index": 1,
+   "page_name": "PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id13563",
+     "scene_name": "Pa Hang Hyd Ins Ret",
+     "scene_pid": "175020",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id13281",
+     "vector_ref_id": "id13282",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang Hyd Ins Ret",
+   "expanded_title": "Pa Hang Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "6b64c7f99574ff920552669427c363149b9dbf38"
+  },
+  {
+   "key_tail": "|id5221|id13667",
+   "page_index": 2,
+   "group_index": 2,
+   "page_name": "PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id13667",
+     "scene_name": "Pa Hang Slab Hyd Ins Ret",
+     "scene_pid": "175024",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id13283",
+     "vector_ref_id": "id13284",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang Slab Hyd Ins Ret",
+   "expanded_title": "Pa Hang Slab Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "1b5e2762b60a8d5bf57557bb581cf443d99cb698"
+  },
+  {
+   "key_tail": "|id5222|id13814",
+   "page_index": 3,
+   "group_index": 1,
+   "page_name": "PARA PONY",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id13814",
+     "scene_name": "Pa Top Pony Hyd Ret",
+     "scene_pid": "175068",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id13287",
+     "vector_ref_id": "id13288",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Pony Hyd Ret",
+   "expanded_title": "Pa Top Pony Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8058
+   ],
+   "searchable_text_sha1": "5f14039ca21caf81310e50ab7c4f369322ddffea"
+  },
+  {
+   "key_tail": "|id5222|id14026",
+   "page_index": 3,
+   "group_index": 2,
+   "page_name": "PARA PONY",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id14026",
+     "scene_name": "Pa Top Pony Hyd Ret",
+     "scene_pid": "175068",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id13818",
+     "vector_ref_id": "id13819",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id14027",
+     "scene_name": "Pa Top Hyd Ret",
+     "scene_pid": "175047",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id13820",
+     "vector_ref_id": "id13821",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Pony Hyd Ret",
+   "expanded_title": "Pa Top Pony Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    21.914
+   ],
+   "searchable_text_sha1": "0d9f1595c8dd87f3877cf23316ac769f276d82fe"
+  },
+  {
+   "key_tail": "|id5223|id14155",
+   "page_index": 4,
+   "group_index": 1,
+   "page_name": "PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id14155",
+     "scene_name": "Pa Top Hyd Ret",
+     "scene_pid": "175047",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id14032",
+     "vector_ref_id": "id14033",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Hyd Ret",
+   "expanded_title": "Pa Top Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "547dcbc894033bffd16f6d19da03f3eadf077b8a"
+  },
+  {
+   "key_tail": "|id5223|id14273",
+   "page_index": 4,
+   "group_index": 2,
+   "page_name": "PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id14273",
+     "scene_name": "Pa Top Slab Hyd Ret",
+     "scene_pid": "175051",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id14034",
+     "vector_ref_id": "id14035",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Slab Hyd Ret",
+   "expanded_title": "Pa Top Slab Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "b66bfcbe4c83dbc7555dbd7a4a849f8c1e823b7c"
+  },
+  {
+   "key_tail": "|id5224|id14367",
+   "page_index": 5,
+   "group_index": 1,
+   "page_name": "PERP FLSH",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id14367",
+     "scene_name": "Pe Hang Hyd Ret",
+     "scene_pid": "175033",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id14040",
+     "vector_ref_id": "id14041",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang Hyd Ret",
+   "expanded_title": "Pe Hang Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "2c9605f780111cf8dc5bc14b994702726e3ee426"
+  },
+  {
+   "key_tail": "|id5224|id14471",
+   "page_index": 5,
+   "group_index": 2,
+   "page_name": "PERP FLSH",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id14471",
+     "scene_name": "Pe Hang Slab Hyd Ret",
+     "scene_pid": "175043",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id14042",
+     "vector_ref_id": "id14043",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang Slab Hyd Ret",
+   "expanded_title": "Pe Hang Slab Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "f932b65a25dea64d3e2acebb41f0e92dc690a9e7"
+  },
+  {
+   "key_tail": "|id5225|id14583",
+   "page_index": 6,
+   "group_index": 1,
+   "page_name": "PERP INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id14583",
+     "scene_name": "Pe Hang Hyd Ins Ret",
+     "scene_pid": "175034",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id14474",
+     "vector_ref_id": "id14475",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang Hyd Ins Ret",
+   "expanded_title": "Pe Hang Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "d8c12b6a2968eade522ba4a4f778cff74ebd2359"
+  },
+  {
+   "key_tail": "|id5225|id14696",
+   "page_index": 6,
+   "group_index": 2,
+   "page_name": "PERP INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id14696",
+     "scene_name": "Pe Hang Slab Hyd Ins Ret",
+     "scene_pid": "175044",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id14476",
+     "vector_ref_id": "id14477",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang Slab Hyd Ins Ret",
+   "expanded_title": "Pe Hang Slab Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "88cd7d0965a71247ad5513cce3b9cc05bfee6b28"
+  },
+  {
+   "key_tail": "|id5226|id14879",
+   "page_index": 7,
+   "group_index": 1,
+   "page_name": "PERP PONY",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id14879",
+     "scene_name": "Pe Top Pony Hyd Ret",
+     "scene_pid": "175066",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id14718",
+     "vector_ref_id": "id14719",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Pony Hyd Ret",
+   "expanded_title": "Pe Top Pony Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8124
+   ],
+   "searchable_text_sha1": "124d6f55eea91d94fc5dabc3fd9a55dee8b7f782"
+  },
+  {
+   "key_tail": "|id5226|id15080",
+   "page_index": 7,
+   "group_index": 2,
+   "page_name": "PERP PONY",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id15080",
+     "scene_name": "Pe Top Pony Hyd Ret",
+     "scene_pid": "175066",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id14722",
+     "vector_ref_id": "id14723",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id15081",
+     "scene_name": "Pe Top Hyd Ret",
+     "scene_pid": "175055",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id14724",
+     "vector_ref_id": "id14725",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Pony Hyd Ret",
+   "expanded_title": "Pe Top Pony Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    21.914
+   ],
+   "searchable_text_sha1": "85475ad00c239947aa8a2ed329201b6cf4d2c4fc"
+  },
+  {
+   "key_tail": "|id5227|id42197",
+   "page_index": 8,
+   "group_index": 2,
+   "page_name": "PERP TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id42197",
+     "scene_name": "Pe Top Hyd Ret",
+     "scene_pid": "175055",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id41678",
+     "vector_ref_id": "id41679",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Hyd Ret",
+   "expanded_title": "Pe Top Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    1.7843,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "dec180748292495b2db4b2c699cbf872350b99bf"
+  },
+  {
+   "key_tail": "|id5227|id42320",
+   "page_index": 8,
+   "group_index": 3,
+   "page_name": "PERP TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id42320",
+     "scene_name": "Pe Top Slab Hyd Ret",
+     "scene_pid": "175059",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id41680",
+     "vector_ref_id": "id41681",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Slab Hyd Ret",
+   "expanded_title": "Pe Top Slab Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    1.7843,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "08cd66703f997a2f8ec9d413f720635fc83288dc"
+  },
+  {
+   "key_tail": "|id8545|id15456",
+   "page_index": 9,
+   "group_index": 1,
+   "page_name": "PARA TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id15456",
+     "scene_name": "Pa Top Cont Hyd Ins Ret",
+     "scene_pid": "175078",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id15321",
+     "vector_ref_id": "id15322",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Cont Hyd Ins Ret",
+   "expanded_title": "Pa Top Cont Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "b2b0867932467271f2cbd39996d1d57029750bb4"
+  },
+  {
+   "key_tail": "|id8545|id15553",
+   "page_index": 9,
+   "group_index": 2,
+   "page_name": "PARA TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id15553",
+     "scene_name": "Pa Top Cont NW Hyd Ins Ret",
+     "scene_pid": "175084",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id15323",
+     "vector_ref_id": "id15324",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Cont NW Hyd Ins Ret",
+   "expanded_title": "Pa Top Cont No Wall Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "653fe51741d58fe8f2865266b159e77ec9278591"
+  },
+  {
+   "key_tail": "|id8545|id15693",
+   "page_index": 9,
+   "group_index": 3,
+   "page_name": "PARA TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id15693",
+     "scene_name": "Pa Hang 2 Pa Top Hyd Ins Ret",
+     "scene_pid": "175106",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id15329",
+     "vector_ref_id": "id15330",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang 2 Pa Top Hyd Ins Ret",
+   "expanded_title": "Pa Hang 2 Pa Top Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.1772
+   ],
+   "searchable_text_sha1": "6dd930c1a9420f48ba737be4569a1a5da7e9adfd"
+  },
+  {
+   "key_tail": "|id8546|id15835",
+   "page_index": 10,
+   "group_index": 1,
+   "page_name": "PARA TO PARA PONY",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id15835",
+     "scene_name": "Pa2Pa Top Pony Hyd Ret",
+     "scene_pid": "175080",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id15694",
+     "vector_ref_id": "id15695",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa2Pa Top Pony Hyd Ret",
+   "expanded_title": "Pa2Pa Top Pony Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8058
+   ],
+   "searchable_text_sha1": "fd45ebf3695469080f617767842e346fa142bdaa"
+  },
+  {
+   "key_tail": "|id8546|id16043",
+   "page_index": 10,
+   "group_index": 2,
+   "page_name": "PARA TO PARA PONY",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id16043",
+     "scene_name": "Pa2Pa Top Pony Hyd Ret",
+     "scene_pid": "175080",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id15845",
+     "vector_ref_id": "id15846",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id16044",
+     "scene_name": "Pa Top Cont Hyd Ret",
+     "scene_pid": "175077",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id15847",
+     "vector_ref_id": "id15848",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa2Pa Top Pony Hyd Ret",
+   "expanded_title": "Pa2Pa Top Pony Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    21.9139
+   ],
+   "searchable_text_sha1": "45578def9027ddaa516ed3a624e18eea58e96cb4"
+  },
+  {
+   "key_tail": "|id8547|id16170",
+   "page_index": 11,
+   "group_index": 1,
+   "page_name": "PARA TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id16170",
+     "scene_name": "Pa Top Cont Hyd Ret",
+     "scene_pid": "175077",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id16048",
+     "vector_ref_id": "id16049",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Cont Hyd Ret",
+   "expanded_title": "Pa Top Cont Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "3cc3cd4799ad1f4d49bc41ac42789bc82f59a1fc"
+  },
+  {
+   "key_tail": "|id8547|id16254",
+   "page_index": 11,
+   "group_index": 2,
+   "page_name": "PARA TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id16254",
+     "scene_name": "Pa Top Cont NW Hyd Ret",
+     "scene_pid": "175083",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id16050",
+     "vector_ref_id": "id16051",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Cont NW Hyd Ret",
+   "expanded_title": "Pa Top Cont No Wall Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "c337e75855deb8216c3ca17d999ad4a20496422e"
+  },
+  {
+   "key_tail": "|id8547|id16381",
+   "page_index": 11,
+   "group_index": 3,
+   "page_name": "PARA TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id16381",
+     "scene_name": "Pa Hang 2 Pa Top Hyd Ret",
+     "scene_pid": "175105",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id16056",
+     "vector_ref_id": "id16057",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang 2 Pa Top Hyd Ret",
+   "expanded_title": "Pa Hang 2 Pa Top Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.1772
+   ],
+   "searchable_text_sha1": "be13da3da728b362cf0a8b8ef4d89b5152692dbd"
+  },
+  {
+   "key_tail": "|id5229|id18411",
+   "page_index": 12,
+   "group_index": 1,
+   "page_name": "PERP TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id18411",
+     "scene_name": "Pe2Pa Top Hyd Ins Ret",
+     "scene_pid": "175088",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id18271",
+     "vector_ref_id": "id18272",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pa Top Hyd Ins Ret",
+   "expanded_title": "Pe2Pa Top Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "934347354889ffa45d2e4c0c672fe06c9e4b78e5"
+  },
+  {
+   "key_tail": "|id5229|id18560",
+   "page_index": 12,
+   "group_index": 2,
+   "page_name": "PERP TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id18560",
+     "scene_name": "Pa Hang 2 Pe Top Hyd Ins Ret",
+     "scene_pid": "175102",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id18273",
+     "vector_ref_id": "id18274",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang 2 Pe Top Hyd Ins Ret",
+   "expanded_title": "Pa Hang 2 Pe Top Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.1772
+   ],
+   "searchable_text_sha1": "991f4f74b6e404cfd493250729ec1dd793aa25fb"
+  },
+  {
+   "key_tail": "|id5229|id18709",
+   "page_index": 12,
+   "group_index": 3,
+   "page_name": "PERP TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id18709",
+     "scene_name": "Pe Hang 2 Pa Top Hyd Ins Ret",
+     "scene_pid": "175110",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id18275",
+     "vector_ref_id": "id18276",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang 2 Pa Top Hyd Ins Ret",
+   "expanded_title": "Pe Hang 2 Pa Top Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    10.4771,
+    16.4224,
+    16.1772
+   ],
+   "searchable_text_sha1": "d0d855c01d23089385e6504e8249456fc3436b5b"
+  },
+  {
+   "key_tail": "|id5229|id18815",
+   "page_index": 12,
+   "group_index": 4,
+   "page_name": "PERP TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id18815",
+     "scene_name": "Pe2Pa Top NW Hyd Ins Ret",
+     "scene_pid": "175094",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id18277",
+     "vector_ref_id": "id18278",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pa Top NW Hyd Ins Ret",
+   "expanded_title": "Pe2Pa Top No Wall Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "95ed7b25b05e9be1994d810905901f647f3a8f15"
+  },
+  {
+   "key_tail": "|id5230|id17041",
+   "page_index": 13,
+   "group_index": 1,
+   "page_name": "PERP TO PARA PONY",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id17041",
+     "scene_name": "Pe2Pa Top Pony Hyd Ret",
+     "scene_pid": "175090",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id16883",
+     "vector_ref_id": "id16884",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pa Top Pony Hyd Ret",
+   "expanded_title": "Pe2Pa Top Pony Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8058
+   ],
+   "searchable_text_sha1": "0f66e930d93c196fed51c716e462551d12c651f9"
+  },
+  {
+   "key_tail": "|id5230|id17246",
+   "page_index": 13,
+   "group_index": 2,
+   "page_name": "PERP TO PARA PONY",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id17246",
+     "scene_name": "Pe2Pa Top Hyd Ret",
+     "scene_pid": "175087",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id16887",
+     "vector_ref_id": "id16888",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id17247",
+     "scene_name": "Pe2Pa Top Pony Hyd Ret",
+     "scene_pid": "175090",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id16889",
+     "vector_ref_id": "id16890",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pa Top Hyd Ret",
+   "expanded_title": "Pe2Pa Top Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    21.9139
+   ],
+   "searchable_text_sha1": "e53a650eb30caea3dda5bf979aa0760ec9d91136"
+  },
+  {
+   "key_tail": "|id5231|id17373",
+   "page_index": 14,
+   "group_index": 1,
+   "page_name": "PERP TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id17373",
+     "scene_name": "Pe2Pa Top NW Hyd Ret",
+     "scene_pid": "175093",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id17271",
+     "vector_ref_id": "id17272",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pa Top NW Hyd Ret",
+   "expanded_title": "Pe2Pa Top No Wall Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "13837a9f101c92477e362725f7f890cb1475c210"
+  },
+  {
+   "key_tail": "|id5231|id17493",
+   "page_index": 14,
+   "group_index": 2,
+   "page_name": "PERP TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id17493",
+     "scene_name": "Pe2Pa Top Hyd Ret",
+     "scene_pid": "175087",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id17269",
+     "vector_ref_id": "id17270",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pa Top Hyd Ret",
+   "expanded_title": "Pe2Pa Top Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "ffb03d9bf789cc33e4b24947b6b8cf2ce3dd5614"
+  },
+  {
+   "key_tail": "|id5231|id17629",
+   "page_index": 14,
+   "group_index": 3,
+   "page_name": "PERP TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id17629",
+     "scene_name": "Pa Hang 2 Pe Top Hyd Ret",
+     "scene_pid": "175101",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id17273",
+     "vector_ref_id": "id17274",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang 2 Pe Top Hyd Ret",
+   "expanded_title": "Pa Hang 2 Pe Top Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.1772
+   ],
+   "searchable_text_sha1": "4d0b5ca4fe8eba3a0c497ff8b6d74f73cb49756b"
+  },
+  {
+   "key_tail": "|id5231|id17765",
+   "page_index": 14,
+   "group_index": 4,
+   "page_name": "PERP TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id17765",
+     "scene_name": "Pe Hang 2 Pa Top Hyd Ret",
+     "scene_pid": "175109",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id17275",
+     "vector_ref_id": "id17276",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang 2 Pa Top Hyd Ret",
+   "expanded_title": "Pe Hang 2 Pa Top Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    10.4771,
+    16.4224,
+    16.1772
+   ],
+   "searchable_text_sha1": "f1e024fd7853b5d256fc5fc88d9c72751d2893b9"
+  },
+  {
+   "key_tail": "|id8542|id18995",
+   "page_index": 15,
+   "group_index": 1,
+   "page_name": "PERP TO PERP INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id18995",
+     "scene_name": "Pe Hang 2 Pe Top Hyd Ins Ret",
+     "scene_pid": "175098",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id18816",
+     "vector_ref_id": "id18817",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang 2 Pe Top Hyd Ins Ret",
+   "expanded_title": "Pe Hang 2 Pe Top Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.216
+   ],
+   "searchable_text_sha1": "6d80dbeec10e0574a1a782debaff950af1bae40b"
+  },
+  {
+   "key_tail": "|id8542|id19124",
+   "page_index": 15,
+   "group_index": 2,
+   "page_name": "PERP TO PERP INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id19124",
+     "scene_name": "Pe Top Cont Hyd Ins Ret",
+     "scene_pid": "175064",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id18820",
+     "vector_ref_id": "id18821",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Cont Hyd Ins Ret",
+   "expanded_title": "Pe Top Cont Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "bdc1ada9d031d2c2c3c4fea52b01431ac0d78654"
+  },
+  {
+   "key_tail": "|id8542|id19226",
+   "page_index": 15,
+   "group_index": 3,
+   "page_name": "PERP TO PERP INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id19226",
+     "scene_name": "Pe Top Cont NW Hyd Ins Ret",
+     "scene_pid": "175074",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id18822",
+     "vector_ref_id": "id18823",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Cont NW Hyd Ins Ret",
+   "expanded_title": "Pe Top Cont No Wall Hydronics Ins Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "e1b2bfb2165549cbfb504be4254f6714d481422d"
+  },
+  {
+   "key_tail": "|id8543|id19369",
+   "page_index": 16,
+   "group_index": 1,
+   "page_name": "PERP TO PERP PONY",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id19369",
+     "scene_name": "Pe2Pe Top Pony Hyd Ret",
+     "scene_pid": "175070",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id18828",
+     "vector_ref_id": "id18829",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pe Top Pony Hyd Ret",
+   "expanded_title": "Pe2Pe Top Pony Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8058
+   ],
+   "searchable_text_sha1": "e8b0d6f0ae8dddbe95b233cf734cf3dfd7e8c090"
+  },
+  {
+   "key_tail": "|id8543|id19566",
+   "page_index": 16,
+   "group_index": 2,
+   "page_name": "PERP TO PERP PONY",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id19566",
+     "scene_name": "Pe2Pe Top Pony Hyd Ret",
+     "scene_pid": "175070",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id18831",
+     "vector_ref_id": "id18832",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id19567",
+     "scene_name": "Pe Top Cont Hyd Ret",
+     "scene_pid": "175063",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id18833",
+     "vector_ref_id": "id18834",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pe Top Pony Hyd Ret",
+   "expanded_title": "Pe2Pe Top Pony Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    21.914
+   ],
+   "searchable_text_sha1": "d11c70344544fca66c522a5888776b034cee759b"
+  },
+  {
+   "key_tail": "|id8544|id19698",
+   "page_index": 17,
+   "group_index": 1,
+   "page_name": "PERP TO PERP TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id19698",
+     "scene_name": "Pe Top Cont Hyd Ret",
+     "scene_pid": "175063",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id19571",
+     "vector_ref_id": "id19572",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Cont Hyd Ret",
+   "expanded_title": "Pe Top Cont Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "51f0df047765a152ab2f27be00dec1b7a8ae7b3a"
+  },
+  {
+   "key_tail": "|id8544|id19787",
+   "page_index": 17,
+   "group_index": 2,
+   "page_name": "PERP TO PERP TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id19787",
+     "scene_name": "Pe Top Cont NW Hyd Ret",
+     "scene_pid": "175073",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id19573",
+     "vector_ref_id": "id19574",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Cont NW Hyd Ret",
+   "expanded_title": "Pe Top Cont No Wall Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "f1234769a538be06a113f4c643b5915ebfc4ef23"
+  },
+  {
+   "key_tail": "|id8544|id19931",
+   "page_index": 17,
+   "group_index": 3,
+   "page_name": "PERP TO PERP TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id19931",
+     "scene_name": "Pe Hang 2 Pe Top Hyd Ret",
+     "scene_pid": "175097",
+     "skp_ref_id": "id6024",
+     "image_ref_id": "id19579",
+     "vector_ref_id": "id19580",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang 2 Pe Top Hyd Ret",
+   "expanded_title": "Pe Hang 2 Pe Top Hydronics Retaining Wall",
+   "master_title": "Floor TO Retaining Wall CONC Hydronics Solid Joist (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.216
+   ],
+   "searchable_text_sha1": "0382c1dadb8ad4c89984c795b33d9e9bdb6b6486"
+  }
+ ]
+}

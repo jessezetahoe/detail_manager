@@ -1,0 +1,882 @@
+{
+ "layout_filename": "(03) FLR TO FLR TRAD EXT SJ WSW (New Details!).layout",
+ "page_count": 10,
+ "detail_count": 28,
+ "skp_reference_count": 1,
+ "skp_references": {
+  "id5221": {
+   "externalTarget": "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp",
+   "internalTarget": "ref/3234524399_(03) FLR TO FLR SJ_5221.skp"
+  }
+ },
+ "details": [
+  {
+   "key_tail": "|id3709|id8911",
+   "page_index": 1,
+   "group_index": 1,
+   "page_name": "PARA WALL BLW",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id8911",
+     "scene_name": "TJI Para NW ABV WSW",
+     "scene_pid": "376278",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id8775",
+     "vector_ref_id": "id8776",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Para NW ABV WSW",
+   "expanded_title": "I-Joist Parallel No Wall ABV Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7902
+   ],
+   "searchable_text_sha1": "8a1372d5baeb4aa2228a1059efb97c6cb71ee2ae"
+  },
+  {
+   "key_tail": "|id6215|id10586",
+   "page_index": 2,
+   "group_index": 1,
+   "page_name": "PARA WALL ABV BLW",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id10586",
+     "scene_name": "TJI Para WSW",
+     "scene_pid": "247797",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id10453",
+     "vector_ref_id": "id10454",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Para WSW",
+   "expanded_title": "I-Joist Parallel Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7902
+   ],
+   "searchable_text_sha1": "47c5f754b179c7e67876b98de8490b385897a0a6"
+  },
+  {
+   "key_tail": "|id6253|id25394",
+   "page_index": 3,
+   "group_index": 1,
+   "page_name": "PARA WALL ABV BLW DECK",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id25394",
+     "scene_name": "TJI Pa2Pa Deck Se WSW",
+     "scene_pid": "750495",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id25208",
+     "vector_ref_id": "id25209",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pa2Pa Deck Se WSW",
+   "expanded_title": "I-Joist Pa2Pa Decking Se Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7902
+   ],
+   "searchable_text_sha1": "978023576f1fadb223f775c57e454e9e7e3770ce"
+  },
+  {
+   "key_tail": "|id6253|id25550",
+   "page_index": 3,
+   "group_index": 2,
+   "page_name": "PARA WALL ABV BLW DECK",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id25550",
+     "scene_name": "TJI Pa2Pe Deck WSW",
+     "scene_pid": "750498",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id25202",
+     "vector_ref_id": "id25203",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pa2Pe Deck WSW",
+   "expanded_title": "I-Joist Pa2Pe Decking Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.1706
+   ],
+   "searchable_text_sha1": "7062f16bf32d15c23b9e7c6366d7d56779146469"
+  },
+  {
+   "key_tail": "|id6253|id25711",
+   "page_index": 3,
+   "group_index": 3,
+   "page_name": "PARA WALL ABV BLW DECK",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id25711",
+     "scene_name": "TJI Pa2Pe Deck Se WSW",
+     "scene_pid": "750499",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id25204",
+     "vector_ref_id": "id25205",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pa2Pe Deck Se WSW",
+   "expanded_title": "I-Joist Pa2Pe Decking Se Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    10.4771,
+    16.4224,
+    16.2868
+   ],
+   "searchable_text_sha1": "0dd8ebe5762a035a03893de9b6769cb22d1441e2"
+  },
+  {
+   "key_tail": "|id6253|id25863",
+   "page_index": 3,
+   "group_index": 4,
+   "page_name": "PARA WALL ABV BLW DECK",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id25863",
+     "scene_name": "TJI Pa2Pa Deck WSW",
+     "scene_pid": "750493",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id25206",
+     "vector_ref_id": "id25207",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pa2Pa Deck WSW",
+   "expanded_title": "I-Joist Pa2Pa Decking Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7902
+   ],
+   "searchable_text_sha1": "66064788ff8a1946dd0cd73b446642d799d2e74e"
+  },
+  {
+   "key_tail": "|id8808|id26012",
+   "page_index": 4,
+   "group_index": 2,
+   "page_name": "PARA WALL ABV BLW RFTR SJ",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id26012",
+     "scene_name": "TJI Pa2Pa Deck Se 2 WSW",
+     "scene_pid": "750504",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id25232",
+     "vector_ref_id": "id25233",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pa2Pa Deck Se 2 WSW",
+   "expanded_title": "I-Joist Pa2Pa Decking Se 2 Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7902
+   ],
+   "searchable_text_sha1": "271c3d558aeb5ad1e9af8058d6b7061e132eed28"
+  },
+  {
+   "key_tail": "|id8808|id26167",
+   "page_index": 4,
+   "group_index": 3,
+   "page_name": "PARA WALL ABV BLW RFTR SJ",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id26167",
+     "scene_name": "TJI Pa2Pe Roof WSW",
+     "scene_pid": "750506",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id25226",
+     "vector_ref_id": "id25227",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pa2Pe Roof WSW",
+   "expanded_title": "I-Joist Pa2Pe Roof Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.245
+   ],
+   "searchable_text_sha1": "3128539f840db4f371bd15807f08d6692f02cd69"
+  },
+  {
+   "key_tail": "|id8808|id26304",
+   "page_index": 4,
+   "group_index": 4,
+   "page_name": "PARA WALL ABV BLW RFTR SJ",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id26304",
+     "scene_name": "TJI Pa2Pa Roof WSW",
+     "scene_pid": "750501",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id25228",
+     "vector_ref_id": "id25229",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pa2Pa Roof WSW",
+   "expanded_title": "I-Joist Pa2Pa Roof Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8742
+   ],
+   "searchable_text_sha1": "f2ad6ef9cf7d6b1e4a193749d797c2e6686e2fef"
+  },
+  {
+   "key_tail": "|id8808|id26462",
+   "page_index": 4,
+   "group_index": 5,
+   "page_name": "PARA WALL ABV BLW RFTR SJ",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id26462",
+     "scene_name": "TJI Pa2Pe Deck Se 2 WSW",
+     "scene_pid": "750508",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id25230",
+     "vector_ref_id": "id25231",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pa2Pe Deck Se 2 WSW",
+   "expanded_title": "I-Joist Pa2Pe Decking Se 2 Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    10.4771,
+    16.4224,
+    16.1706
+   ],
+   "searchable_text_sha1": "3045102c2199fe8521ee7e87a4e8a58c30863aaf"
+  },
+  {
+   "key_tail": "|id10600|id26721",
+   "page_index": 5,
+   "group_index": 2,
+   "page_name": "PARA WALL ABV BLW RFTR TJI",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id26721",
+     "scene_name": "TJI Pa2Pa TJI Roof WSW",
+     "scene_pid": "750510",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26494",
+     "vector_ref_id": "id26495",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pa2Pa TJI Roof WSW",
+   "expanded_title": "I-Joist Pa2Pa I-Joist Roof Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8742
+   ],
+   "searchable_text_sha1": "8900a0955d32e43d97ee5fca7374b7f61dbb322d"
+  },
+  {
+   "key_tail": "|id10600|id26870",
+   "page_index": 5,
+   "group_index": 3,
+   "page_name": "PARA WALL ABV BLW RFTR TJI",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id26870",
+     "scene_name": "TJI Pa2Pe TJI Roof Flat WSW",
+     "scene_pid": "750516",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26496",
+     "vector_ref_id": "id26497",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pa2Pe TJI Roof Flat WSW",
+   "expanded_title": "I-Joist Pa2Pe I-Joist Roof Flat Rafter / Joist Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    10.4771,
+    16.4224,
+    16.1706
+   ],
+   "searchable_text_sha1": "a5b4fef974968c5317b71c7446a2858741abaff9"
+  },
+  {
+   "key_tail": "|id10600|id27016",
+   "page_index": 5,
+   "group_index": 4,
+   "page_name": "PARA WALL ABV BLW RFTR TJI",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id27016",
+     "scene_name": "TJI Pa2Pe TJI Roof WSW",
+     "scene_pid": "750513",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26492",
+     "vector_ref_id": "id26493",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pa2Pe TJI Roof WSW",
+   "expanded_title": "I-Joist Pa2Pe I-Joist Roof Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.245
+   ],
+   "searchable_text_sha1": "4c1eed435536242c0f825e11f30a8e8b6f803c1d"
+  },
+  {
+   "key_tail": "|id10600|id27155",
+   "page_index": 5,
+   "group_index": 5,
+   "page_name": "PARA WALL ABV BLW RFTR TJI",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id27155",
+     "scene_name": "TJI Pa2Pa TJI Roof Flat WSW",
+     "scene_pid": "750512",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26498",
+     "vector_ref_id": "id26499",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pa2Pa TJI Roof Flat WSW",
+   "expanded_title": "I-Joist Pa2Pa I-Joist Roof Flat Rafter / Joist Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7902
+   ],
+   "searchable_text_sha1": "5103e41caf1d6576bbd1e5a12021dcf6f078b1a8"
+  },
+  {
+   "key_tail": "|id10911|id13678",
+   "page_index": 6,
+   "group_index": 1,
+   "page_name": "PERP WALL BLW",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id13678",
+     "scene_name": "TJI Perp NW ABV WSW",
+     "scene_pid": "378920",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id13462",
+     "vector_ref_id": "id13463",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Perp NW ABV WSW",
+   "expanded_title": "I-Joist Perpendicular No Wall ABV Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7902
+   ],
+   "searchable_text_sha1": "a69bf06fce63276dd00adcffd166682c28fbfd21"
+  },
+  {
+   "key_tail": "|id10916|id13816",
+   "page_index": 7,
+   "group_index": 1,
+   "page_name": "PERP WALL ABV BLW",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id13816",
+     "scene_name": "TJI Perp WSW",
+     "scene_pid": "378918",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id13466",
+     "vector_ref_id": "id13467",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Perp WSW",
+   "expanded_title": "I-Joist Perpendicular Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8262
+   ],
+   "searchable_text_sha1": "c6367c283683648eee6c7c5212f1d55f040b26be"
+  },
+  {
+   "key_tail": "|id10925|id27324",
+   "page_index": 8,
+   "group_index": 2,
+   "page_name": "PERP WALL ABV BLW DECK",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id27324",
+     "scene_name": "TJI Pe2Pe Deck Se WSW",
+     "scene_pid": "750525",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26516",
+     "vector_ref_id": "id26517",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pe2Pe Deck Se WSW",
+   "expanded_title": "I-Joist Pe2Pe Decking Se Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    10.4771,
+    16.4224,
+    16.1706
+   ],
+   "searchable_text_sha1": "b64e88d4e23f278b029551a4658a57e856661266"
+  },
+  {
+   "key_tail": "|id10925|id27479",
+   "page_index": 8,
+   "group_index": 3,
+   "page_name": "PERP WALL ABV BLW DECK",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id27479",
+     "scene_name": "TJI Pe2Pa Deck WSW",
+     "scene_pid": "750518",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26518",
+     "vector_ref_id": "id26519",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pe2Pa Deck WSW",
+   "expanded_title": "I-Joist Pe2Pa Decking Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.3899,
+    7.7902
+   ],
+   "searchable_text_sha1": "faf84d941dd1dbe27b8eccfa7f79b21a534a1fcb"
+  },
+  {
+   "key_tail": "|id10925|id27638",
+   "page_index": 8,
+   "group_index": 4,
+   "page_name": "PERP WALL ABV BLW DECK",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id27638",
+     "scene_name": "TJI Pe2Pa Deck Se WSW",
+     "scene_pid": "750521",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26520",
+     "vector_ref_id": "id26521",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pe2Pa Deck Se WSW",
+   "expanded_title": "I-Joist Pe2Pa Decking Se Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7902
+   ],
+   "searchable_text_sha1": "ae79da3e9d1c0d8de786a82d6aef66ff058ad06b"
+  },
+  {
+   "key_tail": "|id10925|id27803",
+   "page_index": 8,
+   "group_index": 5,
+   "page_name": "PERP WALL ABV BLW DECK",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id27803",
+     "scene_name": "TJI Pe2Pe Deck WSW",
+     "scene_pid": "750522",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26522",
+     "vector_ref_id": "id26523",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pe2Pe Deck WSW",
+   "expanded_title": "I-Joist Pe2Pe Decking Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.1706
+   ],
+   "searchable_text_sha1": "014885389acf140894b9ace731733ee596954dc5"
+  },
+  {
+   "key_tail": "|id10934|id27959",
+   "page_index": 9,
+   "group_index": 2,
+   "page_name": "PERP WALL ABV BLW RFTR SJ",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id27959",
+     "scene_name": "TJI Pe2Pe Roof WSW",
+     "scene_pid": "750530",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26540",
+     "vector_ref_id": "id26541",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pe2Pe Roof WSW",
+   "expanded_title": "I-Joist Pe2Pe Roof Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.245
+   ],
+   "searchable_text_sha1": "6a638f98285ead8e78e619f26e8684b140b7e6ec"
+  },
+  {
+   "key_tail": "|id10934|id28105",
+   "page_index": 9,
+   "group_index": 3,
+   "page_name": "PERP WALL ABV BLW RFTR SJ",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id28105",
+     "scene_name": "TJI Pe2Pa Roof WSW",
+     "scene_pid": "750527",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26542",
+     "vector_ref_id": "id26543",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pe2Pa Roof WSW",
+   "expanded_title": "I-Joist Pe2Pa Roof Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8742
+   ],
+   "searchable_text_sha1": "89ec96e330f091f4900747427fb671db4fe38ad8"
+  },
+  {
+   "key_tail": "|id10934|id28263",
+   "page_index": 9,
+   "group_index": 4,
+   "page_name": "PERP WALL ABV BLW RFTR SJ",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id28263",
+     "scene_name": "TJI Pe2Pe Deck Se 2 WSW",
+     "scene_pid": "750532",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26544",
+     "vector_ref_id": "id26545",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pe2Pe Deck Se 2 WSW",
+   "expanded_title": "I-Joist Pe2Pe Decking Se 2 Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7902
+   ],
+   "searchable_text_sha1": "e9fcbdab3f867802cf8d180108a66461065036ab"
+  },
+  {
+   "key_tail": "|id10934|id28412",
+   "page_index": 9,
+   "group_index": 5,
+   "page_name": "PERP WALL ABV BLW RFTR SJ",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id28412",
+     "scene_name": "TJI Pe2Pa Deck Se 2 WSW",
+     "scene_pid": "750529",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26546",
+     "vector_ref_id": "id26547",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pe2Pa Deck Se 2 WSW",
+   "expanded_title": "I-Joist Pe2Pa Decking Se 2 Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    10.4771,
+    16.4224,
+    16.1706
+   ],
+   "searchable_text_sha1": "1059bb13ace488f5e3cda0f6d50b6cd4741ca029"
+  },
+  {
+   "key_tail": "|id10939|id28567",
+   "page_index": 10,
+   "group_index": 2,
+   "page_name": "PERP WALL ABV BLW RFTR TJI",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id28567",
+     "scene_name": "TJI Pe2Pe TJI Roof WSW",
+     "scene_pid": "750538",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26564",
+     "vector_ref_id": "id26565",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pe2Pe TJI Roof WSW",
+   "expanded_title": "I-Joist Pe2Pe I-Joist Roof Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.245
+   ],
+   "searchable_text_sha1": "074b13a97d6a120acadd152bb1bc9cd26a529eb2"
+  },
+  {
+   "key_tail": "|id10939|id28725",
+   "page_index": 10,
+   "group_index": 3,
+   "page_name": "PERP WALL ABV BLW RFTR TJI",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id28725",
+     "scene_name": "TJI Pe2Pe TJI Flat Roof WSW",
+     "scene_pid": "750540",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26568",
+     "vector_ref_id": "id26569",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pe2Pe TJI Flat Roof WSW",
+   "expanded_title": "I-Joist Pe2Pe I-Joist Flat Rafter / Joist Roof Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7902
+   ],
+   "searchable_text_sha1": "79e1bddf9666afd4038c24eb4d0ee13c061d0d3c"
+  },
+  {
+   "key_tail": "|id10939|id28871",
+   "page_index": 10,
+   "group_index": 4,
+   "page_name": "PERP WALL ABV BLW RFTR TJI",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id28871",
+     "scene_name": "TJI Pe2Pa TJI Roof WSW",
+     "scene_pid": "750534",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26566",
+     "vector_ref_id": "id26567",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pe2Pa TJI Roof WSW",
+   "expanded_title": "I-Joist Pe2Pa I-Joist Roof Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8742
+   ],
+   "searchable_text_sha1": "0c5410ffd3d417dad92d3370d4dc089207d6ab16"
+  },
+  {
+   "key_tail": "|id10939|id29020",
+   "page_index": 10,
+   "group_index": 5,
+   "page_name": "PERP WALL ABV BLW RFTR TJI",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id29020",
+     "scene_name": "TJI Pe2Pa TJI Flat Roof WSW",
+     "scene_pid": "750537",
+     "skp_ref_id": "id5221",
+     "image_ref_id": "id26570",
+     "vector_ref_id": "id26571",
+     "has_preview": true
+    }
+   ],
+   "display_title": "TJI Pe2Pa TJI Flat Roof WSW",
+   "expanded_title": "I-Joist Pe2Pa I-Joist Flat Rafter / Joist Roof Wood Strong Wall",
+   "master_title": "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(03) FLR TO FLR/(03) FLR TO FLR SJ.skp"
+   ],
+   "bounds": [
+    8.4195,
+    10.4771,
+    16.4224,
+    16.1706
+   ],
+   "searchable_text_sha1": "93fa56ee2ec4dec1cfdaabe77849f07ad1c8b288"
+  }
+ ]
+}

@@ -1,0 +1,1361 @@
+{
+ "layout_filename": "(02) FLR TO FND CONC HYD TJI.layout",
+ "page_count": 17,
+ "detail_count": 42,
+ "skp_reference_count": 1,
+ "skp_references": {
+  "id33207": {
+   "externalTarget": "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp",
+   "internalTarget": "ref/1374839268_(02) FLR TO FND CONC TJI_33207.skp"
+  }
+ },
+ "details": [
+  {
+   "key_tail": "|id3709|id38744",
+   "page_index": 1,
+   "group_index": 1,
+   "page_name": "PARA FLSH",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id38744",
+     "scene_name": "Pa Hang Slab Hyd",
+     "scene_pid": "50873",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id38640",
+     "vector_ref_id": "id38641",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang Slab Hyd",
+   "expanded_title": "Pa Hang Slab Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "30435e4e0c4f3f3c91587e8b60ab4267f0f8b38e"
+  },
+  {
+   "key_tail": "|id3709|id38830",
+   "page_index": 1,
+   "group_index": 2,
+   "page_name": "PARA FLSH",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id38830",
+     "scene_name": "Pa Hang Hyd",
+     "scene_pid": "50872",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id38638",
+     "vector_ref_id": "id38639",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang Hyd",
+   "expanded_title": "Pa Hang Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "6a5714cbbd991f10e7a3f9752ed1a6154c453a98"
+  },
+  {
+   "key_tail": "|id5221|id38925",
+   "page_index": 2,
+   "group_index": 1,
+   "page_name": "PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id38925",
+     "scene_name": "Pa Hang Hyd Ins",
+     "scene_pid": "134455",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id38646",
+     "vector_ref_id": "id38647",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang Hyd Ins",
+   "expanded_title": "Pa Hang Hydronics Ins",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "140e2ad4162bd74dd6c8fb074fc4cc08268548ef"
+  },
+  {
+   "key_tail": "|id5221|id39029",
+   "page_index": 2,
+   "group_index": 2,
+   "page_name": "PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id39029",
+     "scene_name": "Pa Hang Slab Hyd Ins",
+     "scene_pid": "134457",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id38648",
+     "vector_ref_id": "id38649",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang Slab Hyd Ins",
+   "expanded_title": "Pa Hang Slab Hydronics Ins",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "b2fb9cde68765022dd82741672b6c353ea0499d9"
+  },
+  {
+   "key_tail": "|id5222|id39196",
+   "page_index": 3,
+   "group_index": 1,
+   "page_name": "PARA PONY",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id39196",
+     "scene_name": "Pa Top Pony Hyd",
+     "scene_pid": "162876",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id39032",
+     "vector_ref_id": "id39033",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Pony Hyd",
+   "expanded_title": "Pa Top Pony Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8058
+   ],
+   "searchable_text_sha1": "e6f36a8b0afc537e5197bd1f5717a7d9727c0f12"
+  },
+  {
+   "key_tail": "|id5222|id39392",
+   "page_index": 3,
+   "group_index": 2,
+   "page_name": "PARA PONY",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id39392",
+     "scene_name": "Pa Top Pony Hyd",
+     "scene_pid": "162876",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id39036",
+     "vector_ref_id": "id39037",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id39393",
+     "scene_name": "Pa Top Hyd",
+     "scene_pid": "91428",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id39038",
+     "vector_ref_id": "id39039",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Pony Hyd",
+   "expanded_title": "Pa Top Pony Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    21.8983
+   ],
+   "searchable_text_sha1": "4c85fe59b7e9d14a194e6239667034cd4ee51776"
+  },
+  {
+   "key_tail": "|id5223|id39504",
+   "page_index": 4,
+   "group_index": 1,
+   "page_name": "PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id39504",
+     "scene_name": "Pa Top Hyd",
+     "scene_pid": "91428",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id39044",
+     "vector_ref_id": "id39045",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Hyd",
+   "expanded_title": "Pa Top Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "5a479de3b16ab3f7fbdcbfe35c9c64238f0fdee8"
+  },
+  {
+   "key_tail": "|id5223|id39622",
+   "page_index": 4,
+   "group_index": 2,
+   "page_name": "PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id39622",
+     "scene_name": "Pa Top Slab Hyd",
+     "scene_pid": "91429",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id39046",
+     "vector_ref_id": "id39047",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Slab Hyd",
+   "expanded_title": "Pa Top Slab Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "02c90de6ed7d10529f5e1fa63c9b7de7c7883273"
+  },
+  {
+   "key_tail": "|id5224|id39753",
+   "page_index": 5,
+   "group_index": 1,
+   "page_name": "PERP FLSH",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id39753",
+     "scene_name": "Pe Hang Slab Hyd",
+     "scene_pid": "79048",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id39626",
+     "vector_ref_id": "id39627",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang Slab Hyd",
+   "expanded_title": "Pe Hang Slab Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "cac448962f698e4155fb7d925a5ec53ebc6126cf"
+  },
+  {
+   "key_tail": "|id5224|id39848",
+   "page_index": 5,
+   "group_index": 2,
+   "page_name": "PERP FLSH",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id39848",
+     "scene_name": "Pe Hang Hyd",
+     "scene_pid": "79047",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id39624",
+     "vector_ref_id": "id39625",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang Hyd",
+   "expanded_title": "Pe Hang Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "08533f659c347b27b98ea4a0a2b5cb3ad1dfe6b1"
+  },
+  {
+   "key_tail": "|id5225|id39952",
+   "page_index": 6,
+   "group_index": 1,
+   "page_name": "PERP INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id39952",
+     "scene_name": "Pe Hang Hyd Ins",
+     "scene_pid": "134462",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id39632",
+     "vector_ref_id": "id39633",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang Hyd Ins",
+   "expanded_title": "Pe Hang Hydronics Ins",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "0b26c06f706b231a3d25494ee7e8b83a30a90964"
+  },
+  {
+   "key_tail": "|id5225|id40065",
+   "page_index": 6,
+   "group_index": 2,
+   "page_name": "PERP INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id40065",
+     "scene_name": "Pe Hang Slab Hyd Ins",
+     "scene_pid": "134467",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id39634",
+     "vector_ref_id": "id39635",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang Slab Hyd Ins",
+   "expanded_title": "Pe Hang Slab Hydronics Ins",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "03c429d726d85536ab0156e21d6151c46a70a124"
+  },
+  {
+   "key_tail": "|id5226|id40217",
+   "page_index": 7,
+   "group_index": 1,
+   "page_name": "PERP PONY",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id40217",
+     "scene_name": "Pe Top Pony Hyd",
+     "scene_pid": "162874",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id39640",
+     "vector_ref_id": "id39641",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Pony Hyd",
+   "expanded_title": "Pe Top Pony Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8124
+   ],
+   "searchable_text_sha1": "04f4f690dad482a8198dc53962274afe22f758d8"
+  },
+  {
+   "key_tail": "|id5226|id40418",
+   "page_index": 7,
+   "group_index": 2,
+   "page_name": "PERP PONY",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id40418",
+     "scene_name": "Pe Top Pony Hyd",
+     "scene_pid": "162874",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id39644",
+     "vector_ref_id": "id39645",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id40420",
+     "scene_name": "Pe Top Hyd",
+     "scene_pid": "101619",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id39646",
+     "vector_ref_id": "id39647",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Pony Hyd",
+   "expanded_title": "Pe Top Pony Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    21.8983
+   ],
+   "searchable_text_sha1": "b15d155b96e3de0c9add0a6b1550ed6dfccfec4e"
+  },
+  {
+   "key_tail": "|id5227|id40559",
+   "page_index": 8,
+   "group_index": 1,
+   "page_name": "PERP TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id40559",
+     "scene_name": "Pe Top Slab Hyd",
+     "scene_pid": "101621",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id40427",
+     "vector_ref_id": "id40428",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Slab Hyd",
+   "expanded_title": "Pe Top Slab Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    1.7843,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "d304f3f74506ae9756f72a11f7b949af21a3ccbb"
+  },
+  {
+   "key_tail": "|id5227|id40668",
+   "page_index": 8,
+   "group_index": 2,
+   "page_name": "PERP TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id40668",
+     "scene_name": "Pe Top Hyd",
+     "scene_pid": "101619",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id40425",
+     "vector_ref_id": "id40426",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Hyd",
+   "expanded_title": "Pe Top Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    1.7843,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "788310257004c18515b53087124911b8c1972739"
+  },
+  {
+   "key_tail": "|id8545|id40793",
+   "page_index": 9,
+   "group_index": 1,
+   "page_name": "PARA TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id40793",
+     "scene_name": "Pa Top Cont Hyd Ins",
+     "scene_pid": "134751",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id40431",
+     "vector_ref_id": "id40432",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Cont Hyd Ins",
+   "expanded_title": "Pa Top Cont Hydronics Ins",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "916d744dac02c4408cdb7ff65d4479a8d4843df0"
+  },
+  {
+   "key_tail": "|id8545|id40890",
+   "page_index": 9,
+   "group_index": 2,
+   "page_name": "PARA TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id40890",
+     "scene_name": "Pa Top Cont NW Hyd Ins",
+     "scene_pid": "134753",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id40433",
+     "vector_ref_id": "id40434",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Cont NW Hyd Ins",
+   "expanded_title": "Pa Top Cont No Wall Hydronics Ins",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "d7b07be7d29950a400948811721e25dde4108718"
+  },
+  {
+   "key_tail": "|id8545|id41030",
+   "page_index": 9,
+   "group_index": 3,
+   "page_name": "PARA TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id41030",
+     "scene_name": "Pa Hang 2 Pa Top Hyd Ins",
+     "scene_pid": "135013",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id40439",
+     "vector_ref_id": "id40440",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang 2 Pa Top Hyd Ins",
+   "expanded_title": "Pa Hang 2 Pa Top Hydronics Ins",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.1772
+   ],
+   "searchable_text_sha1": "c6b2284cdb6d04033b638683c2d357275f99d82d"
+  },
+  {
+   "key_tail": "|id8546|id41224",
+   "page_index": 10,
+   "group_index": 1,
+   "page_name": "PARA TO PARA PONY",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id41224",
+     "scene_name": "Pa2Pa Top Pony Hyd",
+     "scene_pid": "162870",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id41031",
+     "vector_ref_id": "id41032",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa2Pa Top Pony Hyd",
+   "expanded_title": "Pa2Pa Top Pony Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8058
+   ],
+   "searchable_text_sha1": "08f01dbfcbeb4a682ee3f48bac061a59ed82915c"
+  },
+  {
+   "key_tail": "|id8546|id41416",
+   "page_index": 10,
+   "group_index": 2,
+   "page_name": "PARA TO PARA PONY",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id41416",
+     "scene_name": "Pa2Pa Top Pony Hyd",
+     "scene_pid": "162870",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id41035",
+     "vector_ref_id": "id41036",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id41417",
+     "scene_name": "Pa Top Cont Hyd",
+     "scene_pid": "117454",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id41037",
+     "vector_ref_id": "id41038",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa2Pa Top Pony Hyd",
+   "expanded_title": "Pa2Pa Top Pony Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    21.9139
+   ],
+   "searchable_text_sha1": "529a3f5f2172e28278e6d47c0970790b72cc108a"
+  },
+  {
+   "key_tail": "|id8547|id41531",
+   "page_index": 11,
+   "group_index": 1,
+   "page_name": "PARA TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id41531",
+     "scene_name": "Pa Top Cont Hyd",
+     "scene_pid": "117454",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id41043",
+     "vector_ref_id": "id41044",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Cont Hyd",
+   "expanded_title": "Pa Top Cont Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "ff4e893b80b555e83ee5cad3954eb7e5a4124cfd"
+  },
+  {
+   "key_tail": "|id8547|id41615",
+   "page_index": 11,
+   "group_index": 2,
+   "page_name": "PARA TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id41615",
+     "scene_name": "Pa Top Cont NW Hyd",
+     "scene_pid": "117492",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id41045",
+     "vector_ref_id": "id41046",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Top Cont NW Hyd",
+   "expanded_title": "Pa Top Cont No Wall Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "57c1ef31e8e64ca76cdd377c9a7b27de244331f3"
+  },
+  {
+   "key_tail": "|id8547|id41742",
+   "page_index": 11,
+   "group_index": 3,
+   "page_name": "PARA TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id41742",
+     "scene_name": "Pa Hang 2 Pa Top Hyd",
+     "scene_pid": "121237",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id41051",
+     "vector_ref_id": "id41052",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang 2 Pa Top Hyd",
+   "expanded_title": "Pa Hang 2 Pa Top Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.1772
+   ],
+   "searchable_text_sha1": "eb912d071e32b483c84da2736891c1a0e5adacb4"
+  },
+  {
+   "key_tail": "|id5229|id41883",
+   "page_index": 12,
+   "group_index": 1,
+   "page_name": "PERP TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id41883",
+     "scene_name": "Pe2Pa Top Hyd Ins",
+     "scene_pid": "134755",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id41743",
+     "vector_ref_id": "id41744",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pa Top Hyd Ins",
+   "expanded_title": "Pe2Pa Top Hydronics Ins",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "0120646747f1ac7c6c8ab5cf0a37bc15c341c423"
+  },
+  {
+   "key_tail": "|id5229|id42032",
+   "page_index": 12,
+   "group_index": 2,
+   "page_name": "PERP TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id42032",
+     "scene_name": "Pa Hang 2 Pe Top Hyd Ins",
+     "scene_pid": "135011",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id41745",
+     "vector_ref_id": "id41746",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang 2 Pe Top Hyd Ins",
+   "expanded_title": "Pa Hang 2 Pe Top Hydronics Ins",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.1772
+   ],
+   "searchable_text_sha1": "b92a3fb1262a362f21366e28935cdeebb2d14ee7"
+  },
+  {
+   "key_tail": "|id5229|id42181",
+   "page_index": 12,
+   "group_index": 3,
+   "page_name": "PERP TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id42181",
+     "scene_name": "Pe Hang 2 Pa Top Hyd Ins",
+     "scene_pid": "135015",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id41747",
+     "vector_ref_id": "id41748",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang 2 Pa Top Hyd Ins",
+   "expanded_title": "Pe Hang 2 Pa Top Hydronics Ins",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    10.4771,
+    16.4224,
+    16.1772
+   ],
+   "searchable_text_sha1": "0682f32f9cf523e2d6027e480ed64d9e7fd7e6e5"
+  },
+  {
+   "key_tail": "|id5229|id42287",
+   "page_index": 12,
+   "group_index": 4,
+   "page_name": "PERP TO PARA INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id42287",
+     "scene_name": "Pe2Pa Top NW Hyd Ins",
+     "scene_pid": "134757",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id41749",
+     "vector_ref_id": "id41750",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pa Top NW Hyd Ins",
+   "expanded_title": "Pe2Pa Top No Wall Hydronics Ins",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "60211a02dee8d948b109efb802302086ca52cfe5"
+  },
+  {
+   "key_tail": "|id5230|id42438",
+   "page_index": 13,
+   "group_index": 1,
+   "page_name": "PERP TO PARA PONY",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id42438",
+     "scene_name": "Pe2Pa Top Pony Hyd",
+     "scene_pid": "162871",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id42288",
+     "vector_ref_id": "id42289",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pa Top Pony Hyd",
+   "expanded_title": "Pe2Pa Top Pony Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8058
+   ],
+   "searchable_text_sha1": "014c68bacc576377712520e2a2fda659c86f42d6"
+  },
+  {
+   "key_tail": "|id5230|id42679",
+   "page_index": 13,
+   "group_index": 2,
+   "page_name": "PERP TO PARA PONY",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id42679",
+     "scene_name": "Pe2Pa Top Hyd",
+     "scene_pid": "121096",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id42440",
+     "vector_ref_id": "id42441",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id42680",
+     "scene_name": "Pe2Pa Top Pony Hyd",
+     "scene_pid": "162871",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id42442",
+     "vector_ref_id": "id42443",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pa Top Hyd",
+   "expanded_title": "Pe2Pa Top Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    21.9139
+   ],
+   "searchable_text_sha1": "80670d0e1fb9a7d059f72f9c6d107f602a302e7e"
+  },
+  {
+   "key_tail": "|id5231|id42803",
+   "page_index": 14,
+   "group_index": 1,
+   "page_name": "PERP TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id42803",
+     "scene_name": "Pe2Pa Top Hyd",
+     "scene_pid": "121096",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id42451",
+     "vector_ref_id": "id42452",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pa Top Hyd",
+   "expanded_title": "Pe2Pa Top Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "6c5b6263433b4f8e5ef4c23a521eefd2a1c8ce8e"
+  },
+  {
+   "key_tail": "|id5231|id42939",
+   "page_index": 14,
+   "group_index": 2,
+   "page_name": "PERP TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id42939",
+     "scene_name": "Pa Hang 2 Pe Top Hyd",
+     "scene_pid": "121235",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id42453",
+     "vector_ref_id": "id42454",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pa Hang 2 Pe Top Hyd",
+   "expanded_title": "Pa Hang 2 Pe Top Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.1772
+   ],
+   "searchable_text_sha1": "bc8cb77f637e198e8122f4a2b5f2cf5be257143f"
+  },
+  {
+   "key_tail": "|id5231|id43075",
+   "page_index": 14,
+   "group_index": 3,
+   "page_name": "PERP TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id43075",
+     "scene_name": "Pe Hang 2 Pa Top Hyd",
+     "scene_pid": "121239",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id42455",
+     "vector_ref_id": "id42456",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang 2 Pa Top Hyd",
+   "expanded_title": "Pe Hang 2 Pa Top Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    10.4771,
+    16.4224,
+    16.1772
+   ],
+   "searchable_text_sha1": "f23859550f56e43dd0199bfad22551c7d2a2ae0e"
+  },
+  {
+   "key_tail": "|id5231|id43168",
+   "page_index": 14,
+   "group_index": 4,
+   "page_name": "PERP TO PARA TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id43168",
+     "scene_name": "Pe2Pa Top NW Hyd",
+     "scene_pid": "132716",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id42457",
+     "vector_ref_id": "id42458",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pa Top NW Hyd",
+   "expanded_title": "Pe2Pa Top No Wall Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "acb401ba15fc71c041ce1f0e35df35364ffc56d4"
+  },
+  {
+   "key_tail": "|id8542|id43284",
+   "page_index": 15,
+   "group_index": 1,
+   "page_name": "PERP TO PERP INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id43284",
+     "scene_name": "Pe Top Cont Hyd",
+     "scene_pid": "113563",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id42464",
+     "vector_ref_id": "id42465",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Cont Hyd",
+   "expanded_title": "Pe Top Cont Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "d174ac91878003b122207b244cea8cfac9e27c49"
+  },
+  {
+   "key_tail": "|id8542|id43373",
+   "page_index": 15,
+   "group_index": 2,
+   "page_name": "PERP TO PERP INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id43373",
+     "scene_name": "Pe Top Cont NW Hyd",
+     "scene_pid": "113592",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id42466",
+     "vector_ref_id": "id42467",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Cont NW Hyd",
+   "expanded_title": "Pe Top Cont No Wall Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "b35524794f61e3af9b9112620574a56053726a44"
+  },
+  {
+   "key_tail": "|id8542|id43517",
+   "page_index": 15,
+   "group_index": 3,
+   "page_name": "PERP TO PERP INSL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id43517",
+     "scene_name": "Pe Hang 2 Pe Top Hyd",
+     "scene_pid": "121233",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id42472",
+     "vector_ref_id": "id42473",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang 2 Pe Top Hyd",
+   "expanded_title": "Pe Hang 2 Pe Top Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.216
+   ],
+   "searchable_text_sha1": "beef5a87b224a70b5f3a06d960bae43ea31ef813"
+  },
+  {
+   "key_tail": "|id8543|id43683",
+   "page_index": 16,
+   "group_index": 1,
+   "page_name": "PERP TO PERP PONY",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id43683",
+     "scene_name": "Pe2Pe Top Pony Hyd",
+     "scene_pid": "162869",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id43518",
+     "vector_ref_id": "id43519",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pe Top Pony Hyd",
+   "expanded_title": "Pe2Pe Top Pony Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.8058
+   ],
+   "searchable_text_sha1": "83ff34d1b21f28605b765aa85f247d9ed14f3215"
+  },
+  {
+   "key_tail": "|id8543|id43880",
+   "page_index": 16,
+   "group_index": 2,
+   "page_name": "PERP TO PERP PONY",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id43880",
+     "scene_name": "Pe2Pe Top Pony Hyd",
+     "scene_pid": "162869",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id43521",
+     "vector_ref_id": "id43522",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id43881",
+     "scene_name": "Pe Top Cont Hyd",
+     "scene_pid": "113563",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id43523",
+     "vector_ref_id": "id43524",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe2Pe Top Pony Hyd",
+   "expanded_title": "Pe2Pe Top Pony Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    21.914
+   ],
+   "searchable_text_sha1": "39d6d6bba221902cfd1d96b45266cd63fcc6055a"
+  },
+  {
+   "key_tail": "|id8544|id44000",
+   "page_index": 17,
+   "group_index": 1,
+   "page_name": "PERP TO PERP TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id44000",
+     "scene_name": "Pe Top Cont Hyd",
+     "scene_pid": "113563",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id43529",
+     "vector_ref_id": "id43530",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Cont Hyd",
+   "expanded_title": "Pe Top Cont Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    7.7968
+   ],
+   "searchable_text_sha1": "57ba28bc2acf568b2a3812707312cd5b77e005a3"
+  },
+  {
+   "key_tail": "|id8544|id44089",
+   "page_index": 17,
+   "group_index": 2,
+   "page_name": "PERP TO PERP TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id44089",
+     "scene_name": "Pe Top Cont NW Hyd",
+     "scene_pid": "113592",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id43531",
+     "vector_ref_id": "id43532",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Top Cont NW Hyd",
+   "expanded_title": "Pe Top Cont No Wall Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "1d7df9c0505d87ed8a5d70c87a1b0b015d2cdb93"
+  },
+  {
+   "key_tail": "|id8544|id44233",
+   "page_index": 17,
+   "group_index": 3,
+   "page_name": "PERP TO PERP TOP",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id44233",
+     "scene_name": "Pe Hang 2 Pe Top Hyd",
+     "scene_pid": "121233",
+     "skp_ref_id": "id33207",
+     "image_ref_id": "id43537",
+     "vector_ref_id": "id43538",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Pe Hang 2 Pe Top Hyd",
+   "expanded_title": "Pe Hang 2 Pe Top Hydronics",
+   "master_title": "Floor TO Foundation CONC Hydronics I-Joist",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(02) FLR TO FND/(02) FLR TO FND CONC TJI.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4195,
+    16.216
+   ],
+   "searchable_text_sha1": "e4a4d0f201edc15b245c6fcbaec670474f8208fb"
+  }
+ ]
+}

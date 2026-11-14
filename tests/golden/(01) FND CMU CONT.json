@@ -1,0 +1,448 @@
+{
+ "layout_filename": "(01) FND CMU CONT.layout",
+ "page_count": 4,
+ "detail_count": 14,
+ "skp_reference_count": 1,
+ "skp_references": {
+  "id5295": {
+   "externalTarget": "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp",
+   "internalTarget": "ref/1011007689_(01) FND_5295.skp"
+  }
+ },
+ "details": [
+  {
+   "key_tail": "|id3709|id5909",
+   "page_index": 1,
+   "group_index": 1,
+   "page_name": "GRAD",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id5909",
+     "scene_name": "Grade Beam at Garage",
+     "scene_pid": "1259261",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id5801",
+     "vector_ref_id": "id5802",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Grade Beam at Garage",
+   "expanded_title": "Grade Beam at Garage",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    8.394,
+    2.0967,
+    16.4224,
+    7.7955
+   ],
+   "searchable_text_sha1": "1021098934cce4b67e6455c0287648ee7c731f78"
+  },
+  {
+   "key_tail": "|id3709|id9826",
+   "page_index": 1,
+   "group_index": 2,
+   "page_name": "GRAD",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id9826",
+     "scene_name": "Grade Beam Blw Frame",
+     "scene_pid": "1373302",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id9789",
+     "vector_ref_id": "id9790",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Grade Beam Blw Frame",
+   "expanded_title": "Grade Beam Blw Frame",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    0.424,
+    2.0967,
+    8.4195,
+    7.7916
+   ],
+   "searchable_text_sha1": "e452bed1ffd9a7ddc5550431b2f0079196177d91"
+  },
+  {
+   "key_tail": "|id8978|id9162",
+   "page_index": 2,
+   "group_index": 1,
+   "page_name": "STEM",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id9162",
+     "scene_name": "Stem CMU",
+     "scene_pid": "1235398",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id8970",
+     "vector_ref_id": "id8971",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Stem CMU",
+   "expanded_title": "Stem CMU",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4068,
+    7.7968
+   ],
+   "searchable_text_sha1": "accc989dd309d6ee786c3fb9c471cabb79236c02"
+  },
+  {
+   "key_tail": "|id8978|id9291",
+   "page_index": 2,
+   "group_index": 2,
+   "page_name": "STEM",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id9291",
+     "scene_name": "Stem CMU Perf",
+     "scene_pid": "1235399",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id8972",
+     "vector_ref_id": "id8973",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Stem CMU Perf",
+   "expanded_title": "Stem CMU Perforated Wall",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    8.4323,
+    2.0967,
+    16.4224,
+    7.7968
+   ],
+   "searchable_text_sha1": "cde751ac4a2527c75d7daf0faa0723f110f5a029"
+  },
+  {
+   "key_tail": "|id8978|id9388",
+   "page_index": 2,
+   "group_index": 3,
+   "page_name": "STEM",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id9388",
+     "scene_name": "Stem CMU Step",
+     "scene_pid": "1439132",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id8974",
+     "vector_ref_id": "id8975",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Stem CMU Step",
+   "expanded_title": "Stem CMU Step",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    0.4029,
+    10.4771,
+    8.4195,
+    16.1646
+   ],
+   "searchable_text_sha1": "d26920985b658a6a9fbd0e203c7a02951b36f6e6"
+  },
+  {
+   "key_tail": "|id8978|id9457",
+   "page_index": 2,
+   "group_index": 4,
+   "page_name": "STEM",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id9457",
+     "scene_name": "Stem CMU Corner",
+     "scene_pid": "1419233",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id8976",
+     "vector_ref_id": "id8977",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Stem CMU Corner",
+   "expanded_title": "Stem CMU Corner",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    8.4195,
+    10.4311,
+    16.4224,
+    16.1749
+   ],
+   "searchable_text_sha1": "b17459709cc661059a493ee515be30f7fa8679f5"
+  },
+  {
+   "key_tail": "|id5411|id7952",
+   "page_index": 3,
+   "group_index": 1,
+   "page_name": "STEM WITH WALL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id7952",
+     "scene_name": "Stem Conc. w/ Wall Int Slab",
+     "scene_pid": "1186810",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id7842",
+     "vector_ref_id": "id7843",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Stem Conc. w/ Wall Int Slab",
+   "expanded_title": "Stem Conc. w/ Wall Interior Slab",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    8.4195,
+    18.8575,
+    16.4224,
+    24.5666
+   ],
+   "searchable_text_sha1": "a369cdd24345355f47755a0b403f884cbec581ce"
+  },
+  {
+   "key_tail": "|id5411|id8086",
+   "page_index": 3,
+   "group_index": 2,
+   "page_name": "STEM WITH WALL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id8086",
+     "scene_name": "Stem CMU w/ Wall Slabx2",
+     "scene_pid": "1235404",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id7848",
+     "vector_ref_id": "id7849",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Stem CMU w/ Wall Slabx2",
+   "expanded_title": "Stem CMU w/ Wall Slabx2",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    0.4167,
+    18.8575,
+    8.4323,
+    24.5576
+   ],
+   "searchable_text_sha1": "341d86e9fc29657a98e1264dc66f74c89c4e9101"
+  },
+  {
+   "key_tail": "|id5411|id8199",
+   "page_index": 3,
+   "group_index": 3,
+   "page_name": "STEM WITH WALL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id8199",
+     "scene_name": "Stem CMU w/ Wall Slab",
+     "scene_pid": "1235402",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id7846",
+     "vector_ref_id": "id7847",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Stem CMU w/ Wall Slab",
+   "expanded_title": "Stem CMU w/ Wall Slab",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    0.4167,
+    10.4771,
+    8.4323,
+    16.1772
+   ],
+   "searchable_text_sha1": "fd207940912eed3ea0bf55100dc472930abd2706"
+  },
+  {
+   "key_tail": "|id5411|id8288",
+   "page_index": 3,
+   "group_index": 4,
+   "page_name": "STEM WITH WALL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id8288",
+     "scene_name": "Stem CMU w/ Wall",
+     "scene_pid": "1235400",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id7844",
+     "vector_ref_id": "id7845",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Stem CMU w/ Wall",
+   "expanded_title": "Stem CMU w/ Wall",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4323,
+    7.7968
+   ],
+   "searchable_text_sha1": "652d07d138a31e96199b28f26b5ac3c1021a3fcd"
+  },
+  {
+   "key_tail": "|id5411|id8410",
+   "page_index": 3,
+   "group_index": 5,
+   "page_name": "STEM WITH WALL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id8410",
+     "scene_name": "Stem CMU w/ Wall Perf",
+     "scene_pid": "1235401",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id8308",
+     "vector_ref_id": "id8309",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Stem CMU w/ Wall Perf",
+   "expanded_title": "Stem CMU w/ Wall Perforated Wall",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4351,
+    7.7968
+   ],
+   "searchable_text_sha1": "3b3e80329d88af69df175330e0073e6b68046ef4"
+  },
+  {
+   "key_tail": "|id5411|id8554",
+   "page_index": 3,
+   "group_index": 6,
+   "page_name": "STEM WITH WALL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id8554",
+     "scene_name": "Stem CMU w/ Wall Perf Slab",
+     "scene_pid": "1235403",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id8310",
+     "vector_ref_id": "id8311",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Stem CMU w/ Wall Perf Slab",
+   "expanded_title": "Stem CMU w/ Wall Perforated Wall Slab",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    8.4195,
+    10.4771,
+    16.4351,
+    16.1772
+   ],
+   "searchable_text_sha1": "5611f08303565b64ec55654e59b0edaff3aa371f"
+  },
+  {
+   "key_tail": "|id6026|id8669",
+   "page_index": 4,
+   "group_index": 1,
+   "page_name": "STEM WITH WALL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id8669",
+     "scene_name": "Stem Step at Shear Wall CMU",
+     "scene_pid": "1439236",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id8314",
+     "vector_ref_id": "id8315",
+     "has_preview": true
+    }
+   ],
+   "display_title": "Stem Step at Shear Wall CMU",
+   "expanded_title": "Stem Step at Shear Wall CMU",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    0.4167,
+    1.6555,
+    25.3015,
+    11.9988
+   ],
+   "searchable_text_sha1": "3fcf0a5c9f36ab5ebf9f4630c54aea0a5ae8c581"
+  },
+  {
+   "key_tail": "|id6026|id8709",
+   "page_index": 4,
+   "group_index": 2,
+   "page_name": "STEM WITH WALL",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id8709",
+     "scene_name": "HD and Strap at Stem CMU",
+     "scene_pid": "1469177",
+     "skp_ref_id": "id5295",
+     "image_ref_id": "id8318",
+     "vector_ref_id": "id8319",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HD and Strap at Stem CMU",
+   "expanded_title": "Holdown and Strap at Stem CMU",
+   "master_title": "Foundation CMU CONT",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    7.7959
+   ],
+   "searchable_text_sha1": "c56feb441527e1e9da152480e9264a5a11f656c2"
+  }
+ ]
+}

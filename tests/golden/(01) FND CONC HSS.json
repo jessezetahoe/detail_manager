@@ -1,0 +1,564 @@
+{
+ "layout_filename": "(01) FND CONC HSS.layout",
+ "page_count": 5,
+ "detail_count": 14,
+ "skp_reference_count": 3,
+ "skp_references": {
+  "id11231": {
+   "externalTarget": "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND POST.skp",
+   "internalTarget": "ref/1555284879_(01) FND POST_11231.skp"
+  },
+  "id14176": {
+   "externalTarget": "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (4) BOLT.skp",
+   "internalTarget": "ref/3379076703_(01) FND HSS (4) BOLT_14176.skp"
+  },
+  "id9797": {
+   "externalTarget": "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (2) BOLT.skp",
+   "internalTarget": "ref/568153116_(01) FND HSS (2) BOLT_9797.skp"
+  }
+ },
+ "details": [
+  {
+   "key_tail": "|id4179|id10009",
+   "page_index": 1,
+   "group_index": 1,
+   "page_name": "CONT (2) BOLT",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id10009",
+     "scene_name": "HSS 2 Side Bolt 2 Side Nailer Shear",
+     "scene_pid": "134586",
+     "skp_ref_id": "id9797",
+     "image_ref_id": "id9802",
+     "vector_ref_id": "id9803",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id10010",
+     "scene_name": "HSS 2 Side Bolt 2 Side Nailer t.s.",
+     "scene_pid": "148966",
+     "skp_ref_id": "id9797",
+     "image_ref_id": "id9804",
+     "vector_ref_id": "id9805",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS 2 Side Bolt 2 Side Nailer Shear",
+   "expanded_title": "HSS 2 Side Bolted 2 Side Nailer Shear",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (2) BOLT.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4234,
+    13.5179
+   ],
+   "searchable_text_sha1": "66609be75c0db68e545ff6d05376173c4855fc12"
+  },
+  {
+   "key_tail": "|id4179|id10214",
+   "page_index": 1,
+   "group_index": 2,
+   "page_name": "CONT (2) BOLT",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id10214",
+     "scene_name": "HSS 2 Side Bolt1 Side Nailer Shear",
+     "scene_pid": "1",
+     "skp_ref_id": "id9797",
+     "image_ref_id": "id9798",
+     "vector_ref_id": "id9799",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id10215",
+     "scene_name": "HSS 2 Side Bolt 1 Side Nailer  t.s.",
+     "scene_pid": "2",
+     "skp_ref_id": "id9797",
+     "image_ref_id": "id9800",
+     "vector_ref_id": "id9801",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS 2 Side Bolt1 Side Nailer Shear",
+   "expanded_title": "HSS 2 Side Bolt1 Side Nailer Shear",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (2) BOLT.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4206,
+    13.5179
+   ],
+   "searchable_text_sha1": "7b1539c789fdc76ba63969522176d13e5b9ee8ef"
+  },
+  {
+   "key_tail": "|id4179|id10494",
+   "page_index": 1,
+   "group_index": 3,
+   "page_name": "CONT (2) BOLT",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id10494",
+     "scene_name": "HSS 1 Side Bolt 1 Side Nailer Shear",
+     "scene_pid": "243278",
+     "skp_ref_id": "id9797",
+     "image_ref_id": "id10274",
+     "vector_ref_id": "id10275",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id10495",
+     "scene_name": "HSS 1 Side Bolt 1 Side Nailer t.s.",
+     "scene_pid": "245014",
+     "skp_ref_id": "id9797",
+     "image_ref_id": "id10276",
+     "vector_ref_id": "id10277",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS 1 Side Bolt 1 Side Nailer Shear",
+   "expanded_title": "HSS 1 Side Bolted 1 Side Nailer Shear",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (2) BOLT.skp"
+   ],
+   "bounds": [
+    0.4167,
+    14.8863,
+    8.4518,
+    26.3075
+   ],
+   "searchable_text_sha1": "ac6c9f95973866820d67c30c60d396648438eb33"
+  },
+  {
+   "key_tail": "|id4179|id10717",
+   "page_index": 1,
+   "group_index": 4,
+   "page_name": "CONT (2) BOLT",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id10717",
+     "scene_name": "HSS 1 Side Bolt 2 Side Nailer Shear",
+     "scene_pid": "148974",
+     "skp_ref_id": "id9797",
+     "image_ref_id": "id10278",
+     "vector_ref_id": "id10279",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id10718",
+     "scene_name": "HSS 1 Side Bolt 2 Side Nailer t.s.",
+     "scene_pid": "148975",
+     "skp_ref_id": "id9797",
+     "image_ref_id": "id10280",
+     "vector_ref_id": "id10281",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS 1 Side Bolt 2 Side Nailer Shear",
+   "expanded_title": "HSS 1 Side Bolted 2 Side Nailer Shear",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (2) BOLT.skp"
+   ],
+   "bounds": [
+    8.4195,
+    14.8863,
+    16.4547,
+    26.3075
+   ],
+   "searchable_text_sha1": "9be29926ec0eb6dc10aae89417a08377db96ad06"
+  },
+  {
+   "key_tail": "|id12757|id14456",
+   "page_index": 2,
+   "group_index": 1,
+   "page_name": "CONT (4) BOLT",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id14456",
+     "scene_name": "HSS 2 Side Bolt1 Side Nailer Shear",
+     "scene_pid": "1",
+     "skp_ref_id": "id14176",
+     "image_ref_id": "id14177",
+     "vector_ref_id": "id14178",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id14457",
+     "scene_name": "HSS 2 Side Bolt 1 Side Nailer  t.s.",
+     "scene_pid": "2",
+     "skp_ref_id": "id14176",
+     "image_ref_id": "id14179",
+     "vector_ref_id": "id14180",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS 2 Side Bolt1 Side Nailer Shear",
+   "expanded_title": "HSS 2 Side Bolt1 Side Nailer Shear",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (4) BOLT.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    13.5179
+   ],
+   "searchable_text_sha1": "dc2e0c5e192782cbcb27fa95e1408fbf41ac86fd"
+  },
+  {
+   "key_tail": "|id12757|id14701",
+   "page_index": 2,
+   "group_index": 2,
+   "page_name": "CONT (4) BOLT",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id14701",
+     "scene_name": "HSS 2 Side Bolt 2 Side Nailer Shear",
+     "scene_pid": "134586",
+     "skp_ref_id": "id14176",
+     "image_ref_id": "id14181",
+     "vector_ref_id": "id14182",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id14702",
+     "scene_name": "HSS 2 Side Bolt 2 Side Nailer t.s.",
+     "scene_pid": "148966",
+     "skp_ref_id": "id14176",
+     "image_ref_id": "id14183",
+     "vector_ref_id": "id14184",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS 2 Side Bolt 2 Side Nailer Shear",
+   "expanded_title": "HSS 2 Side Bolted 2 Side Nailer Shear",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (4) BOLT.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    13.5179
+   ],
+   "searchable_text_sha1": "1ddbe2a590b536ae01eba584ae6a9a5da8851490"
+  },
+  {
+   "key_tail": "|id12757|id14924",
+   "page_index": 2,
+   "group_index": 3,
+   "page_name": "CONT (4) BOLT",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id14924",
+     "scene_name": "HSS 1 Side Bolt 1 Side Nailer Shear",
+     "scene_pid": "243278",
+     "skp_ref_id": "id14176",
+     "image_ref_id": "id14189",
+     "vector_ref_id": "id14190",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id14925",
+     "scene_name": "HSS 1 Side Bolt 1 Side Nailer t.s.",
+     "scene_pid": "245014",
+     "skp_ref_id": "id14176",
+     "image_ref_id": "id14191",
+     "vector_ref_id": "id14192",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS 1 Side Bolt 1 Side Nailer Shear",
+   "expanded_title": "HSS 1 Side Bolted 1 Side Nailer Shear",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (4) BOLT.skp"
+   ],
+   "bounds": [
+    0.4167,
+    14.8863,
+    8.4195,
+    26.3075
+   ],
+   "searchable_text_sha1": "84a88d4271aac0a80e4d8a4d4d388e6f15829c94"
+  },
+  {
+   "key_tail": "|id12757|id15147",
+   "page_index": 2,
+   "group_index": 4,
+   "page_name": "CONT (4) BOLT",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id15147",
+     "scene_name": "HSS 1 Side Bolt 2 Side Nailer Shear",
+     "scene_pid": "148974",
+     "skp_ref_id": "id14176",
+     "image_ref_id": "id14193",
+     "vector_ref_id": "id14194",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id15148",
+     "scene_name": "HSS 1 Side Bolt 2 Side Nailer t.s.",
+     "scene_pid": "148975",
+     "skp_ref_id": "id14176",
+     "image_ref_id": "id14195",
+     "vector_ref_id": "id14196",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS 1 Side Bolt 2 Side Nailer Shear",
+   "expanded_title": "HSS 1 Side Bolted 2 Side Nailer Shear",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (4) BOLT.skp"
+   ],
+   "bounds": [
+    8.4195,
+    14.8863,
+    16.4224,
+    26.3075
+   ],
+   "searchable_text_sha1": "da63a1d53ab628a51b9868c7338e1795874452ea"
+  },
+  {
+   "key_tail": "|id10233|id10967",
+   "page_index": 3,
+   "group_index": 1,
+   "page_name": "CRNR (2) BOLT",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id10967",
+     "scene_name": "HSS Corner Shear",
+     "scene_pid": "251687",
+     "skp_ref_id": "id9797",
+     "image_ref_id": "id10728",
+     "vector_ref_id": "id10729",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id10968",
+     "scene_name": "HSS Corner t.s.",
+     "scene_pid": "565744",
+     "skp_ref_id": "id9797",
+     "image_ref_id": "id10730",
+     "vector_ref_id": "id10731",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS Corner Shear",
+   "expanded_title": "HSS Corner Shear",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (2) BOLT.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0966,
+    8.6053,
+    13.5179
+   ],
+   "searchable_text_sha1": "6443965b854aa9987797e48ef5a0fb848d11d600"
+  },
+  {
+   "key_tail": "|id10233|id11203",
+   "page_index": 3,
+   "group_index": 2,
+   "page_name": "CRNR (2) BOLT",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id11203",
+     "scene_name": "HSS 1 Side Bolt Corner Shear ",
+     "scene_pid": "579399",
+     "skp_ref_id": "id9797",
+     "image_ref_id": "id10732",
+     "vector_ref_id": "id10733",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id11204",
+     "scene_name": "HSS 1 Side Bolt Corner t.s.",
+     "scene_pid": "579400",
+     "skp_ref_id": "id9797",
+     "image_ref_id": "id10734",
+     "vector_ref_id": "id10735",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS 1 Side Bolt Corner Shear",
+   "expanded_title": "HSS 1 Side Bolted Corner Shear",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (2) BOLT.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0966,
+    16.4547,
+    13.5179
+   ],
+   "searchable_text_sha1": "04a9d8af0dc5590ace97b30b61d1c3c17ede52fd"
+  },
+  {
+   "key_tail": "|id12766|id15409",
+   "page_index": 4,
+   "group_index": 1,
+   "page_name": "CRNR (4) BOLT",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id15409",
+     "scene_name": "HSS Corner Shear",
+     "scene_pid": "251687",
+     "skp_ref_id": "id14176",
+     "image_ref_id": "id14207",
+     "vector_ref_id": "id14208",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id15410",
+     "scene_name": "HSS Corner t.s.",
+     "scene_pid": "565744",
+     "skp_ref_id": "id14176",
+     "image_ref_id": "id14209",
+     "vector_ref_id": "id14210",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS Corner Shear",
+   "expanded_title": "HSS Corner Shear",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (4) BOLT.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0966,
+    8.4764,
+    13.5179
+   ],
+   "searchable_text_sha1": "dce665f1eb4066a25a16a938d9fbda506003aebd"
+  },
+  {
+   "key_tail": "|id12766|id15652",
+   "page_index": 4,
+   "group_index": 2,
+   "page_name": "CRNR (4) BOLT",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id15652",
+     "scene_name": "HSS 1 Side Bolt Corner Shear ",
+     "scene_pid": "579399",
+     "skp_ref_id": "id14176",
+     "image_ref_id": "id14211",
+     "vector_ref_id": "id14212",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id15653",
+     "scene_name": "HSS 1 Side Bolt Corner t.s.",
+     "scene_pid": "579400",
+     "skp_ref_id": "id14176",
+     "image_ref_id": "id14213",
+     "vector_ref_id": "id14214",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS 1 Side Bolt Corner Shear",
+   "expanded_title": "HSS 1 Side Bolted Corner Shear",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND HSS (4) BOLT.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0966,
+    16.4224,
+    13.5179
+   ],
+   "searchable_text_sha1": "2afe95794cf837ef4340d920de976865d9514ef7"
+  },
+  {
+   "key_tail": "|id11222|id11342",
+   "page_index": 5,
+   "group_index": 1,
+   "page_name": "ISO",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id11342",
+     "scene_name": "HSS w/ Slab",
+     "scene_pid": "225708",
+     "skp_ref_id": "id11231",
+     "image_ref_id": "id11225",
+     "vector_ref_id": "id11226",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS w/ Slab",
+   "expanded_title": "HSS w/ Slab",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND POST.skp"
+   ],
+   "bounds": [
+    8.4099,
+    2.0967,
+    16.4224,
+    7.7998
+   ],
+   "searchable_text_sha1": "79cc3b48521220a4130a9b202f9da7f74bc93629"
+  },
+  {
+   "key_tail": "|id11222|id11456",
+   "page_index": 5,
+   "group_index": 2,
+   "page_name": "ISO",
+   "viewport_count": 1,
+   "viewports": [
+    {
+     "viewport_id": "id11456",
+     "scene_name": "HSS ISO",
+     "scene_pid": "226712",
+     "skp_ref_id": "id11231",
+     "image_ref_id": "id11227",
+     "vector_ref_id": "id11228",
+     "has_preview": true
+    }
+   ],
+   "display_title": "HSS ISO",
+   "expanded_title": "HSS Isolated",
+   "master_title": "Foundation CONC HSS",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND POST.skp"
+   ],
+   "bounds": [
+    0.3973,
+    2.0967,
+    8.4099,
+    7.7998
+   ],
+   "searchable_text_sha1": "70faa5b71001d8d2d1fae8a0979e73f32050aff9"
+  }
+ ]
+}

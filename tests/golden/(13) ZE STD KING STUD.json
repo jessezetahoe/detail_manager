@@ -1,0 +1,94 @@
+{
+ "layout_filename": "(13) ZE STD KING STUD.layout",
+ "page_count": 1,
+ "detail_count": 2,
+ "skp_reference_count": 1,
+ "skp_references": {
+  "id5286": {
+   "externalTarget": "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(13) ZE STD/(13) ZE STD.skp",
+   "internalTarget": "ref/2197337574_(13) ZE STD_5286.skp"
+  }
+ },
+ "details": [
+  {
+   "key_tail": "|id6900|id7163",
+   "page_index": 1,
+   "group_index": 1,
+   "page_name": "KING STUD",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id7163",
+     "scene_name": "King Stud Blw",
+     "scene_pid": "73227",
+     "skp_ref_id": "id5286",
+     "image_ref_id": "id6901",
+     "vector_ref_id": "id6902",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id7164",
+     "scene_name": "King Stud Abv",
+     "scene_pid": "73226",
+     "skp_ref_id": "id5286",
+     "image_ref_id": "id6903",
+     "vector_ref_id": "id6904",
+     "has_preview": true
+    }
+   ],
+   "display_title": "King Stud Blw",
+   "expanded_title": "King Stud Blw",
+   "master_title": "ZE Standard KING STUD",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(13) ZE STD/(13) ZE STD.skp"
+   ],
+   "bounds": [
+    0.4167,
+    2.0967,
+    8.4195,
+    13.5023
+   ],
+   "searchable_text_sha1": "386b3ee0234824d08b36b1af10217971ee39f24a"
+  },
+  {
+   "key_tail": "|id6900|id7397",
+   "page_index": 1,
+   "group_index": 2,
+   "page_name": "KING STUD",
+   "viewport_count": 2,
+   "viewports": [
+    {
+     "viewport_id": "id7397",
+     "scene_name": "LVL King Stud Blw",
+     "scene_pid": "73229",
+     "skp_ref_id": "id5286",
+     "image_ref_id": "id6905",
+     "vector_ref_id": "id6906",
+     "has_preview": true
+    },
+    {
+     "viewport_id": "id7398",
+     "scene_name": "LVL King Stud Abv",
+     "scene_pid": "73228",
+     "skp_ref_id": "id5286",
+     "image_ref_id": "id6907",
+     "vector_ref_id": "id6908",
+     "has_preview": true
+    }
+   ],
+   "display_title": "LVL King Stud Blw",
+   "expanded_title": "LVL King Stud Blw",
+   "master_title": "ZE Standard KING STUD",
+   "skp_paths_exact": [
+    "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(13) ZE STD/(13) ZE STD.skp"
+   ],
+   "bounds": [
+    8.4195,
+    2.0967,
+    16.4224,
+    13.5023
+   ],
+   "searchable_text_sha1": "5b43a8803e89fc53c023d68e42b1ce8aab2bf9fc"
+  }
+ ]
+}
