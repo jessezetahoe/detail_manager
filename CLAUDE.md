@@ -16,7 +16,7 @@ Read `docs/handoff/CLAUDE_CODE_HANDOFF.md` before modifying code.
 - Preserve LayOut 2025 compatibility.
 - Small incremental changes; tests before refactors.
 - Any staging change: validate package AND have the user open it in LayOut 2025.
-- Regression-check against both the company mapped library and the C: Distribution Library.
+- Regression-check against the Z: company library (primary). The C: Distribution Library was a presentation setup; check it only when deployment changes.
 
 ## Git
 - First commit is the untouched original; never rewrite history on `main`.
