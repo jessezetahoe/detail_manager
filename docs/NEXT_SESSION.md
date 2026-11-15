@@ -1,0 +1,30 @@
+# To-do list for the next session (in the order to do it)
+
+Updated 2026-11-15. Tags (T3, M1 ...) match `docs/BACKLOG.md`.
+Size: S = under an hour, M = a few hours, L = open ended. "Default" is what I would do if you have no preference.
+
+## Where things stand
+**Done:** repo and rules; regression tests (33, passing on your computer) merged to `main`; render files for the 8 test masters in place; user guide draft started (Python requirements).
+**Program itself:** still exactly Prototype 0.1. Nothing in `src/` has changed yet.
+**After a session, push with:** `cd /d C:\sketchup_dev\detail_manager` then `git push origin main`.
+**To run the tests:** `cd /d C:\sketchup_dev\detail_manager` then `py -m unittest discover -s tests` (about 40 s, expect `OK`).
+
+## The list, in order
+| # | Tag | Item | Size | What I need from you |
+|---|---|---|---|---|
+| 1 | D1, D2 | Diagnostics log in %LOCALAPPDATA% and a place in the program to see the last errors | S | nothing |
+| 2 | M1 | Title fix: real title from the text beside "N.T.S." | S-M | Look at a list of old and new titles for the 149 test details and say if they are right |
+| 3 | M2 | Clean text: drop bubble numbers, table numbers and "N.T.S." from search and display; keep raw | S-M | nothing |
+| 4 | T3 | Thumbnail crop tests from the render files | S | `py -m pip install pymupdf` once if the tests say it is missing |
+| 5 | U1, U3 | Slim cards and fuller inspector | M | Q2; look at it in the browser |
+| 6 | U2 | Sidebar collapsed, filters | S-M | Q3 |
+| 7 | M3, U4 | Search ranking; more than 80 results | M | A few real searches where the order felt wrong |
+| 8 | S1 | Open SketchUp to the exact scene | M | Test in SketchUp 2025 |
+| 9 | D3 | Local server check | S | nothing |
+| 10 | P1, P2 | Standalone program window, packaged (start of 0.3) | L | Test on a second computer |
+
+## How each step goes
+1. I make the change on its own branch and run the tests.
+2. You run the tests and try it (I give the exact lines to paste).
+3. If it is right, I merge to `main` and you push.
+Anything that touches Open Detail: you also open the result in LayOut 2025.
