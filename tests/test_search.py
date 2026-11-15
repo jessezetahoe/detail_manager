@@ -54,6 +54,26 @@ class TestSearch(unittest.TestCase):
         self.assertEqual(r["scene_label"], "King Stud Blw (+1 more view)")
         self.assertTrue(dm.search_details("king studs at wall openings"))
 
+    def test_raw_clean_and_notes_text(self):
+        r = dm.search_details("king stud blw")[0]
+        raw, clean, notes = r["raw_text"].split("\n"), r["clean_text"].split("\n"), r["notes_text"].split("\n")
+        self.assertIn("N.T.S.", raw); self.assertIn("XXX", raw); self.assertIn("6", raw)
+        self.assertFalse([x for x in clean if x.strip().isdigit() and len(x.strip()) <= 3])
+        self.assertNotIn("N.T.S.", clean); self.assertNotIn("XXX", clean)
+        self.assertIn("King Studs at Wall Openings", clean)
+        self.assertNotIn("King Studs at Wall Openings", notes)  # the title is not repeated in the notes
+        self.assertIn("2X STUD WALL PER PLAN, TYP", notes)
+        self.assertIn('1/4" SDS SCREWS', notes)
+
+    def test_placeholder_only_matches_inside_real_notes(self):
+        # "XXX" alone (the detail-number placeholder) is gone; "PER DTL XXX" in a note still counts.
+        hits = dm.search_details("XXX")
+        self.assertLess(len(hits), 80)
+        for r in hits:
+            self.assertNotIn("XXX", r["clean_text"].split("\n"))
+            self.assertIn("xxx", r["clean_text"].lower())
+        self.assertTrue(dm.search_details("A35"))
+
     def test_results_carry_viewports_and_paths(self):
         r = dm.search_details("king stud blw")[0]
         self.assertGreaterEqual(len(r["viewports"]), 1)

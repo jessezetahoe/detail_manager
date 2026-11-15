@@ -43,7 +43,10 @@
     16.4224,
     7.7834
    ],
-   "searchable_text_sha1": "9fce3e523a58ab1941320b1d098c5d4e9b6ea979"
+   "searchable_text_sha1": "0296dec217acb30ad304241b00e18fbd0f872e58",
+   "raw_text_sha1": "4e3cc00676fd5a937a65e404e3874b198033f25f",
+   "raw_lines": 31,
+   "clean_lines": 17
   },
   {
    "key_tail": "|id6853|id7065",
@@ -74,7 +77,10 @@
     12.032,
     7.7793
    ],
-   "searchable_text_sha1": "1fc821650789bc1d674c63894fe4bb044606b5d6"
+   "searchable_text_sha1": "2260301d3059296dce6e3669ddfe5a9cc8933910",
+   "raw_text_sha1": "5a363373defb8e1adfd235dff049af1ee8d5978c",
+   "raw_lines": 34,
+   "clean_lines": 13
   },
   {
    "key_tail": "|id6853|id7131",
@@ -123,7 +129,10 @@
     28.9342,
     21.5807
    ],
-   "searchable_text_sha1": "d90ffa95ef72ac7bd36171b7ed225edfe07c3a58"
+   "searchable_text_sha1": "416abca08ac3ec56972b7bd9d5c60b0439319071",
+   "raw_text_sha1": "7a82494699a69e03b10d8e4b3a71c7a64b300068",
+   "raw_lines": 43,
+   "clean_lines": 31
   },
   {
    "key_tail": "|id5622|id7332",
@@ -154,7 +163,10 @@
     8.4195,
     7.7834
    ],
-   "searchable_text_sha1": "5fe2ee87a783c3b34a076516f5bc8a9ba0e5a5f1"
+   "searchable_text_sha1": "99244c5251abe2e0bd6f63871e1751a62cf76efa",
+   "raw_text_sha1": "c07c51351379880161117b524228e10e2f6cb9fa",
+   "raw_lines": 18,
+   "clean_lines": 9
   },
   {
    "key_tail": "|id5622|id7494",
@@ -185,7 +197,10 @@
     25.2859,
     11.9659
    ],
-   "searchable_text_sha1": "361b63b0a19c219408039ab5f79647c1d12d2b3a"
+   "searchable_text_sha1": "b898d876dba64a061632df81acab543d0fc980ec",
+   "raw_text_sha1": "b71de775148266606bd94f7c398c797ae9c6ed58",
+   "raw_lines": 24,
+   "clean_lines": 14
   }
  ]
 }

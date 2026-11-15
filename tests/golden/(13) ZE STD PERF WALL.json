@@ -66,7 +66,10 @@
     8.4792,
     13.526
    ],
-   "searchable_text_sha1": "b356fba603f039a1ff43c99ac6f3de1b599ff956"
+   "searchable_text_sha1": "d39727a191c66ef7ab5f611ee652f6f372269209",
+   "raw_text_sha1": "dd0ece5ed65b6c24d9a907999aa21429ae5fa3c0",
+   "raw_lines": 60,
+   "clean_lines": 18
   },
   {
    "key_tail": "|id7489|id8013",
@@ -124,7 +127,10 @@
     16.482,
     13.526
    ],
-   "searchable_text_sha1": "e1b34f42651207f0d1087f8ddc0aa89af4a0dd14"
+   "searchable_text_sha1": "2ebadd759449f7182a6943dfceb4f93cc3ea395b",
+   "raw_text_sha1": "58fc714de993eb2ed9fdbde71618872c555ec205",
+   "raw_lines": 63,
+   "clean_lines": 19
   }
  ]
 }

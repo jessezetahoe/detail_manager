@@ -47,6 +47,23 @@ class TestRtf(unittest.TestCase):
         self.assertEqual(dm.rtf_to_text(""), "")
 
 
+class TestCleanText(unittest.TestCase):
+    def test_noise_is_dropped(self):
+        for junk in ("1", "10", "100", " 7 ", "N.T.S.", "NTS", "not to scale", "XXX", "xxx", "", "  "):
+            self.assertTrue(dm.is_noise_text(junk), repr(junk))
+
+    def test_real_content_is_kept(self):
+        for keep in ("2X6 STUD", "(2) A35", '2 1/4"', "1/4", '4"', "1 3/4", "16d NAILS", "HDU2", "TYP", "plan",
+                     "\u2264 4'-0\"", "2018 IRC KING STUD REQUIREMENTS", "BEAM POCKET PER\nDTL XXX", "1234", "1.5\""):
+            self.assertFalse(dm.is_noise_text(keep), repr(keep))
+
+    def test_order_kept_and_input_untouched(self):
+        raw = ["6", "King Studs at Wall Openings", "N.T.S.", "XXX", "1", "2X STUD WALL PER PLAN, TYP"]
+        copy = list(raw)
+        self.assertEqual(dm.clean_text_blocks(raw), ["King Studs at Wall Openings", "2X STUD WALL PER PLAN, TYP"])
+        self.assertEqual(raw, copy)
+
+
 class TestInferTitle(unittest.TestCase):
     def test_title_in_text_box_before_nts(self):
         # How the library is drawn: title box, then a separate N.T.S. box.

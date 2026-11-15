@@ -35,7 +35,7 @@ PORT_DEFAULT = 8768
 # Raise this whenever the rules for reading a master change (titles, text...).
 # Masters indexed under an older number are re-read on the next refresh even
 # though the file itself has not changed; their thumbnails are kept.
-INDEX_VERSION = 2
+INDEX_VERSION = 3
 
 NS = {
     "e": "http://sketchup.google.com/schemas/layout/1.0/entities",
@@ -279,6 +279,22 @@ def _plausible_title(text: str) -> bool:
     return len(t) >= 4 and not t.isdigit() and t.upper() != "XXX" and not _is_nts(t)
 
 
+def is_noise_text(block: str) -> bool:
+    """True for text boxes that say nothing about the detail: callout bubble and
+    table-cell numbers on their own, "N.T.S.", and the "XXX" detail-number placeholder.
+    Anything with real content ("2X6 STUD", "(2) A35", 2 1/4", "1/4") is kept."""
+    t = re.sub(r"\s+", " ", block or "").strip()
+    if not t: return True
+    if re.fullmatch(r"\d{1,3}", t): return True
+    if _is_nts(t): return True
+    return t.upper() == "XXX"
+
+
+def clean_text_blocks(text_items: Sequence[str]) -> List[str]:
+    """The text worth searching and showing. The raw list is stored separately, untouched."""
+    return [t for t in text_items if not is_noise_text(t)]
+
+
 def infer_title_with_source(text_items: Sequence[str], scene_names: Sequence[str], page_name: str) -> Tuple[str, str]:
     """Return (title, source). source is 'drawing' (the title drawn on the detail),
     'scene' (SketchUp scene name) or 'page'."""
@@ -404,6 +420,9 @@ class LibraryDB:
           skp_ref_id TEXT, image_ref_id TEXT, vector_ref_id TEXT, preview_relpath TEXT,
           PRIMARY KEY(detail_key, viewport_id));
         """)
+        detail_cols = {r[1] for r in cur.execute("PRAGMA table_info(details)")}
+        for col in ("raw_text", "clean_text"):
+            if col not in detail_cols: cur.execute(f"ALTER TABLE details ADD COLUMN {col} TEXT DEFAULT ''")
         if "index_version" not in {r[1] for r in cur.execute("PRAGMA table_info(layout_files)")}:
             cur.execute("ALTER TABLE layout_files ADD COLUMN index_version INTEGER DEFAULT 0")
         with contextlib.suppress(sqlite3.OperationalError):
@@ -557,8 +576,9 @@ def parse_layout(layout_path: Path, preview_dir: Path) -> Tuple[dict, List[dict]
                 expanded_title = title if title_source == "drawing" else expand_abbreviations(title)
                 master_title = master_intended_title(layout_path.stem)
                 detail_key = f"{layout_file}|{page_ref_id}|{primary['viewport_id']}"
-                searchable = "\n".join(filter(None, [layout_path.stem, master_title, page_name, expand_abbreviations(page_name), title, expanded_title, *scene_names, *(expand_abbreviations(x) for x in scene_names), *texts]))
-                details.append({"detail_key": detail_key, "layout_file": layout_file, "layout_filename": layout_path.name, "page_ref_id": page_ref_id, "page_xml": page_xml, "page_name": page_name, "page_index": page_index, "group_index": group_index, "viewport_count": len(viewports), "primary_viewport_id": primary["viewport_id"], "primary_scene_name": primary["scene_name"], "primary_scene_pid": primary["scene_pid"], "display_title": title, "expanded_title": expanded_title, "master_title": master_title, "skp_paths_exact": skp_paths, "bounds": group_bounds(entity), "full_preview_relpath": "", "searchable_text": searchable, "viewports": viewports})
+                clean = clean_text_blocks(texts)
+                searchable = "\n".join(filter(None, [layout_path.stem, master_title, page_name, expand_abbreviations(page_name), title, expanded_title, *scene_names, *(expand_abbreviations(x) for x in scene_names), *clean]))
+                details.append({"detail_key": detail_key, "layout_file": layout_file, "layout_filename": layout_path.name, "page_ref_id": page_ref_id, "page_xml": page_xml, "page_name": page_name, "page_index": page_index, "group_index": group_index, "viewport_count": len(viewports), "primary_viewport_id": primary["viewport_id"], "primary_scene_name": primary["scene_name"], "primary_scene_pid": primary["scene_pid"], "display_title": title, "expanded_title": expanded_title, "master_title": master_title, "skp_paths_exact": skp_paths, "bounds": group_bounds(entity), "full_preview_relpath": "", "searchable_text": searchable, "raw_text": "\n".join(texts), "clean_text": "\n".join(clean), "viewports": viewports})
         return ({"layout_file": layout_file, "layout_filename": layout_path.name, "size_bytes": stat.st_size, "mtime_ns": stat.st_mtime_ns, "page_count": len(ordered_pages), "detail_count": len(details), "skp_reference_count": len(skp_refs), "skp_references": skp_refs}, details)
 
 
@@ -603,7 +623,7 @@ def index_library(library_root: str):
                 con.execute("INSERT INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version) VALUES (?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, summary["size_bytes"], summary["mtime_ns"], summary["page_count"], summary["detail_count"], summary["skp_reference_count"], datetime.now(timezone.utc).isoformat(), "", INDEX_VERSION))
                 for rid, r in summary["skp_references"].items(): con.execute("INSERT INTO skp_references VALUES (?,?,?,?)", (path_str, rid, r.get("externalTarget", ""), r.get("internalTarget", "")))
                 for d in details:
-                    con.execute("INSERT INTO details VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (d["detail_key"], d["layout_file"], d["layout_filename"], d["page_ref_id"], d["page_xml"], d["page_name"], d["page_index"], d["group_index"], d["viewport_count"], d["primary_viewport_id"], d["primary_scene_name"], d["primary_scene_pid"], d["display_title"], d["expanded_title"], d["master_title"], json.dumps(d["skp_paths_exact"]), json.dumps(d["bounds"]), d["full_preview_relpath"], d["searchable_text"]))
+                    con.execute("INSERT INTO details (detail_key,layout_file,layout_filename,page_ref_id,page_xml,page_name,page_index,group_index,viewport_count,primary_viewport_id,primary_scene_name,primary_scene_pid,display_title,expanded_title,master_title,skp_paths_exact,bounds_json,full_preview_relpath,searchable_text,raw_text,clean_text) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (d["detail_key"], d["layout_file"], d["layout_filename"], d["page_ref_id"], d["page_xml"], d["page_name"], d["page_index"], d["group_index"], d["viewport_count"], d["primary_viewport_id"], d["primary_scene_name"], d["primary_scene_pid"], d["display_title"], d["expanded_title"], d["master_title"], json.dumps(d["skp_paths_exact"]), json.dumps(d["bounds"]), d["full_preview_relpath"], d["searchable_text"], d["raw_text"], d["clean_text"]))
                     with contextlib.suppress(sqlite3.OperationalError): con.execute("INSERT INTO detail_search(detail_key, searchable_text) VALUES (?,?)", (d["detail_key"], d["searchable_text"]))
                     for vp in d["viewports"]: con.execute("INSERT INTO viewports VALUES (?,?,?,?,?,?,?,?)", (d["detail_key"], vp["viewport_id"], vp["scene_name"], vp["scene_pid"], vp["skp_ref_id"], vp["image_ref_id"], vp["vector_ref_id"], vp["preview_relpath"]))
                 con.commit()
@@ -937,7 +957,7 @@ def search_details(q: str = "", source: str = "", limit: int = 80) -> List[dict]
         sql = "SELECT d.* FROM details d" + ((" WHERE " + " AND ".join(where)) if where else "") + " ORDER BY d.layout_filename,d.page_name,d.group_index LIMIT ?"; params.append(limit); rows = con.execute(sql, params).fetchall()
     out = []
     for r in rows:
-        item = dict(r); item["skp_paths_exact"] = json.loads(item["skp_paths_exact"] or "[]"); item["viewports"] = [dict(x) for x in con.execute("SELECT * FROM viewports WHERE detail_key=? ORDER BY rowid", (r["detail_key"],))]; item["scene_label"] = scene_label(item); out.append(item)
+        item = dict(r); item["skp_paths_exact"] = json.loads(item["skp_paths_exact"] or "[]"); item["viewports"] = [dict(x) for x in con.execute("SELECT * FROM viewports WHERE detail_key=? ORDER BY rowid", (r["detail_key"],))]; item["scene_label"] = scene_label(item); item["notes_text"] = notes_text(item); out.append(item)
     con.close(); return out
 
 
@@ -949,6 +969,15 @@ def scene_label(item: dict) -> str:
         return ""
     extra = max(0, int(item.get("viewport_count") or 1) - 1)
     return scene + (f" (+{extra} more view{'s' if extra != 1 else ''})" if extra else "")
+
+
+def notes_text(item: dict) -> str:
+    """Notes shown in the detail window: the clean text without the title line.
+    Empty for details indexed before clean text existed (the window then shows the old text)."""
+    lines = (item.get("clean_text") or "").split("\n")
+    title = item.get("display_title") or ""
+    if title in lines: lines.remove(title)
+    return "\n".join(x for x in lines if x.strip())
 
 
 def library_sources() -> List[dict]:
@@ -1201,7 +1230,7 @@ INDEX_HTML = r'''<!doctype html>
 <div class="aside-title" style="margin-top:18px">Full Thumbnails</div><div class="thumbtools"><label style="font-size:11px;color:#67717e">Hide exact LayOut layer name(s)</label><input id="hiddenlayers" type="text" value="GUIDES" title="Comma-separated exact layer names"><div id="thumbstatus" class="thumbstatus"></div><div class="smallnote"><b>07A:</b> Tight crop uses 0.01&quot; top and 0.025&quot; left/right/bottom margins; white padding is added in the card instead of capturing adjacent page content.</div><button id="preparethumbs" class="primary">1. Prepare Render Queue</button><div class="smallnote">2. In SketchUp Ruby Console, load <b>thumbnail_worker.rb</b>. It renders the queued masters read-only with these layers hidden.</div><button id="processthumbs">3. Process Rendered Thumbnails</button></div>
 <div class="aside-title" style="margin-top:18px">Temp</div><button id="cleanup" style="width:100%">Clean Staging Files</button><div class="aside-title" style="margin-top:18px">Help</div><button id="diagbtn" style="width:100%">Diagnostics<span id="diagbadge" class="badge" style="display:none"></span></button></aside>
 <main><div class="statusline"><span id="resultcount"></span><span id="indexstatus"></span></div><div class="notice">Cards use the <b>full LayOut-rendered detail</b> when available—viewport(s), labels, leaders, notes, and linework together. Until rendered, the cached SketchUp viewport(s) remain as a fallback. One detail can contain 1–5+ viewports.</div><div style="height:13px"></div><div id="grid" class="grid"></div></main></div>
-<div id="modalback" class="modalback"><div class="modal"><div class="modalview"><div id="modalimgs" class="modalimgs"></div></div><div class="modalinfo"><button id="close" class="close">×</button><h2 id="modaltitle"></h2><div id="modalraw" class="rawtitle"></div><div id="modalmeta"></div><h3>Indexed LayOut text</h3><div id="modaltext" class="detailtext"></div><div class="actions" style="margin-top:14px"><button id="modalopen" class="primary">Open Detail</button><button id="modalmaster">Open Master LayOut</button><button id="modalskp">Open SketchUp Source</button></div></div></div></div><div id="diagback" class="modalback"><div class="diag"><button id="diagclose" class="close">×</button><h2>Diagnostics</h2><div id="diagbody"></div></div></div><div id="toast" class="toast"></div>
+<div id="modalback" class="modalback"><div class="modal"><div class="modalview"><div id="modalimgs" class="modalimgs"></div></div><div class="modalinfo"><button id="close" class="close">×</button><h2 id="modaltitle"></h2><div id="modalraw" class="rawtitle"></div><div id="modalmeta"></div><h3>Notes on the detail</h3><div id="modaltext" class="detailtext"></div><details style="margin-top:8px"><summary style="cursor:pointer;color:var(--muted);font-size:12px">Everything read from the LayOut file (raw)</summary><div id="modalrawtext" class="detailtext" style="margin-top:6px"></div></details><div class="actions" style="margin-top:14px"><button id="modalopen" class="primary">Open Detail</button><button id="modalmaster">Open Master LayOut</button><button id="modalskp">Open SketchUp Source</button></div></div></div></div><div id="diagback" class="modalback"><div class="diag"><button id="diagclose" class="close">×</button><h2>Diagnostics</h2><div id="diagbody"></div></div></div><div id="toast" class="toast"></div>
 <script>
 let currentSource='',currentDetails=[],modalDetail=null,timer=null;const q=s=>document.querySelector(s),grid=q('#grid');function esc(s){return (s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function api(url,opt){const r=await fetch(url,opt),j=await r.json();if(!r.ok)throw new Error(j.error||r.statusText);return j}function toast(msg){const t=q('#toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',8500)}function vclass(d){return 'count-'+Math.min(Math.max(d.viewports.length,1),6)}
 function thumbHtml(d,modal=false){if(d.full_preview_relpath){return `<img loading="lazy" src="/fullcache/${encodeURI(d.full_preview_relpath)}" title="Full LayOut detail"><span class="previewbadge">Full LayOut Preview</span>`}if(!d.viewports.length)return '<div style="color:#777">No preview</div>';let imgs=d.viewports.slice(0,6).map(v=>v.preview_relpath?`<img loading="lazy" src="/cache/${encodeURI(v.preview_relpath)}" title="${esc(v.scene_name)}">`:'').join('');return imgs+`<span class="previewbadge">Viewport Cache</span>`}
@@ -1211,7 +1240,7 @@ async function loadSources(){let j=await api('/api/status');q('#libpath').textCo
 async function loadThumbStatus(){try{let s=await api('/api/thumbnail-status');q('#hiddenlayers').value=(s.hidden_layers||['GUIDES']).join(', ');q('#thumbstatus').textContent=`${s.full_preview_count}/${s.detail_count} full previews · ${s.render_manifest_count} rendered master${s.render_manifest_count==1?'':'s'} ready`;}catch(e){}}
 async function choose(){try{let j=await api('/api/choose-library',{method:'POST'});if(j.library_root){q('#libpath').textContent=j.library_root;startIndex(j.library_root)}}catch(e){toast(e.message)}}async function startIndex(root){try{await api('/api/index',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({library_root:root})});pollIndex()}catch(e){toast(e.message)}}async function pollIndex(){let j=await api('/api/index-status'),p=q('#progress'),bar=p.firstElementChild;if(j.running){p.style.display='block';bar.style.width=(j.total?100*j.done/j.total:2)+'%';q('#indexstatus').textContent=`Indexing ${j.done}/${j.total}: ${j.current||j.message}`;setTimeout(pollIndex,500)}else{p.style.display='none';q('#indexstatus').textContent=j.message||'';await loadSources();await search();if(j.errors?.length)toast(`${j.errors.length} file(s) had indexing errors. Open Diagnostics (bottom of the left panel) for the list.`);loadDiagBadge()}}
 async function openDetail(d){try{await api('/api/open-detail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({detail_key:d.detail_key})});toast(`Opened lightweight staging detail (${d.viewport_count} viewport${d.viewport_count==1?'':'s'}). Copy it normally, close staging, then paste into your project.`)}catch(e){toast(e.message)}}async function openMaster(d){try{await api('/api/open-master',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({detail_key:d.detail_key})})}catch(e){toast(e.message)}}async function openSkp(d){try{await api('/api/open-skp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({detail_key:d.detail_key})})}catch(e){toast(e.message)}}
-function openModal(d){modalDetail=d;q('#modaltitle').textContent=d.expanded_title||d.display_title;q('#modalraw').textContent=d.scene_label||'';let full=!!d.full_preview_relpath;q('#modalimgs').className='modalimgs '+(full?'full':'fallback '+vclass(d));q('#modalimgs').innerHTML=thumbHtml(d,true);let paths=d.skp_paths_exact||[];q('#modalmeta').innerHTML=`<div class="kv"><b>Intended Master Title</b>${esc(d.master_title||'')}</div><div class="kv"><b>Source LayOut</b>${esc(d.layout_filename)}</div><div class="kv"><b>Page</b>${esc(d.page_name)}</div><div class="kv"><b>Scene(s)</b>${d.viewports.map(v=>esc(v.scene_name)).join('<br>')}</div><div class="kv"><b>SketchUp reference path</b>${paths.map(esc).join('<br>')}</div>`;q('#modaltext').textContent=d.searchable_text||'';q('#modalback').style.display='flex'}q('#close').onclick=()=>q('#modalback').style.display='none';q('#modalback').onclick=e=>{if(e.target===q('#modalback'))q('#modalback').style.display='none'};q('#modalopen').onclick=()=>modalDetail&&openDetail(modalDetail);q('#modalmaster').onclick=()=>modalDetail&&openMaster(modalDetail);q('#modalskp').onclick=()=>modalDetail&&openSkp(modalDetail);
+function openModal(d){modalDetail=d;q('#modaltitle').textContent=d.expanded_title||d.display_title;q('#modalraw').textContent=d.scene_label||'';let full=!!d.full_preview_relpath;q('#modalimgs').className='modalimgs '+(full?'full':'fallback '+vclass(d));q('#modalimgs').innerHTML=thumbHtml(d,true);let paths=d.skp_paths_exact||[];q('#modalmeta').innerHTML=`<div class="kv"><b>Intended Master Title</b>${esc(d.master_title||'')}</div><div class="kv"><b>Source LayOut</b>${esc(d.layout_filename)}</div><div class="kv"><b>Page</b>${esc(d.page_name)}</div><div class="kv"><b>Scene(s)</b>${d.viewports.map(v=>esc(v.scene_name)).join('<br>')}</div><div class="kv"><b>SketchUp reference path</b>${paths.map(esc).join('<br>')}</div>`;q('#modaltext').textContent=d.clean_text?(d.notes_text||'(no notes)'):(d.searchable_text||'');q('#modalrawtext').textContent=d.raw_text||'(refresh the index to see the raw text)';q('#modalback').style.display='flex'}q('#close').onclick=()=>q('#modalback').style.display='none';q('#modalback').onclick=e=>{if(e.target===q('#modalback'))q('#modalback').style.display='none'};q('#modalopen').onclick=()=>modalDetail&&openDetail(modalDetail);q('#modalmaster').onclick=()=>modalDetail&&openMaster(modalDetail);q('#modalskp').onclick=()=>modalDetail&&openSkp(modalDetail);
 q('#search').oninput=()=>{clearTimeout(timer);timer=setTimeout(search,180)};q('#size').oninput=e=>{let v=e.target.value;document.documentElement.style.setProperty('--card-w',v+'px');q('#sizeval').textContent=v};q('#choose').onclick=choose;q('#refresh').onclick=async()=>{let j=await api('/api/status');j.library_root?startIndex(j.library_root):choose()};q('#cleanup').onclick=async()=>{let j=await api('/api/cleanup',{method:'POST'});toast(`Deleted ${j.deleted} staging file(s).`)};
 q('#preparethumbs').onclick=async()=>{try{let hidden=q('#hiddenlayers').value.split(',').map(x=>x.trim()).filter(Boolean);let j=await api('/api/prepare-thumbnails',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hidden_layers:hidden})});toast(`Prepared ${j.job_count} master file(s). Now load thumbnail_worker.rb in the SketchUp Ruby Console.`);await loadThumbStatus()}catch(e){toast(e.message)}};
 q('#processthumbs').onclick=async()=>{try{q('#indexstatus').textContent='Processing full-detail thumbnails...';let j=await api('/api/process-thumbnails',{method:'POST'});let probs=(j.warnings?.length||0)+(j.skipped_files?.length||0);toast(`Created/updated ${j.processed_details} full previews from ${j.processed_files} master file(s).${probs?' '+probs+' warning(s) or skipped file(s) - see Diagnostics.':''}`);loadDiagBadge();await loadThumbStatus();await search();q('#indexstatus').textContent='Full thumbnails processed';}catch(e){toast(e.message);q('#indexstatus').textContent=''}};

@@ -48,7 +48,10 @@
     8.4195,
     13.5023
    ],
-   "searchable_text_sha1": "d963d760669146574ad647fc17e399b94c107951"
+   "searchable_text_sha1": "b52ba5c8327f49e923dd3aebdcb2b703cb5be6b6",
+   "raw_text_sha1": "229b9e828594471ca555150dcae1d51797fba9f9",
+   "raw_lines": 97,
+   "clean_lines": 35
   },
   {
    "key_tail": "|id6900|id7397",
@@ -88,7 +91,10 @@
     16.4224,
     13.5023
    ],
-   "searchable_text_sha1": "d5f0fb07824240a5b6c03d7eaafefbce823beb43"
+   "searchable_text_sha1": "b2d019577729825e9367c9b98be54398e6706926",
+   "raw_text_sha1": "899fd19ce13ffeb6a87467614d38a11e687bf819",
+   "raw_lines": 97,
+   "clean_lines": 35
   }
  ]
 }

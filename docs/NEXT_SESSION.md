@@ -8,12 +8,12 @@ Size: S = under an hour, M = a few hours, L = open ended. "Default" is what I wo
 **Program itself:** Prototype 0.1 plus the diagnostics log. Search, Open Detail and thumbnails are unchanged.
 **After a session, push with:** `cd /d C:\sketchup_dev\detail_manager` then `git push origin main`.
 **To try the development copy:** double-click `C:\sketchup_dev\detail_manager\RUN_DEV.bat` (own port and its own copy of the index; the daily program is never changed).
-**To run the tests:** `cd /d C:\sketchup_dev\detail_manager` then `py -m unittest discover -s tests` (about 40 s, 48 tests, expect `OK`).
+**To run the tests:** `cd /d C:\sketchup_dev\detail_manager` then `py -m unittest discover -s tests` (about 40 s, 53 tests, expect `OK`).
 
 ## The list, in order
 | # | Tag | Item | Size | What I need from you |
 |---|---|---|---|---|
-| 3 | M2 | Clean text: drop bubble numbers, table numbers and "N.T.S." from search and display; keep raw | S-M | nothing |
+| 3 | M2 | **Clean text: BUILT on branch `feature/clean-text`, waiting for your test.** Run the tests (53), `RUN_DEV.bat`, Refresh Index, try searches, open a detail and read its notes | S-M | Your test, then I merge |
 | 4 | T3 | Thumbnail crop tests from the render files | S | `py -m pip install pymupdf` once if the tests say it is missing |
 | 5 | U1, U3 | Slim cards (title, then framing type and Hydronics) and fuller inspector | M | Look at it in the browser |
 | 6 | U2 | Sidebar collapsed, filter by category (from the scrapbook number) | S-M | nothing (answered) |

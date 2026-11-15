@@ -28,6 +28,9 @@ def snapshot(summary, details):
             "skp_paths_exact": d["skp_paths_exact"],
             "bounds": [round(x, 4) for x in d["bounds"]] if d["bounds"] else None,
             "searchable_text_sha1": hashlib.sha1(d["searchable_text"].encode("utf-8")).hexdigest(),
+            "raw_text_sha1": hashlib.sha1(d["raw_text"].encode("utf-8")).hexdigest(),
+            "raw_lines": len(d["raw_text"].split("\n")) if d["raw_text"] else 0,
+            "clean_lines": len(d["clean_text"].split("\n")) if d["clean_text"] else 0,
         })
     return {
         "layout_filename": summary["layout_filename"],
