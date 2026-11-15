@@ -7,17 +7,18 @@ Size: S = under an hour, M = a few hours, L = open ended. "Default" is what I wo
 **Done:** repo and rules; regression tests (33, passing on your computer) merged to `main`; render files for the 8 test masters in place; user guide draft started (Python requirements).
 **Program itself:** still exactly Prototype 0.1. Nothing in `src/` has changed yet.
 **After a session, push with:** `cd /d C:\sketchup_dev\detail_manager` then `git push origin main`.
-**To run the tests:** `cd /d C:\sketchup_dev\detail_manager` then `py -m unittest discover -s tests` (about 40 s, expect `OK`).
+**To try the development copy:** double-click `C:\sketchup_dev\detail_manager\RUN_DEV.bat` (own port, same index as the daily program).
+**To run the tests:** `cd /d C:\sketchup_dev\detail_manager` then `py -m unittest discover -s tests` (about 40 s, 41 tests, expect `OK`).
 
 ## The list, in order
 | # | Tag | Item | Size | What I need from you |
 |---|---|---|---|---|
-| 1 | D1, D2 | Diagnostics log in %LOCALAPPDATA% and a place in the program to see the last errors | S | nothing |
+| 1 | D1, D2 | **Diagnostics log and Diagnostics button: BUILT on branch `feature/diagnostics-log`, waiting for your test.** Run the tests, then double-click `RUN_DEV.bat` and open Diagnostics at the bottom of the left panel | S | Your test, then I merge |
 | 2 | M1 | Title fix: real title from the text beside "N.T.S." | S-M | Look at a list of old and new titles for the 149 test details and say if they are right |
 | 3 | M2 | Clean text: drop bubble numbers, table numbers and "N.T.S." from search and display; keep raw | S-M | nothing |
 | 4 | T3 | Thumbnail crop tests from the render files | S | `py -m pip install pymupdf` once if the tests say it is missing |
 | 5 | U1, U3 | Slim cards and fuller inspector | M | Q2; look at it in the browser |
-| 6 | U2 | Sidebar collapsed, filters | S-M | Q3 |
+| 6 | U2 | Sidebar collapsed, filter by category (from the scrapbook number) | S-M | Q3: names for 04 to 07, roof as one or five |
 | 7 | M3, U4 | Search ranking; more than 80 results | M | A few real searches where the order felt wrong |
 | 8 | S1 | Open SketchUp to the exact scene | M | Test in SketchUp 2025 |
 | 9 | D3 | Local server check | S | nothing |
