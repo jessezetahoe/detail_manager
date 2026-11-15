@@ -14,8 +14,8 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
 - **T Tests**
   - [ ] T3 Thumbnail crop tests using the render files (needs PyMuPDF where the tests run)
 - **D Diagnostics**
-  - [~] D1 Persistent log in the data folder (`logs\detail_manager.log`, 1 MB x 4 files): start-up, index runs and errors, thumbnail warnings, Open Detail, failed commands. Never in the library or job folders. BUILT 2026-11-15 (branch `feature/diagnostics-log`), user test pending
-  - [~] D2 Diagnostics button (bottom of the left panel, red count when something is wrong): library reachable or not, counts, masters that failed to index, last SketchUp render result, recent log entries, Open Log Folder. BUILT, user test pending
+  - [x] D1 (verified by the user 2026-11-15, merged) Persistent log in the data folder (`logs\detail_manager.log`, 1 MB x 4 files): start-up, index runs and errors, thumbnail warnings, Open Detail, failed commands. Never in the library or job folders. BUILT 2026-11-15 (branch `feature/diagnostics-log`), user test pending
+  - [x] D2 (verified by the user 2026-11-15: opens, counts match) Diagnostics button (bottom of the left panel, red count when something is wrong): library reachable or not, counts, masters that failed to index, last SketchUp render result, recent log entries, Open Log Folder. BUILT, user test pending
   - [x] D4a An unreachable library folder can no longer be read as "every master was deleted" (refresh stops with a logged error; before, starting with `--library` while Z: was offline would have emptied the index and its thumbnails)
   - [ ] D4b Same protection when the drive drops out part-way through a scan (some masters seem to vanish): do not purge when a large share is missing; ask first
   - [x] D5 `RUN_DEV.bat`: runs the development copy on its own port (8769) beside the daily program, reading the same index (`ZE Detail Manager POC 07A`). Before M1/M2 change what is stored in the index, give the development copy its own copy of the index
@@ -26,8 +26,9 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
   - [ ] M3 Search ranking: title first, then scenes, then notes; stop the master file name from matching every detail equally
   - [ ] M4 Manual title overrides for titles the program cannot work out (only if M1 leaves gaps)
 - **U Screen layout**
-  - [ ] U1 Slim cards: thumbnail, title, one short descriptor (Q2)
-  - [ ] U2 Sidebar: source file list collapsed by default; filter by CATEGORY instead (user, 2026-11-15: friendly type names such as Foundation, Floor, Roof, Connection, Shear Transfer, worked out from the scrapbook number only, since several scrapbooks share a number). Names kept in an editable `categories.json` next to `abbreviations.json`. Numbers in the index today: 01 FND (8 files), 02 FLR TO FND / RET (24), 03 FLR TO FLR (26), 04 to 07 FLR TO 2PLY / 3PLY / SOLD / STL beam (24 each), 08 ROOF EAVE, 09 ROOF RAKE, 10 ROOF RDGE, 11 ROOF PTCH, 12 ROOF STD, 13 ZE STD (10), 14 CONN (5). Open: Q3
+  - [ ] U1 Slim cards: thumbnail, title, one short second line. ANSWERED (Q2, 2026-11-15): second line is the framing type (Solid Joist / Truss Joist / I-Joist, from the master name), with Hydronics added where it occurs, for example "Truss Joist - Hydronics"
+  - [ ] U2 Sidebar: source file list collapsed by default; filter by CATEGORY instead (user, 2026-11-15: friendly type names such as Foundation, Floor, Roof, Connection, Shear Transfer, worked out from the scrapbook number only, since several scrapbooks share a number). Names kept in an editable `categories.json` next to `abbreviations.json`. Numbers in the index today: 01 FND (8 files), 02 FLR TO FND / RET (24), 03 FLR TO FLR (26), 04 to 07 FLR TO 2PLY / 3PLY / SOLD / STL beam (24 each), 08 ROOF EAVE, 09 ROOF RAKE, 10 ROOF RDGE, 11 ROOF PTCH, 12 ROOF STD, 13 ZE STD (10), 14 CONN (5). ANSWERED 2026-11-15: 04 = Floor to Beam, Flush, Exterior; 05 = Flush, Interior; 06 = Bearing, Exterior; 07 = Bearing, Interior (confirmed against the index: every file of each number carries those two words). Roof (08 to 12): start as ONE category; more roof details are coming, split later by editing `categories.json` (no code change). Build the file so a category can have sub-types.
+  - [ ] U5 Source switch above the categories: Library / Old Projects / Both (user, 2026-11-15). Old Projects = job files not yet in the formal library (L3). Show the switch when L3 exists; design U2 so it has room for it
   - [ ] U3 Fuller detail inspector: source, page, all scenes, paths, raw and clean text
   - [ ] U4 More than 80 results (paging or load-more)
 - **S SketchUp helper**
@@ -47,13 +48,13 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
 ## Later
 - [ ] L1 Which masters and details use a given SketchUp model (dependency tracking)
 - [ ] L2 Controlled, explicit master reference maintenance (never automatic)
-- [ ] L3 Job Archive search (second library, clearly labelled)
+- [ ] L3 Job Archive search = "Old Projects" (second source, clearly labelled; see U5)
 - [ ] L4 Promote to Library review queue
 - [ ] L5 Find details from a SketchUp view (image or model recognition); may move more into SketchUp
 - [ ] L6 Favorites, recently used, detail basket (only if users ask)
 
 ## Questions for the user
 - Q1 Which computers have Python now, and which version? (`py --version`). Only matters until P2
-- Q2 U1: is the framing type (Solid Joist / Truss Joist / I-Joist, from the master name) the right second line on a card?
-- Q3 U2 (partly answered: categories by scrapbook number): what are the friendly names for 04, 05, 06 and 07 (all four are floor to beam; what sets them apart?), and should the five roof numbers be one "Roof" category or five?
+- Q2 ANSWERED 2026-11-15: yes, slimmer card; framing type plus Hydronics where it occurs
+- Q3 ANSWERED 2026-11-15: see U2
 - Q4 ANSWERED 2026-11-15: the POC 07A index on this computer (182 masters, 5,254 details, built in August) is believed to be the one in daily use
