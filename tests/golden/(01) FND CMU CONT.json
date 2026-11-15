@@ -27,8 +27,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Grade Beam at Garage",
-   "expanded_title": "Grade Beam at Garage",
+   "display_title": "Grade Beam @ Garage",
+   "expanded_title": "Grade Beam @ Garage",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -39,7 +39,7 @@
     16.4224,
     7.7955
    ],
-   "searchable_text_sha1": "1021098934cce4b67e6455c0287648ee7c731f78"
+   "searchable_text_sha1": "86c82b4743c10041234d835e4e88a186354cb18a"
   },
   {
    "key_tail": "|id3709|id9826",
@@ -58,8 +58,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Grade Beam Blw Frame",
-   "expanded_title": "Grade Beam Blw Frame",
+   "display_title": "Grade Beam",
+   "expanded_title": "Grade Beam",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -70,7 +70,7 @@
     8.4195,
     7.7916
    ],
-   "searchable_text_sha1": "e452bed1ffd9a7ddc5550431b2f0079196177d91"
+   "searchable_text_sha1": "25db13cbc63ba46983968086b54e3dc4d11fc007"
   },
   {
    "key_tail": "|id8978|id9162",
@@ -89,8 +89,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Stem CMU",
-   "expanded_title": "Stem CMU",
+   "display_title": "Continuous Footing",
+   "expanded_title": "Continuous Footing",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -101,7 +101,7 @@
     8.4068,
     7.7968
    ],
-   "searchable_text_sha1": "accc989dd309d6ee786c3fb9c471cabb79236c02"
+   "searchable_text_sha1": "e6f7cd23c095cb4114f6605219f82c5cda48c848"
   },
   {
    "key_tail": "|id8978|id9291",
@@ -120,8 +120,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Stem CMU Perf",
-   "expanded_title": "Stem CMU Perforated Wall",
+   "display_title": "Continuous Footing",
+   "expanded_title": "Continuous Footing",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -132,7 +132,7 @@
     16.4224,
     7.7968
    ],
-   "searchable_text_sha1": "cde751ac4a2527c75d7daf0faa0723f110f5a029"
+   "searchable_text_sha1": "fac730f081d8bdae2eedb05fa14d36750db094ba"
   },
   {
    "key_tail": "|id8978|id9388",
@@ -151,8 +151,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Stem CMU Step",
-   "expanded_title": "Stem CMU Step",
+   "display_title": "Step Footing",
+   "expanded_title": "Step Footing",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -163,7 +163,7 @@
     8.4195,
     16.1646
    ],
-   "searchable_text_sha1": "d26920985b658a6a9fbd0e203c7a02951b36f6e6"
+   "searchable_text_sha1": "ff0187f48a37ab70fa45f27fa21d8fb0d1faa9c7"
   },
   {
    "key_tail": "|id8978|id9457",
@@ -182,8 +182,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Stem CMU Corner",
-   "expanded_title": "Stem CMU Corner",
+   "display_title": "Continuous Footing @ Corner",
+   "expanded_title": "Continuous Footing @ Corner",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -194,7 +194,7 @@
     16.4224,
     16.1749
    ],
-   "searchable_text_sha1": "b17459709cc661059a493ee515be30f7fa8679f5"
+   "searchable_text_sha1": "9e19ff1727e44259757eaadf276d64d26d0db04d"
   },
   {
    "key_tail": "|id5411|id7952",
@@ -213,8 +213,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Stem Conc. w/ Wall Int Slab",
-   "expanded_title": "Stem Conc. w/ Wall Interior Slab",
+   "display_title": "Continuous Footing w/ Slab - Interior",
+   "expanded_title": "Continuous Footing w/ Slab - Interior",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -225,7 +225,7 @@
     16.4224,
     24.5666
    ],
-   "searchable_text_sha1": "a369cdd24345355f47755a0b403f884cbec581ce"
+   "searchable_text_sha1": "f7cf701749db7d0bd959810ffa8fe071a9787228"
   },
   {
    "key_tail": "|id5411|id8086",
@@ -244,8 +244,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Stem CMU w/ Wall Slabx2",
-   "expanded_title": "Stem CMU w/ Wall Slabx2",
+   "display_title": "Continuous Footing w/ Wall",
+   "expanded_title": "Continuous Footing w/ Wall",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -256,7 +256,7 @@
     8.4323,
     24.5576
    ],
-   "searchable_text_sha1": "341d86e9fc29657a98e1264dc66f74c89c4e9101"
+   "searchable_text_sha1": "d29f29790d644b6d3919d21492a99db60ddcf7a4"
   },
   {
    "key_tail": "|id5411|id8199",
@@ -275,8 +275,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Stem CMU w/ Wall Slab",
-   "expanded_title": "Stem CMU w/ Wall Slab",
+   "display_title": "Continuous Footing w/ Wall",
+   "expanded_title": "Continuous Footing w/ Wall",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -287,7 +287,7 @@
     8.4323,
     16.1772
    ],
-   "searchable_text_sha1": "fd207940912eed3ea0bf55100dc472930abd2706"
+   "searchable_text_sha1": "062306f6c5f5a10ee8403c7925ef7a9ac056cd63"
   },
   {
    "key_tail": "|id5411|id8288",
@@ -306,8 +306,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Stem CMU w/ Wall",
-   "expanded_title": "Stem CMU w/ Wall",
+   "display_title": "Continuous Footing w/ Wall",
+   "expanded_title": "Continuous Footing w/ Wall",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -318,7 +318,7 @@
     8.4323,
     7.7968
    ],
-   "searchable_text_sha1": "652d07d138a31e96199b28f26b5ac3c1021a3fcd"
+   "searchable_text_sha1": "66c0cbe89e47a57eccbcfee7b383ca12fc426233"
   },
   {
    "key_tail": "|id5411|id8410",
@@ -337,8 +337,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Stem CMU w/ Wall Perf",
-   "expanded_title": "Stem CMU w/ Wall Perforated Wall",
+   "display_title": "Continuous Footing w/ Wall",
+   "expanded_title": "Continuous Footing w/ Wall",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -349,7 +349,7 @@
     16.4351,
     7.7968
    ],
-   "searchable_text_sha1": "3b3e80329d88af69df175330e0073e6b68046ef4"
+   "searchable_text_sha1": "0d7a2e6a27989a48427416994112c588735a83d1"
   },
   {
    "key_tail": "|id5411|id8554",
@@ -368,8 +368,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Stem CMU w/ Wall Perf Slab",
-   "expanded_title": "Stem CMU w/ Wall Perforated Wall Slab",
+   "display_title": "Continuous Footing w/ Wall",
+   "expanded_title": "Continuous Footing w/ Wall",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -380,7 +380,7 @@
     16.4351,
     16.1772
    ],
-   "searchable_text_sha1": "5611f08303565b64ec55654e59b0edaff3aa371f"
+   "searchable_text_sha1": "38affbc65319693d79d71bc09d1878625844d19e"
   },
   {
    "key_tail": "|id6026|id8669",
@@ -399,8 +399,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Stem Step at Shear Wall CMU",
-   "expanded_title": "Stem Step at Shear Wall CMU",
+   "display_title": "Typical Shear Wall Connection @ Step",
+   "expanded_title": "Typical Shear Wall Connection @ Step",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -411,7 +411,7 @@
     25.3015,
     11.9988
    ],
-   "searchable_text_sha1": "3fcf0a5c9f36ab5ebf9f4630c54aea0a5ae8c581"
+   "searchable_text_sha1": "54b3f1f3a66308f429871bc97aa25ea94bcabd6e"
   },
   {
    "key_tail": "|id6026|id8709",
@@ -430,8 +430,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "HD and Strap at Stem CMU",
-   "expanded_title": "Holdown and Strap at Stem CMU",
+   "display_title": "Typical Hold-Down and Strap",
+   "expanded_title": "Typical Hold-Down and Strap",
    "master_title": "Foundation CMU CONT",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(01) FND/(01) FND.skp"
@@ -442,7 +442,7 @@
     16.4224,
     7.7959
    ],
-   "searchable_text_sha1": "c56feb441527e1e9da152480e9264a5a11f656c2"
+   "searchable_text_sha1": "59e94ba5a4c35f535794df569f8b87c8f5ec2d68"
   }
  ]
 }

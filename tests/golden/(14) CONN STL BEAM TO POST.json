@@ -31,8 +31,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "W2S (2) Bolt",
-   "expanded_title": "W2S (2) Bolted",
+   "display_title": "Wood Post Above or Below Steel Beam",
+   "expanded_title": "Wood Post Above or Below Steel Beam",
    "master_title": "Connection Steel Beam TO Post or Column",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(14) CONN/(14) CONN BEAM TO POST.skp"
@@ -43,7 +43,7 @@
     16.4224,
     7.7834
    ],
-   "searchable_text_sha1": "49ea7debe9dd2731477fcd18b1358fdeb7d844c4"
+   "searchable_text_sha1": "9fce3e523a58ab1941320b1d098c5d4e9b6ea979"
   },
   {
    "key_tail": "|id6853|id7065",
@@ -62,8 +62,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "W2S TSP",
-   "expanded_title": "W2S TSP",
+   "display_title": "Wood Post at Steel Beam",
+   "expanded_title": "Wood Post at Steel Beam",
    "master_title": "Connection Steel Beam TO Post or Column",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(14) CONN/(14) CONN BEAM TO POST.skp"
@@ -74,7 +74,7 @@
     12.032,
     7.7793
    ],
-   "searchable_text_sha1": "ccacf19f341244fe40fd7cc61d57f27e7e7df667"
+   "searchable_text_sha1": "1fc821650789bc1d674c63894fe4bb044606b5d6"
   },
   {
    "key_tail": "|id6853|id7131",
@@ -111,8 +111,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "W2S (7) SDS",
-   "expanded_title": "W2S (7) SDS Screws",
+   "display_title": "Steel Beam to Wood Post w/ Ears - SDS",
+   "expanded_title": "Steel Beam to Wood Post w/ Ears - SDS",
    "master_title": "Connection Steel Beam TO Post or Column",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(14) CONN/(14) CONN BEAM TO POST.skp"
@@ -123,7 +123,7 @@
     28.9342,
     21.5807
    ],
-   "searchable_text_sha1": "6c9bd7269381d2069e6accd3fc10cc24618a8339"
+   "searchable_text_sha1": "d90ffa95ef72ac7bd36171b7ed225edfe07c3a58"
   },
   {
    "key_tail": "|id5622|id7332",
@@ -142,8 +142,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "Stl2Stl",
-   "expanded_title": "Stl2Stl",
+   "display_title": "Steel Post Above or Below Steel Beam",
+   "expanded_title": "Steel Post Above or Below Steel Beam",
    "master_title": "Connection Steel Beam TO Post or Column",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(14) CONN/(14) CONN BEAM TO POST.skp"
@@ -154,7 +154,7 @@
     8.4195,
     7.7834
    ],
-   "searchable_text_sha1": "6a5e274d3704a4e735dbdb8135b419a097702695"
+   "searchable_text_sha1": "5fe2ee87a783c3b34a076516f5bc8a9ba0e5a5f1"
   },
   {
    "key_tail": "|id5622|id7494",
@@ -173,8 +173,8 @@
      "has_preview": true
     }
    ],
-   "display_title": "HSS Abv / Blw",
-   "expanded_title": "HSS Abv / Blw",
+   "display_title": "HSS @ Moment Frame - Typical",
+   "expanded_title": "HSS @ Moment Frame - Typical",
    "master_title": "Connection Steel Beam TO Post or Column",
    "skp_paths_exact": [
     "Z:/Google Drive/ZE Library/ZE Scrapbooks/_Models/(14) CONN/(14) CONN STL FRME.skp"
@@ -185,7 +185,7 @@
     25.2859,
     11.9659
    ],
-   "searchable_text_sha1": "b89d074bb6a5daf08c1091e280196161a42d7c54"
+   "searchable_text_sha1": "361b63b0a19c219408039ab5f79647c1d12d2b3a"
   }
  ]
 }

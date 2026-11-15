@@ -32,6 +32,10 @@ from xml.dom import minidom, Node
 APP_NAME = "ZE Detail Manager Prototype 0.1"
 APP_DIR_NAME = "ZE Detail Manager Prototype 0.1"
 PORT_DEFAULT = 8768
+# Raise this whenever the rules for reading a master change (titles, text...).
+# Masters indexed under an older number are re-read on the next refresh even
+# though the file itself has not changed; their thumbnails are kept.
+INDEX_VERSION = 2
 
 NS = {
     "e": "http://sketchup.google.com/schemas/layout/1.0/entities",
@@ -266,7 +270,41 @@ def text_from_group(group: ET.Element) -> List[str]:
     return texts
 
 
+def _is_nts(text: str) -> bool:
+    return re.sub(r"[^A-Za-z]", "", text or "").upper() in {"NTS", "NOTTOSCALE"}
+
+
+def _plausible_title(text: str) -> bool:
+    t = (text or "").strip()
+    return len(t) >= 4 and not t.isdigit() and t.upper() != "XXX" and not _is_nts(t)
+
+
+def infer_title_with_source(text_items: Sequence[str], scene_names: Sequence[str], page_name: str) -> Tuple[str, str]:
+    """Return (title, source). source is 'drawing' (the title drawn on the detail),
+    'scene' (SketchUp scene name) or 'page'."""
+    # The library draws the title and "N.T.S." as two separate text boxes, the
+    # title first. Use N.T.S. only as the marker; it is not part of the title.
+    for i, block in enumerate(text_items):
+        if i > 0 and _is_nts(block):
+            candidate = re.sub(r"\s+", " ", text_items[i - 1]).strip()
+            if _plausible_title(candidate):
+                return candidate, "drawing"
+    for block in reversed(text_items):
+        lines = [re.sub(r"\s+", " ", x).strip() for x in block.splitlines() if x.strip()]
+        for i, line in enumerate(lines):
+            if _is_nts(line) and i > 0 and _plausible_title(lines[i - 1]):
+                return lines[i - 1], "drawing"
+    for scene in scene_names:
+        if scene.strip(): return scene.strip(), "scene"
+    return (page_name, "page") if page_name else ("Untitled Detail", "page")
+
+
 def infer_title(text_items: Sequence[str], scene_names: Sequence[str], page_name: str) -> str:
+    return infer_title_with_source(text_items, scene_names, page_name)[0]
+
+
+def _infer_title_poc07a(text_items: Sequence[str], scene_names: Sequence[str], page_name: str) -> str:
+    """Prototype 0.1 rule, kept for reference and comparison only."""
     for block in reversed(text_items):
         lines = [re.sub(r"\s+", " ", x).strip() for x in block.splitlines() if x.strip()]
         for i, line in enumerate(lines):
@@ -366,6 +404,8 @@ class LibraryDB:
           skp_ref_id TEXT, image_ref_id TEXT, vector_ref_id TEXT, preview_relpath TEXT,
           PRIMARY KEY(detail_key, viewport_id));
         """)
+        if "index_version" not in {r[1] for r in cur.execute("PRAGMA table_info(layout_files)")}:
+            cur.execute("ALTER TABLE layout_files ADD COLUMN index_version INTEGER DEFAULT 0")
         with contextlib.suppress(sqlite3.OperationalError):
             cur.execute("CREATE VIRTUAL TABLE IF NOT EXISTS detail_search USING fts5(detail_key UNINDEXED, searchable_text)")
         con.commit(); con.close()
@@ -454,7 +494,7 @@ def read_log_tail(max_lines: int = 300) -> List[dict]:
 
 
 setup_logging(DB.root)
-INDEX_STATE = {"running": False, "total": 0, "done": 0, "current": "", "message": "", "errors": [], "changed": 0, "unchanged": 0}
+INDEX_STATE = {"running": False, "total": 0, "done": 0, "current": "", "message": "", "errors": [], "changed": 0, "unchanged": 0, "reread": 0}
 INDEX_LOCK = threading.Lock()
 
 
@@ -511,8 +551,10 @@ def parse_layout(layout_path: Path, preview_dir: Path) -> Tuple[dict, List[dict]
                         with z.open(internal) as src, out_path.open("wb") as dst: shutil.copyfileobj(src, dst)
                         rel = str(out_path.relative_to(DB.preview_root)).replace(os.sep, "/")
                     viewports.append({"viewport_id": viewport_id, "scene_name": scene, "scene_pid": scene_pid, "skp_ref_id": sid, "image_ref_id": iid, "vector_ref_id": vid, "preview_relpath": rel})
-                texts = text_from_group(entity); title = infer_title(texts, scene_names, page_name); primary = viewports[0]
-                expanded_title = expand_abbreviations(title)
+                texts = text_from_group(entity); title, title_source = infer_title_with_source(texts, scene_names, page_name); primary = viewports[0]
+                # A title drawn on the detail is already plain English: leave it alone.
+                # Shorthand expansion is only for scene/page names used as a fallback.
+                expanded_title = title if title_source == "drawing" else expand_abbreviations(title)
                 master_title = master_intended_title(layout_path.stem)
                 detail_key = f"{layout_file}|{page_ref_id}|{primary['viewport_id']}"
                 searchable = "\n".join(filter(None, [layout_path.stem, master_title, page_name, expand_abbreviations(page_name), title, expanded_title, *scene_names, *(expand_abbreviations(x) for x in scene_names), *texts]))
@@ -521,7 +563,7 @@ def parse_layout(layout_path: Path, preview_dir: Path) -> Tuple[dict, List[dict]
 
 
 def index_library(library_root: str):
-    with INDEX_LOCK: INDEX_STATE.update({"running": True, "total": 0, "done": 0, "current": "", "message": "Scanning library...", "errors": [], "changed": 0, "unchanged": 0})
+    with INDEX_LOCK: INDEX_STATE.update({"running": True, "total": 0, "done": 0, "current": "", "message": "Scanning library...", "errors": [], "changed": 0, "unchanged": 0, "reread": 0})
     try:
         root = Path(library_root)
         # Safety: an unreachable library must never be read as "every master was deleted".
@@ -536,7 +578,8 @@ def index_library(library_root: str):
         with INDEX_LOCK: INDEX_STATE.update({"total": len(files), "message": f"Found {len(files)} LayOut files"})
         for i, p in enumerate(files, 1):
             path_str, st = str(p), p.stat(); old = existing.get(path_str)
-            unchanged = bool(old and old.get("size_bytes") == st.st_size and old.get("mtime_ns") == st.st_mtime_ns and not old.get("last_error"))
+            file_same = bool(old and old.get("size_bytes") == st.st_size and old.get("mtime_ns") == st.st_mtime_ns and not old.get("last_error"))
+            unchanged = file_same and int(old.get("index_version") or 0) == INDEX_VERSION
             with INDEX_LOCK: INDEX_STATE.update({"done": i-1, "current": p.name})
             if unchanged:
                 with INDEX_LOCK: INDEX_STATE["unchanged"] += 1
@@ -548,12 +591,16 @@ def index_library(library_root: str):
                 for d in details:
                     for vp in d["viewports"]:
                         if vp["preview_relpath"]: vp["preview_relpath"] = vp["preview_relpath"].replace(path_key(path_str)+"_tmp/", path_key(path_str)+"/", 1)
+                if file_same:
+                    # Only the reading rules changed, not the master: keep its full thumbnails.
+                    kept = {r[0]: r[1] or "" for r in con.execute("SELECT detail_key, full_preview_relpath FROM details WHERE layout_file=?", (path_str,))}
+                    for d in details: d["full_preview_relpath"] = kept.get(d["detail_key"], "")
                 con.execute("BEGIN")
                 keys = [r[0] for r in con.execute("SELECT detail_key FROM details WHERE layout_file=?", (path_str,))]
                 for k in keys:
                     with contextlib.suppress(sqlite3.OperationalError): con.execute("DELETE FROM detail_search WHERE detail_key=?", (k,))
                 con.execute("DELETE FROM viewports WHERE detail_key IN (SELECT detail_key FROM details WHERE layout_file=?)", (path_str,)); con.execute("DELETE FROM details WHERE layout_file=?", (path_str,)); con.execute("DELETE FROM skp_references WHERE layout_file=?", (path_str,)); con.execute("DELETE FROM layout_files WHERE layout_file=?", (path_str,))
-                con.execute("INSERT INTO layout_files VALUES (?,?,?,?,?,?,?,?,?)", (path_str, p.name, summary["size_bytes"], summary["mtime_ns"], summary["page_count"], summary["detail_count"], summary["skp_reference_count"], datetime.now(timezone.utc).isoformat(), ""))
+                con.execute("INSERT INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version) VALUES (?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, summary["size_bytes"], summary["mtime_ns"], summary["page_count"], summary["detail_count"], summary["skp_reference_count"], datetime.now(timezone.utc).isoformat(), "", INDEX_VERSION))
                 for rid, r in summary["skp_references"].items(): con.execute("INSERT INTO skp_references VALUES (?,?,?,?)", (path_str, rid, r.get("externalTarget", ""), r.get("internalTarget", "")))
                 for d in details:
                     con.execute("INSERT INTO details VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (d["detail_key"], d["layout_file"], d["layout_filename"], d["page_ref_id"], d["page_xml"], d["page_name"], d["page_index"], d["group_index"], d["viewport_count"], d["primary_viewport_id"], d["primary_scene_name"], d["primary_scene_pid"], d["display_title"], d["expanded_title"], d["master_title"], json.dumps(d["skp_paths_exact"]), json.dumps(d["bounds"]), d["full_preview_relpath"], d["searchable_text"]))
@@ -562,21 +609,23 @@ def index_library(library_root: str):
                 con.commit()
                 shutil.rmtree(final_preview, ignore_errors=True)
                 temp_preview.rename(final_preview)
-                shutil.rmtree(DB.full_preview_root / path_key(path_str), ignore_errors=True)
-                shutil.rmtree(DB.render_root / path_key(path_str), ignore_errors=True)
-                with INDEX_LOCK: INDEX_STATE["changed"] += 1
+                if not file_same:
+                    shutil.rmtree(DB.full_preview_root / path_key(path_str), ignore_errors=True)
+                    shutil.rmtree(DB.render_root / path_key(path_str), ignore_errors=True)
+                with INDEX_LOCK: INDEX_STATE["reread" if file_same else "changed"] += 1
             except Exception as exc:
                 con.rollback(); shutil.rmtree(temp_preview, ignore_errors=True); msg = f"{type(exc).__name__}: {exc}"
                 if not old:
-                    con.execute("INSERT OR REPLACE INTO layout_files VALUES (?,?,?,?,?,?,?,?,?)", (path_str, p.name, st.st_size, st.st_mtime_ns, 0, 0, 0, datetime.now(timezone.utc).isoformat(), msg)); con.commit()
+                    con.execute("INSERT OR REPLACE INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version) VALUES (?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, st.st_size, st.st_mtime_ns, 0, 0, 0, datetime.now(timezone.utc).isoformat(), msg, INDEX_VERSION)); con.commit()
                 with INDEX_LOCK: INDEX_STATE["errors"].append({"file": path_str, "error": msg})
                 log_error(f"Index failed for {path_str}: {msg}" + (" (earlier index data for this master was kept)" if old else ""))
             finally:
                 with INDEX_LOCK: INDEX_STATE["done"] = i
         con.close(); DB.save_config({"library_root": library_root})
         with INDEX_LOCK:
-            INDEX_STATE["message"] = f"Refresh complete: {INDEX_STATE['changed']} changed, {INDEX_STATE['unchanged']} unchanged"
-            summary_line = f"Index refresh complete: {len(files)} master(s), {INDEX_STATE['changed']} changed, {INDEX_STATE['unchanged']} unchanged, {len(INDEX_STATE['errors'])} error(s)"
+            reread_note = f", {INDEX_STATE['reread']} re-read with the new rules (thumbnails kept)" if INDEX_STATE["reread"] else ""
+            INDEX_STATE["message"] = f"Refresh complete: {INDEX_STATE['changed']} changed, {INDEX_STATE['unchanged']} unchanged{reread_note}"
+            summary_line = f"Index refresh complete: {len(files)} master(s), {INDEX_STATE['changed']} changed, {INDEX_STATE['unchanged']} unchanged{reread_note}, {len(INDEX_STATE['errors'])} error(s)"
         log_info(summary_line)
     except Exception as exc:
         # Runs on a background thread: without this the failure would vanish.
@@ -888,8 +937,18 @@ def search_details(q: str = "", source: str = "", limit: int = 80) -> List[dict]
         sql = "SELECT d.* FROM details d" + ((" WHERE " + " AND ".join(where)) if where else "") + " ORDER BY d.layout_filename,d.page_name,d.group_index LIMIT ?"; params.append(limit); rows = con.execute(sql, params).fetchall()
     out = []
     for r in rows:
-        item = dict(r); item["skp_paths_exact"] = json.loads(item["skp_paths_exact"] or "[]"); item["viewports"] = [dict(x) for x in con.execute("SELECT * FROM viewports WHERE detail_key=? ORDER BY rowid", (r["detail_key"],))]; out.append(item)
+        item = dict(r); item["skp_paths_exact"] = json.loads(item["skp_paths_exact"] or "[]"); item["viewports"] = [dict(x) for x in con.execute("SELECT * FROM viewports WHERE detail_key=? ORDER BY rowid", (r["detail_key"],))]; item["scene_label"] = scene_label(item); out.append(item)
     con.close(); return out
+
+
+def scene_label(item: dict) -> str:
+    """Short second line for a card: the SketchUp scene in plain words. Empty when
+    it would only repeat the title (details whose title came from the scene)."""
+    scene = expand_abbreviations(item.get("primary_scene_name") or "")
+    if not scene or scene in {item.get("expanded_title"), item.get("display_title")}:
+        return ""
+    extra = max(0, int(item.get("viewport_count") or 1) - 1)
+    return scene + (f" (+{extra} more view{'s' if extra != 1 else ''})" if extra else "")
 
 
 def library_sources() -> List[dict]:
@@ -1146,13 +1205,13 @@ INDEX_HTML = r'''<!doctype html>
 <script>
 let currentSource='',currentDetails=[],modalDetail=null,timer=null;const q=s=>document.querySelector(s),grid=q('#grid');function esc(s){return (s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function api(url,opt){const r=await fetch(url,opt),j=await r.json();if(!r.ok)throw new Error(j.error||r.statusText);return j}function toast(msg){const t=q('#toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',8500)}function vclass(d){return 'count-'+Math.min(Math.max(d.viewports.length,1),6)}
 function thumbHtml(d,modal=false){if(d.full_preview_relpath){return `<img loading="lazy" src="/fullcache/${encodeURI(d.full_preview_relpath)}" title="Full LayOut detail"><span class="previewbadge">Full LayOut Preview</span>`}if(!d.viewports.length)return '<div style="color:#777">No preview</div>';let imgs=d.viewports.slice(0,6).map(v=>v.preview_relpath?`<img loading="lazy" src="/cache/${encodeURI(v.preview_relpath)}" title="${esc(v.scene_name)}">`:'').join('');return imgs+`<span class="previewbadge">Viewport Cache</span>`}
-function render(){q('#resultcount').textContent=`${currentDetails.length} result${currentDetails.length==1?'':'s'}`;grid.innerHTML='';if(!currentDetails.length){grid.innerHTML='<div class="empty">No details found.</div>';return}currentDetails.forEach(d=>{let c=document.createElement('article');c.className='card';let full=!!d.full_preview_relpath;c.innerHTML=`<div class="thumb ${full?'full':'fallback '+vclass(d)}">${thumbHtml(d)}</div><div class="meta"><div class="title">${esc(d.expanded_title||d.display_title)}</div>${d.expanded_title&&d.expanded_title!==d.display_title?`<div class="rawtitle">Source: ${esc(d.display_title)}</div>`:''}<div class="mastertitle">${esc(d.master_title||'')}</div><div class="sub">${esc(d.layout_filename)} · ${esc(d.page_name)} · ${d.viewport_count} viewport${d.viewport_count==1?'':'s'}</div><div class="actions"><button class="od primary">Open Detail</button><button class="om">Master</button><button class="info">Preview</button></div></div>`;c.querySelector('.thumb').onclick=()=>openModal(d);c.querySelector('.info').onclick=()=>openModal(d);c.querySelector('.od').onclick=e=>{e.stopPropagation();openDetail(d)};c.querySelector('.om').onclick=e=>{e.stopPropagation();openMaster(d)};grid.appendChild(c)})}
+function render(){q('#resultcount').textContent=`${currentDetails.length} result${currentDetails.length==1?'':'s'}`;grid.innerHTML='';if(!currentDetails.length){grid.innerHTML='<div class="empty">No details found.</div>';return}currentDetails.forEach(d=>{let c=document.createElement('article');c.className='card';let full=!!d.full_preview_relpath;c.innerHTML=`<div class="thumb ${full?'full':'fallback '+vclass(d)}">${thumbHtml(d)}</div><div class="meta"><div class="title">${esc(d.expanded_title||d.display_title)}</div>${d.scene_label?`<div class="rawtitle">${esc(d.scene_label)}</div>`:''}<div class="mastertitle">${esc(d.master_title||'')}</div><div class="sub">${esc(d.layout_filename)} · ${esc(d.page_name)} · ${d.viewport_count} viewport${d.viewport_count==1?'':'s'}</div><div class="actions"><button class="od primary">Open Detail</button><button class="om">Master</button><button class="info">Preview</button></div></div>`;c.querySelector('.thumb').onclick=()=>openModal(d);c.querySelector('.info').onclick=()=>openModal(d);c.querySelector('.od').onclick=e=>{e.stopPropagation();openDetail(d)};c.querySelector('.om').onclick=e=>{e.stopPropagation();openMaster(d)};grid.appendChild(c)})}
 async function search(){try{let j=await api(`/api/search?q=${encodeURIComponent(q('#search').value)}&source=${encodeURIComponent(currentSource)}`);currentDetails=j.details;render()}catch(e){toast(e.message)}}
 async function loadSources(){let j=await api('/api/status');q('#libpath').textContent=j.library_root||'No library selected';q('#sources').innerHTML='';let total=0;j.sources.forEach(s=>{total+=s.detail_count||0;let b=document.createElement('button');b.className='source';b.dataset.source=s.layout_file;b.innerHTML=`${esc(s.layout_filename)} <span class="count">${s.detail_count||0}</span>`;b.title=s.layout_file;b.onclick=()=>{document.querySelectorAll('.source').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentSource=s.layout_file;search()};q('#sources').appendChild(b)});q('#allcount').textContent=total;q('.source[data-source=""]').onclick=()=>{document.querySelectorAll('.source').forEach(x=>x.classList.remove('active'));q('.source[data-source=""]').classList.add('active');currentSource='';search()};await loadThumbStatus()}
 async function loadThumbStatus(){try{let s=await api('/api/thumbnail-status');q('#hiddenlayers').value=(s.hidden_layers||['GUIDES']).join(', ');q('#thumbstatus').textContent=`${s.full_preview_count}/${s.detail_count} full previews · ${s.render_manifest_count} rendered master${s.render_manifest_count==1?'':'s'} ready`;}catch(e){}}
 async function choose(){try{let j=await api('/api/choose-library',{method:'POST'});if(j.library_root){q('#libpath').textContent=j.library_root;startIndex(j.library_root)}}catch(e){toast(e.message)}}async function startIndex(root){try{await api('/api/index',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({library_root:root})});pollIndex()}catch(e){toast(e.message)}}async function pollIndex(){let j=await api('/api/index-status'),p=q('#progress'),bar=p.firstElementChild;if(j.running){p.style.display='block';bar.style.width=(j.total?100*j.done/j.total:2)+'%';q('#indexstatus').textContent=`Indexing ${j.done}/${j.total}: ${j.current||j.message}`;setTimeout(pollIndex,500)}else{p.style.display='none';q('#indexstatus').textContent=j.message||'';await loadSources();await search();if(j.errors?.length)toast(`${j.errors.length} file(s) had indexing errors. Open Diagnostics (bottom of the left panel) for the list.`);loadDiagBadge()}}
 async function openDetail(d){try{await api('/api/open-detail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({detail_key:d.detail_key})});toast(`Opened lightweight staging detail (${d.viewport_count} viewport${d.viewport_count==1?'':'s'}). Copy it normally, close staging, then paste into your project.`)}catch(e){toast(e.message)}}async function openMaster(d){try{await api('/api/open-master',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({detail_key:d.detail_key})})}catch(e){toast(e.message)}}async function openSkp(d){try{await api('/api/open-skp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({detail_key:d.detail_key})})}catch(e){toast(e.message)}}
-function openModal(d){modalDetail=d;q('#modaltitle').textContent=d.expanded_title||d.display_title;q('#modalraw').textContent=d.display_title!==d.expanded_title?`Source title: ${d.display_title}`:'';let full=!!d.full_preview_relpath;q('#modalimgs').className='modalimgs '+(full?'full':'fallback '+vclass(d));q('#modalimgs').innerHTML=thumbHtml(d,true);let paths=d.skp_paths_exact||[];q('#modalmeta').innerHTML=`<div class="kv"><b>Intended Master Title</b>${esc(d.master_title||'')}</div><div class="kv"><b>Source LayOut</b>${esc(d.layout_filename)}</div><div class="kv"><b>Page</b>${esc(d.page_name)}</div><div class="kv"><b>Scene(s)</b>${d.viewports.map(v=>esc(v.scene_name)).join('<br>')}</div><div class="kv"><b>SketchUp reference path</b>${paths.map(esc).join('<br>')}</div>`;q('#modaltext').textContent=d.searchable_text||'';q('#modalback').style.display='flex'}q('#close').onclick=()=>q('#modalback').style.display='none';q('#modalback').onclick=e=>{if(e.target===q('#modalback'))q('#modalback').style.display='none'};q('#modalopen').onclick=()=>modalDetail&&openDetail(modalDetail);q('#modalmaster').onclick=()=>modalDetail&&openMaster(modalDetail);q('#modalskp').onclick=()=>modalDetail&&openSkp(modalDetail);
+function openModal(d){modalDetail=d;q('#modaltitle').textContent=d.expanded_title||d.display_title;q('#modalraw').textContent=d.scene_label||'';let full=!!d.full_preview_relpath;q('#modalimgs').className='modalimgs '+(full?'full':'fallback '+vclass(d));q('#modalimgs').innerHTML=thumbHtml(d,true);let paths=d.skp_paths_exact||[];q('#modalmeta').innerHTML=`<div class="kv"><b>Intended Master Title</b>${esc(d.master_title||'')}</div><div class="kv"><b>Source LayOut</b>${esc(d.layout_filename)}</div><div class="kv"><b>Page</b>${esc(d.page_name)}</div><div class="kv"><b>Scene(s)</b>${d.viewports.map(v=>esc(v.scene_name)).join('<br>')}</div><div class="kv"><b>SketchUp reference path</b>${paths.map(esc).join('<br>')}</div>`;q('#modaltext').textContent=d.searchable_text||'';q('#modalback').style.display='flex'}q('#close').onclick=()=>q('#modalback').style.display='none';q('#modalback').onclick=e=>{if(e.target===q('#modalback'))q('#modalback').style.display='none'};q('#modalopen').onclick=()=>modalDetail&&openDetail(modalDetail);q('#modalmaster').onclick=()=>modalDetail&&openMaster(modalDetail);q('#modalskp').onclick=()=>modalDetail&&openSkp(modalDetail);
 q('#search').oninput=()=>{clearTimeout(timer);timer=setTimeout(search,180)};q('#size').oninput=e=>{let v=e.target.value;document.documentElement.style.setProperty('--card-w',v+'px');q('#sizeval').textContent=v};q('#choose').onclick=choose;q('#refresh').onclick=async()=>{let j=await api('/api/status');j.library_root?startIndex(j.library_root):choose()};q('#cleanup').onclick=async()=>{let j=await api('/api/cleanup',{method:'POST'});toast(`Deleted ${j.deleted} staging file(s).`)};
 q('#preparethumbs').onclick=async()=>{try{let hidden=q('#hiddenlayers').value.split(',').map(x=>x.trim()).filter(Boolean);let j=await api('/api/prepare-thumbnails',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hidden_layers:hidden})});toast(`Prepared ${j.job_count} master file(s). Now load thumbnail_worker.rb in the SketchUp Ruby Console.`);await loadThumbStatus()}catch(e){toast(e.message)}};
 q('#processthumbs').onclick=async()=>{try{q('#indexstatus').textContent='Processing full-detail thumbnails...';let j=await api('/api/process-thumbnails',{method:'POST'});let probs=(j.warnings?.length||0)+(j.skipped_files?.length||0);toast(`Created/updated ${j.processed_details} full previews from ${j.processed_files} master file(s).${probs?' '+probs+' warning(s) or skipped file(s) - see Diagnostics.':''}`);loadDiagBadge();await loadThumbStatus();await search();q('#indexstatus').textContent='Full thumbnails processed';}catch(e){toast(e.message);q('#indexstatus').textContent=''}};

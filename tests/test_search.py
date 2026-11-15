@@ -47,6 +47,13 @@ class TestSearch(unittest.TestCase):
             with self.subTest(q=q):
                 dm.search_details(q)
 
+    def test_drawing_title_and_scene_label(self):
+        r = dm.search_details("king stud blw")[0]
+        self.assertEqual(r["display_title"], "King Studs at Wall Openings")
+        self.assertEqual(r["expanded_title"], "King Studs at Wall Openings")  # not run through abbreviations
+        self.assertEqual(r["scene_label"], "King Stud Blw (+1 more view)")
+        self.assertTrue(dm.search_details("king studs at wall openings"))
+
     def test_results_carry_viewports_and_paths(self):
         r = dm.search_details("king stud blw")[0]
         self.assertGreaterEqual(len(r["viewports"]), 1)

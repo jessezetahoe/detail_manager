@@ -48,21 +48,31 @@ class TestRtf(unittest.TestCase):
 
 
 class TestInferTitle(unittest.TestCase):
-    """Documents CURRENT behavior (baseline). Update deliberately with the title fix."""
+    def test_title_in_text_box_before_nts(self):
+        # How the library is drawn: title box, then a separate N.T.S. box.
+        texts = ["6", "5", "King Studs at Wall Openings", "N.T.S.", "XXX", "2X STUD WALL PER PLAN, TYP"]
+        self.assertEqual(dm.infer_title_with_source(texts, ["King Stud Blw"], "Pg"), ("King Studs at Wall Openings", "drawing"))
 
     def test_title_above_nts_in_same_block(self):
-        self.assertEqual(dm.infer_title(["Joist Connection @ Wood Beam\nN.T.S."], ["Scene"], "Pg"),
-                         "Joist Connection @ Wood Beam")
+        self.assertEqual(dm.infer_title(["Joist Connection @ Wood Beam\nN.T.S."], ["Scene"], "Pg"), "Joist Connection @ Wood Beam")
 
-    def test_baseline_misses_title_in_separate_block(self):
-        # Real masters keep the title and N.T.S. in separate text boxes;
-        # the baseline falls back to the scene name. Known issue for 0.2.
-        self.assertEqual(dm.infer_title(["King Studs at Wall Openings", "N.T.S."], ["King Stud Blw"], "Pg"),
-                         "King Stud Blw")
+    def test_nts_spellings(self):
+        for nts in ("N.T.S.", "NTS", "n.t.s", "NOT TO SCALE"):
+            self.assertEqual(dm.infer_title(["Step Footing", nts], ["S"], "P"), "Step Footing", nts)
+
+    def test_bubble_or_placeholder_before_nts_is_not_a_title(self):
+        for junk in ("7", "XXX", "N.T.S."):
+            self.assertEqual(dm.infer_title_with_source([junk, "N.T.S."], ["Scene A"], "Pg"), ("Scene A", "scene"), junk)
+
+    def test_nts_first_has_no_title(self):
+        self.assertEqual(dm.infer_title(["N.T.S.", "Something"], ["Scene A"], "Pg"), "Scene A")
 
     def test_falls_back_to_page_name(self):
-        self.assertEqual(dm.infer_title([], [], "Page 3"), "Page 3")
+        self.assertEqual(dm.infer_title_with_source([], [], "Page 3"), ("Page 3", "page"))
         self.assertEqual(dm.infer_title([], [], ""), "Untitled Detail")
+
+    def test_prototype_rule_kept_for_comparison(self):
+        self.assertEqual(dm._infer_title_poc07a(["King Studs at Wall Openings", "N.T.S."], ["King Stud Blw"], "Pg"), "King Stud Blw")
 
 
 if __name__ == "__main__":
