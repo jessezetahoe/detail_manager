@@ -1,0 +1,78 @@
+{
+  "_how_to_edit": [
+    "Each category lists the scrapbook numbers it covers: the number in brackets at the start of a master's file name, for example (04).",
+    "Entries with the same name are shown together, with their 'sub' names indented underneath. To split Roof later, give each roof number its own entry with name Roof and a sub name.",
+    "Masters whose number is not listed are shown under Other. After saving this file, reload the Detail Manager page.",
+    "If this file has a mistake, Detail Manager uses its built-in list and notes it under Diagnostics."
+  ],
+  "categories": [
+    {
+      "numbers": [
+        "01"
+      ],
+      "name": "Foundation"
+    },
+    {
+      "numbers": [
+        "02"
+      ],
+      "name": "Floor to Foundation"
+    },
+    {
+      "numbers": [
+        "03"
+      ],
+      "name": "Floor to Floor"
+    },
+    {
+      "numbers": [
+        "04"
+      ],
+      "name": "Floor to Beam",
+      "sub": "Flush, Exterior"
+    },
+    {
+      "numbers": [
+        "05"
+      ],
+      "name": "Floor to Beam",
+      "sub": "Flush, Interior"
+    },
+    {
+      "numbers": [
+        "06"
+      ],
+      "name": "Floor to Beam",
+      "sub": "Bearing, Exterior"
+    },
+    {
+      "numbers": [
+        "07"
+      ],
+      "name": "Floor to Beam",
+      "sub": "Bearing, Interior"
+    },
+    {
+      "numbers": [
+        "08",
+        "09",
+        "10",
+        "11",
+        "12"
+      ],
+      "name": "Roof"
+    },
+    {
+      "numbers": [
+        "13"
+      ],
+      "name": "ZE Standards"
+    },
+    {
+      "numbers": [
+        "14"
+      ],
+      "name": "Connections"
+    }
+  ]
+}

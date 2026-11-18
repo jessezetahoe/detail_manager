@@ -171,6 +171,94 @@ def master_intended_title(layout_stem: str) -> str:
 DATA_DIR_ENV = "ZE_DETAIL_MANAGER_DATA_DIR"
 
 
+# ---------------------------------------------------------------------------
+# Categories: friendly groups worked out from the scrapbook number "(04)" at the
+# start of each master's file name. Editable in categories.json next to this file.
+# ---------------------------------------------------------------------------
+DEFAULT_CATEGORIES = [
+    {"numbers": ["01"], "name": "Foundation"},
+    {"numbers": ["02"], "name": "Floor to Foundation"},
+    {"numbers": ["03"], "name": "Floor to Floor"},
+    {"numbers": ["04"], "name": "Floor to Beam", "sub": "Flush, Exterior"},
+    {"numbers": ["05"], "name": "Floor to Beam", "sub": "Flush, Interior"},
+    {"numbers": ["06"], "name": "Floor to Beam", "sub": "Bearing, Exterior"},
+    {"numbers": ["07"], "name": "Floor to Beam", "sub": "Bearing, Interior"},
+    {"numbers": ["08", "09", "10", "11", "12"], "name": "Roof"},
+    {"numbers": ["13"], "name": "ZE Standards"},
+    {"numbers": ["14"], "name": "Connections"},
+]
+OTHER_CATEGORY = "Other"
+_CATEGORY_CACHE: dict = {"mtime": "unset", "cats": None, "error": ""}
+
+
+def categories_path() -> Path:
+    return Path(__file__).with_name("categories.json")
+
+
+def _validate_categories(raw) -> List[dict]:
+    items = raw.get("categories") if isinstance(raw, dict) else raw
+    if not isinstance(items, list) or not items:
+        raise ValueError('expected a "categories" list')
+    out = []
+    for i, item in enumerate(items, 1):
+        if not isinstance(item, dict):
+            raise ValueError(f"entry {i} is not a {{...}} block")
+        name = str(item.get("name", "")).strip()
+        if not name:
+            raise ValueError(f"entry {i} has no name")
+        numbers = item.get("numbers")
+        if not isinstance(numbers, list) or not numbers:
+            raise ValueError(f'entry {i} ("{name}") has no numbers list')
+        try:
+            nums = [int(str(n).strip()) for n in numbers]
+        except ValueError:
+            raise ValueError(f'entry {i} ("{name}") has a number that is not a number')
+        out.append({"name": name, "sub": str(item.get("sub", "") or "").strip(), "numbers": nums})
+    return out
+
+
+def categories_config() -> List[dict]:
+    """The category list; re-read when categories.json changes. A broken file
+    never stops the program: the built-in list is used and a warning logged."""
+    path = categories_path()
+    try:
+        mtime = path.stat().st_mtime_ns
+    except OSError:
+        mtime = None
+    if _CATEGORY_CACHE["cats"] is not None and _CATEGORY_CACHE["mtime"] == mtime:
+        return _CATEGORY_CACHE["cats"]
+    cats, error = _validate_categories(DEFAULT_CATEGORIES), ""
+    if mtime is not None:
+        try:
+            cats = _validate_categories(json.loads(path.read_text(encoding="utf-8")))
+        except Exception as exc:
+            error = f"{type(exc).__name__}: {exc}"
+    if error:
+        with contextlib.suppress(Exception):
+            log_warning(f"categories.json could not be used ({error}); using the built-in category list")
+    _CATEGORY_CACHE.update(mtime=mtime, cats=cats, error=error)
+    return cats
+
+
+def scrapbook_number(filename: str) -> Optional[int]:
+    m = re.match(r"^\s*\((\d+)\)", filename or "")
+    return int(m.group(1)) if m else None
+
+
+def category_for_filename(filename: str, cats: Optional[List[dict]] = None) -> Tuple[str, str]:
+    num = scrapbook_number(filename)
+    for c in (cats if cats is not None else categories_config()):
+        if num is not None and num in c["numbers"]:
+            return c["name"], c["sub"]
+    return OTHER_CATEGORY, ""
+
+
+def category_matches(filename: str, key: str, cats: Optional[List[dict]] = None) -> bool:
+    """key is a category name ("Floor to Beam": every sub-type) or "name|sub"."""
+    name, sub = category_for_filename(filename, cats)
+    return key == name or (bool(sub) and key == f"{name}|{sub}")
+
+
 def app_data_dir() -> Path:
     # Optional override so a development copy can run beside the daily one.
     override = os.environ.get(DATA_DIR_ENV, "").strip()
@@ -941,19 +1029,33 @@ def safe_search_query(q: str) -> str:
     return " AND ".join(f'"{t}"*' for t in re.findall(r"[A-Za-z0-9]+", q))
 
 
-def search_details(q: str = "", source: str = "", limit: int = 80) -> List[dict]:
+def category_layout_files(category: str) -> List[str]:
+    cats = categories_config()
+    con = DB.connect()
+    rows = con.execute("SELECT layout_file, layout_filename FROM layout_files").fetchall()
+    con.close()
+    return [r[0] for r in rows if category_matches(r[1], category, cats)]
+
+
+def search_details(q: str = "", source: str = "", limit: int = 80, category: str = "") -> List[dict]:
+    cat_files = category_layout_files(category) if category else None
+    if cat_files == []:
+        return []
+    cat_sql = f"d.layout_file IN ({','.join('?' * len(cat_files))})" if cat_files else ""
     con = DB.connect(); params, joins, where = [], "", []; order = "d.layout_filename,d.page_name,d.group_index"
     if q.strip():
         ftsq = safe_search_query(q)
         if ftsq:
             joins = " JOIN detail_search s ON s.detail_key=d.detail_key "; where.append("s.searchable_text MATCH ?"); params.append(ftsq); order = "bm25(detail_search),d.layout_filename,d.page_name,d.group_index"
     if source: where.append("d.layout_file=?"); params.append(source)
+    if cat_files: where.append(cat_sql); params += cat_files
     sql = "SELECT d.* FROM details d" + joins + ((" WHERE " + " AND ".join(where)) if where else "") + " ORDER BY " + order + " LIMIT ?"; params.append(limit)
     try: rows = con.execute(sql, params).fetchall()
     except sqlite3.OperationalError:
         params, where = [], []
         if q.strip(): where.append("d.searchable_text LIKE ?"); params.append(f"%{q}%")
         if source: where.append("d.layout_file=?"); params.append(source)
+        if cat_files: where.append(cat_sql); params += cat_files
         sql = "SELECT d.* FROM details d" + ((" WHERE " + " AND ".join(where)) if where else "") + " ORDER BY d.layout_filename,d.page_name,d.group_index LIMIT ?"; params.append(limit); rows = con.execute(sql, params).fetchall()
     out = []
     for r in rows:
@@ -978,6 +1080,33 @@ def notes_text(item: dict) -> str:
     title = item.get("display_title") or ""
     if title in lines: lines.remove(title)
     return "\n".join(x for x in lines if x.strip())
+
+
+def library_categories() -> List[dict]:
+    """Sidebar groups with detail counts, in categories.json order, "Other" last.
+    Only categories that contain details are listed."""
+    cats = categories_config()
+    con = DB.connect()
+    rows = con.execute("SELECT layout_filename, detail_count FROM layout_files WHERE detail_count>0").fetchall()
+    con.close()
+    groups: Dict[str, dict] = {}
+    for filename, count in rows:
+        name, sub = category_for_filename(filename, cats)
+        g = groups.setdefault(name, {"key": name, "name": name, "count": 0, "subs": {}})
+        g["count"] += count or 0
+        if sub:
+            g["subs"][sub] = g["subs"].get(sub, 0) + (count or 0)
+    order = list(dict.fromkeys([c["name"] for c in cats] + [OTHER_CATEGORY]))
+    out = []
+    for name in order:
+        g = groups.get(name)
+        if not g:
+            continue
+        sub_order = list(dict.fromkeys(c["sub"] for c in cats if c["name"] == name and c["sub"]))
+        g["children"] = [{"key": f"{name}|{s}", "sub": s, "count": g["subs"][s]} for s in sub_order if s in g["subs"]]
+        del g["subs"]
+        out.append(g)
+    return out
 
 
 def library_sources() -> List[dict]:
@@ -1223,20 +1352,20 @@ def diagnostics(max_lines: int = 300) -> dict:
 INDEX_HTML = r'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Detail Manager Prototype 0.1</title>
 <style>
-:root{--card-w:420px;--bg:#f4f5f7;--panel:#fff;--border:#d7dbe0;--text:#20242a;--muted:#67717e;--accent:#315b86;--shadow:0 2px 10px rgba(0,0,0,.08)}*{box-sizing:border-box}body{margin:0;font:14px/1.35 "Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden}header{height:74px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:12px 18px}.brand{font-weight:700;font-size:19px;white-space:nowrap}.search{flex:1;min-width:280px;height:42px;border:1px solid #aeb6c0;border-radius:7px;padding:0 14px;font-size:17px}button{border:1px solid #aab2bc;background:#fff;border-radius:6px;padding:8px 12px;cursor:pointer;font-weight:600}button:hover{background:#f2f5f8}button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.sizebox{display:flex;align-items:center;gap:8px;white-space:nowrap;color:var(--muted)}.app{display:grid;grid-template-columns:285px 1fr;height:calc(100vh - 74px)}aside{background:#fff;border-right:1px solid var(--border);overflow:auto;padding:14px}.aside-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:5px 0 8px}.pathbox{font-size:12px;word-break:break-all;background:#f8f9fb;border:1px solid var(--border);border-radius:5px;padding:8px;margin-bottom:8px}.source{display:block;width:100%;text-align:left;border:0;border-radius:4px;padding:7px 8px;font-weight:400}.source.active{background:#e8eef5;font-weight:600}.count{float:right;color:var(--muted)}.thumbtools{border:1px solid var(--border);border-radius:7px;padding:10px;background:#f8f9fb}.thumbtools input[type=text]{width:100%;padding:7px 8px;border:1px solid #b9c0c8;border-radius:5px;margin:4px 0 8px}.thumbtools button{width:100%;margin-top:6px}.smallnote{font-size:11px;color:var(--muted);margin-top:7px}.thumbstatus{font-size:12px;margin:7px 0;color:#45515e}main{overflow:auto;padding:16px 18px 50px}.statusline{display:flex;gap:16px;align-items:center;color:var(--muted);margin:0 0 13px}.notice{background:#edf4fb;border:1px solid #b8cee3;border-radius:6px;padding:8px 10px;color:#2f4d69}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(var(--card-w),100%),1fr));gap:16px;align-items:start}.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;min-width:0}.thumb{height:calc(var(--card-w)*.72);min-height:250px;max-height:485px;background:#e9ebee;display:grid;grid-template-columns:1fr;grid-auto-rows:minmax(0,1fr);gap:2px;align-items:stretch;justify-content:stretch;overflow:hidden;cursor:pointer;position:relative}.thumb.fallback.count-2,.thumb.fallback.count-3,.thumb.fallback.count-4{grid-template-columns:repeat(2,minmax(0,1fr))}.thumb.fallback.count-5,.thumb.fallback.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}.thumb img{width:100%;height:100%;min-width:0;min-height:0;object-fit:contain;background:white}.thumb.full{background:white;padding:10px}.thumb.full img{max-width:100%;max-height:100%}.previewbadge{position:absolute;right:7px;bottom:7px;background:rgba(30,36,43,.78);color:#fff;border-radius:4px;padding:3px 6px;font-size:10px;pointer-events:none}.meta{padding:11px 12px}.title{font-size:16px;font-weight:700;margin:0 0 4px}.rawtitle{color:#4e5966;font-size:12px;margin-bottom:4px}.mastertitle{color:var(--muted);font-size:12px;margin-bottom:3px}.sub{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.actions button{padding:6px 9px;font-size:12px}.empty{padding:50px;text-align:center;color:var(--muted);font-size:17px}#progress{height:4px;background:#e2e6eb;position:fixed;left:285px;right:0;top:74px;z-index:10;display:none}#progress>div{height:100%;background:var(--accent);width:0}.modalback{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;z-index:50;padding:25px}.modal{width:min(1600px,97vw);height:min(960px,95vh);background:#fff;border-radius:9px;box-shadow:0 15px 50px rgba(0,0,0,.3);display:grid;grid-template-columns:minmax(720px,1.8fr) minmax(370px,.62fr);overflow:hidden}.modalview{background:#eceff2;padding:16px;overflow:auto;display:flex;align-items:center;justify-content:center}.modalimgs{display:grid;grid-template-columns:1fr;grid-auto-rows:minmax(280px,1fr);gap:8px;width:100%;height:100%}.modalimgs.fallback.count-2,.modalimgs.fallback.count-3,.modalimgs.fallback.count-4{grid-template-columns:repeat(2,minmax(0,1fr))}.modalimgs.fallback.count-5,.modalimgs.fallback.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}.modalimgs img{width:100%;height:100%;min-width:0;min-height:280px;object-fit:contain;background:white;border:1px solid #c8cdd3}.modalimgs.full{background:white;padding:14px}.modalinfo{padding:18px;overflow:auto;position:relative}.close{position:absolute;right:12px;top:10px;font-size:22px;border:0}.modalinfo h2{padding-right:35px;margin-top:3px;margin-bottom:3px}.detailtext{white-space:pre-wrap;background:#f7f8fa;border:1px solid var(--border);padding:10px;border-radius:5px;max-height:300px;overflow:auto;font-size:12px}.kv{margin:8px 0}.kv b{display:block;font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}.badge{display:inline-block;min-width:18px;padding:1px 6px;border-radius:9px;background:#b3261e;color:#fff;font-size:11px;margin-left:6px}.diag{width:min(1100px,95vw);height:min(820px,92vh);background:#fff;border-radius:9px;box-shadow:0 15px 50px rgba(0,0,0,.3);padding:18px;overflow:auto;position:relative}.diag h2{margin:2px 0 10px}.diag h3{margin:16px 0 6px;font-size:14px}.diag table{border-collapse:collapse;width:100%;font-size:12px}.diag td,.diag th{border-bottom:1px solid var(--border);padding:4px 6px;text-align:left;vertical-align:top}.diag .ok{color:#1e6b34}.diag .bad{color:#b3261e;font-weight:600}.diag .lvl-ERROR td{color:#b3261e}.diag .lvl-WARNING td{color:#8a5a00}.diag .path{word-break:break-all}.toast{position:fixed;right:24px;bottom:24px;background:#20242a;color:#fff;padding:12px 16px;border-radius:7px;display:none;max-width:680px;z-index:80;box-shadow:var(--shadow)}@media(max-width:1100px){.app{grid-template-columns:230px 1fr}#progress{left:230px}.modal{grid-template-columns:1fr}.modalinfo{display:none}}
+:root{--card-w:420px;--bg:#f4f5f7;--panel:#fff;--border:#d7dbe0;--text:#20242a;--muted:#67717e;--accent:#315b86;--shadow:0 2px 10px rgba(0,0,0,.08)}*{box-sizing:border-box}body{margin:0;font:14px/1.35 "Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden}header{height:74px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:12px 18px}.brand{font-weight:700;font-size:19px;white-space:nowrap}.search{flex:1;min-width:280px;height:42px;border:1px solid #aeb6c0;border-radius:7px;padding:0 14px;font-size:17px}button{border:1px solid #aab2bc;background:#fff;border-radius:6px;padding:8px 12px;cursor:pointer;font-weight:600}button:hover{background:#f2f5f8}button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.sizebox{display:flex;align-items:center;gap:8px;white-space:nowrap;color:var(--muted)}.app{display:grid;grid-template-columns:285px 1fr;height:calc(100vh - 74px)}aside{background:#fff;border-right:1px solid var(--border);overflow:auto;padding:14px}.aside-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:5px 0 8px}.pathbox{font-size:12px;word-break:break-all;background:#f8f9fb;border:1px solid var(--border);border-radius:5px;padding:8px;margin-bottom:8px}.source,.cat{display:block;width:100%;text-align:left;border:0;border-radius:4px;padding:7px 8px;font-weight:400}.source.active,.cat.active{background:#e8eef5;font-weight:600}.cat{font-size:14px}.cat.sub{padding-left:24px;font-size:13px;color:#3d4753}.source{font-size:12px}.adv{margin-top:14px;border-top:1px solid var(--border);padding-top:10px}.adv>summary{cursor:pointer;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}.adv[open]>summary{margin-bottom:10px}#filterlabel{color:var(--text);font-weight:600}.count{float:right;color:var(--muted)}.thumbtools{border:1px solid var(--border);border-radius:7px;padding:10px;background:#f8f9fb}.thumbtools input[type=text]{width:100%;padding:7px 8px;border:1px solid #b9c0c8;border-radius:5px;margin:4px 0 8px}.thumbtools button{width:100%;margin-top:6px}.smallnote{font-size:11px;color:var(--muted);margin-top:7px}.thumbstatus{font-size:12px;margin:7px 0;color:#45515e}main{overflow:auto;padding:16px 18px 50px}.statusline{display:flex;gap:16px;align-items:center;color:var(--muted);margin:0 0 13px}.notice{background:#edf4fb;border:1px solid #b8cee3;border-radius:6px;padding:8px 10px;color:#2f4d69}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(var(--card-w),100%),1fr));gap:16px;align-items:start}.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;min-width:0}.thumb{height:calc(var(--card-w)*.72);min-height:250px;max-height:485px;background:#e9ebee;display:grid;grid-template-columns:1fr;grid-auto-rows:minmax(0,1fr);gap:2px;align-items:stretch;justify-content:stretch;overflow:hidden;cursor:pointer;position:relative}.thumb.fallback.count-2,.thumb.fallback.count-3,.thumb.fallback.count-4{grid-template-columns:repeat(2,minmax(0,1fr))}.thumb.fallback.count-5,.thumb.fallback.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}.thumb img{width:100%;height:100%;min-width:0;min-height:0;object-fit:contain;background:white}.thumb.full{background:white;padding:10px}.thumb.full img{max-width:100%;max-height:100%}.previewbadge{position:absolute;right:7px;bottom:7px;background:rgba(30,36,43,.78);color:#fff;border-radius:4px;padding:3px 6px;font-size:10px;pointer-events:none}.meta{padding:11px 12px}.title{font-size:16px;font-weight:700;margin:0 0 4px}.rawtitle{color:#4e5966;font-size:12px;margin-bottom:4px}.mastertitle{color:var(--muted);font-size:12px;margin-bottom:3px}.sub{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.actions button{padding:6px 9px;font-size:12px}.empty{padding:50px;text-align:center;color:var(--muted);font-size:17px}#progress{height:4px;background:#e2e6eb;position:fixed;left:285px;right:0;top:74px;z-index:10;display:none}#progress>div{height:100%;background:var(--accent);width:0}.modalback{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;z-index:50;padding:25px}.modal{width:min(1600px,97vw);height:min(960px,95vh);background:#fff;border-radius:9px;box-shadow:0 15px 50px rgba(0,0,0,.3);display:grid;grid-template-columns:minmax(720px,1.8fr) minmax(370px,.62fr);overflow:hidden}.modalview{background:#eceff2;padding:16px;overflow:auto;display:flex;align-items:center;justify-content:center}.modalimgs{display:grid;grid-template-columns:1fr;grid-auto-rows:minmax(280px,1fr);gap:8px;width:100%;height:100%}.modalimgs.fallback.count-2,.modalimgs.fallback.count-3,.modalimgs.fallback.count-4{grid-template-columns:repeat(2,minmax(0,1fr))}.modalimgs.fallback.count-5,.modalimgs.fallback.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}.modalimgs img{width:100%;height:100%;min-width:0;min-height:280px;object-fit:contain;background:white;border:1px solid #c8cdd3}.modalimgs.full{background:white;padding:14px}.modalinfo{padding:18px;overflow:auto;position:relative}.close{position:absolute;right:12px;top:10px;font-size:22px;border:0}.modalinfo h2{padding-right:35px;margin-top:3px;margin-bottom:3px}.detailtext{white-space:pre-wrap;background:#f7f8fa;border:1px solid var(--border);padding:10px;border-radius:5px;max-height:300px;overflow:auto;font-size:12px}.kv{margin:8px 0}.kv b{display:block;font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}.badge{display:inline-block;min-width:18px;padding:1px 6px;border-radius:9px;background:#b3261e;color:#fff;font-size:11px;margin-left:6px}.diag{width:min(1100px,95vw);height:min(820px,92vh);background:#fff;border-radius:9px;box-shadow:0 15px 50px rgba(0,0,0,.3);padding:18px;overflow:auto;position:relative}.diag h2{margin:2px 0 10px}.diag h3{margin:16px 0 6px;font-size:14px}.diag table{border-collapse:collapse;width:100%;font-size:12px}.diag td,.diag th{border-bottom:1px solid var(--border);padding:4px 6px;text-align:left;vertical-align:top}.diag .ok{color:#1e6b34}.diag .bad{color:#b3261e;font-weight:600}.diag .lvl-ERROR td{color:#b3261e}.diag .lvl-WARNING td{color:#8a5a00}.diag .path{word-break:break-all}.toast{position:fixed;right:24px;bottom:24px;background:#20242a;color:#fff;padding:12px 16px;border-radius:7px;display:none;max-width:680px;z-index:80;box-shadow:var(--shadow)}@media(max-width:1100px){.app{grid-template-columns:230px 1fr}#progress{left:230px}.modal{grid-template-columns:1fr}.modalinfo{display:none}}
 </style></head><body>
 <header><div class="brand">Detail Manager <span style="font-weight:400;color:#788391">Prototype 0.1</span></div><input id="search" class="search" placeholder="Search: floor, FLR, retaining wall, RET, I-joist, TJI..." autofocus><div class="sizebox"><span>Thumbnail</span><input id="size" type="range" min="320" max="640" value="420" step="20"><span id="sizeval">420</span></div><button id="refresh">Refresh Index</button></header><div id="progress"><div></div></div>
-<div class="app"><aside><div class="aside-title">Library</div><div id="libpath" class="pathbox">No library selected</div><button id="choose" style="width:100%;margin-bottom:12px">Choose Library Folder</button><div class="aside-title">Source Files</div><button class="source active" data-source="">All Details <span id="allcount" class="count"></span></button><div id="sources"></div>
-<div class="aside-title" style="margin-top:18px">Full Thumbnails</div><div class="thumbtools"><label style="font-size:11px;color:#67717e">Hide exact LayOut layer name(s)</label><input id="hiddenlayers" type="text" value="GUIDES" title="Comma-separated exact layer names"><div id="thumbstatus" class="thumbstatus"></div><div class="smallnote"><b>07A:</b> Tight crop uses 0.01&quot; top and 0.025&quot; left/right/bottom margins; white padding is added in the card instead of capturing adjacent page content.</div><button id="preparethumbs" class="primary">1. Prepare Render Queue</button><div class="smallnote">2. In SketchUp Ruby Console, load <b>thumbnail_worker.rb</b>. It renders the queued masters read-only with these layers hidden.</div><button id="processthumbs">3. Process Rendered Thumbnails</button></div>
-<div class="aside-title" style="margin-top:18px">Temp</div><button id="cleanup" style="width:100%">Clean Staging Files</button><div class="aside-title" style="margin-top:18px">Help</div><button id="diagbtn" style="width:100%">Diagnostics<span id="diagbadge" class="badge" style="display:none"></span></button></aside>
-<main><div class="statusline"><span id="resultcount"></span><span id="indexstatus"></span></div><div class="notice">Cards use the <b>full LayOut-rendered detail</b> when available—viewport(s), labels, leaders, notes, and linework together. Until rendered, the cached SketchUp viewport(s) remain as a fallback. One detail can contain 1–5+ viewports.</div><div style="height:13px"></div><div id="grid" class="grid"></div></main></div>
+<div class="app"><aside><div class="aside-title">Categories</div><button class="cat active" data-cat="">All Details <span id="allcount" class="count"></span></button><div id="cats"></div><details class="adv"><summary>Source files (advanced)</summary><div id="sources"></div></details><details class="adv"><summary>Library and admin tools</summary><div class="aside-title">Library</div><div id="libpath" class="pathbox">No library selected</div><button id="choose" style="width:100%;margin-bottom:12px">Choose Library Folder</button><div class="aside-title" style="margin-top:12px">Full Thumbnails</div><div class="thumbtools"><label style="font-size:11px;color:#67717e">Hide exact LayOut layer name(s)</label><input id="hiddenlayers" type="text" value="GUIDES" title="Comma-separated exact layer names"><div id="thumbstatus" class="thumbstatus"></div><div class="smallnote"><b>07A:</b> Tight crop uses 0.01&quot; top and 0.025&quot; left/right/bottom margins; white padding is added in the card instead of capturing adjacent page content.</div><button id="preparethumbs" class="primary">1. Prepare Render Queue</button><div class="smallnote">2. In SketchUp Ruby Console, load <b>thumbnail_worker.rb</b>. It renders the queued masters read-only with these layers hidden.</div><button id="processthumbs">3. Process Rendered Thumbnails</button></div><div class="aside-title" style="margin-top:18px">Temp</div><button id="cleanup" style="width:100%">Clean Staging Files</button></details><button id="diagbtn" style="width:100%;margin-top:14px">Diagnostics<span id="diagbadge" class="badge" style="display:none"></span></button></aside>
+<main><div class="statusline"><span id="resultcount"></span><span id="filterlabel"></span><span id="indexstatus"></span></div><div id="grid" class="grid"></div></main></div>
 <div id="modalback" class="modalback"><div class="modal"><div class="modalview"><div id="modalimgs" class="modalimgs"></div></div><div class="modalinfo"><button id="close" class="close">×</button><h2 id="modaltitle"></h2><div id="modalraw" class="rawtitle"></div><div id="modalmeta"></div><h3>Notes on the detail</h3><div id="modaltext" class="detailtext"></div><details style="margin-top:8px"><summary style="cursor:pointer;color:var(--muted);font-size:12px">Everything read from the LayOut file (raw)</summary><div id="modalrawtext" class="detailtext" style="margin-top:6px"></div></details><div class="actions" style="margin-top:14px"><button id="modalopen" class="primary">Open Detail</button><button id="modalmaster">Open Master LayOut</button><button id="modalskp">Open SketchUp Source</button></div></div></div></div><div id="diagback" class="modalback"><div class="diag"><button id="diagclose" class="close">×</button><h2>Diagnostics</h2><div id="diagbody"></div></div></div><div id="toast" class="toast"></div>
 <script>
-let currentSource='',currentDetails=[],modalDetail=null,timer=null;const q=s=>document.querySelector(s),grid=q('#grid');function esc(s){return (s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function api(url,opt){const r=await fetch(url,opt),j=await r.json();if(!r.ok)throw new Error(j.error||r.statusText);return j}function toast(msg){const t=q('#toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',8500)}function vclass(d){return 'count-'+Math.min(Math.max(d.viewports.length,1),6)}
+let currentSource='',currentCat='',currentDetails=[],modalDetail=null,timer=null;const q=s=>document.querySelector(s),grid=q('#grid');function esc(s){return (s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function api(url,opt){const r=await fetch(url,opt),j=await r.json();if(!r.ok)throw new Error(j.error||r.statusText);return j}function toast(msg){const t=q('#toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',8500)}function vclass(d){return 'count-'+Math.min(Math.max(d.viewports.length,1),6)}
 function thumbHtml(d,modal=false){if(d.full_preview_relpath){return `<img loading="lazy" src="/fullcache/${encodeURI(d.full_preview_relpath)}" title="Full LayOut detail"><span class="previewbadge">Full LayOut Preview</span>`}if(!d.viewports.length)return '<div style="color:#777">No preview</div>';let imgs=d.viewports.slice(0,6).map(v=>v.preview_relpath?`<img loading="lazy" src="/cache/${encodeURI(v.preview_relpath)}" title="${esc(v.scene_name)}">`:'').join('');return imgs+`<span class="previewbadge">Viewport Cache</span>`}
 function render(){q('#resultcount').textContent=`${currentDetails.length} result${currentDetails.length==1?'':'s'}`;grid.innerHTML='';if(!currentDetails.length){grid.innerHTML='<div class="empty">No details found.</div>';return}currentDetails.forEach(d=>{let c=document.createElement('article');c.className='card';let full=!!d.full_preview_relpath;c.innerHTML=`<div class="thumb ${full?'full':'fallback '+vclass(d)}">${thumbHtml(d)}</div><div class="meta"><div class="title">${esc(d.expanded_title||d.display_title)}</div>${d.scene_label?`<div class="rawtitle">${esc(d.scene_label)}</div>`:''}<div class="mastertitle">${esc(d.master_title||'')}</div><div class="sub">${esc(d.layout_filename)} · ${esc(d.page_name)} · ${d.viewport_count} viewport${d.viewport_count==1?'':'s'}</div><div class="actions"><button class="od primary">Open Detail</button><button class="om">Master</button><button class="info">Preview</button></div></div>`;c.querySelector('.thumb').onclick=()=>openModal(d);c.querySelector('.info').onclick=()=>openModal(d);c.querySelector('.od').onclick=e=>{e.stopPropagation();openDetail(d)};c.querySelector('.om').onclick=e=>{e.stopPropagation();openMaster(d)};grid.appendChild(c)})}
-async function search(){try{let j=await api(`/api/search?q=${encodeURIComponent(q('#search').value)}&source=${encodeURIComponent(currentSource)}`);currentDetails=j.details;render()}catch(e){toast(e.message)}}
-async function loadSources(){let j=await api('/api/status');q('#libpath').textContent=j.library_root||'No library selected';q('#sources').innerHTML='';let total=0;j.sources.forEach(s=>{total+=s.detail_count||0;let b=document.createElement('button');b.className='source';b.dataset.source=s.layout_file;b.innerHTML=`${esc(s.layout_filename)} <span class="count">${s.detail_count||0}</span>`;b.title=s.layout_file;b.onclick=()=>{document.querySelectorAll('.source').forEach(x=>x.classList.remove('active'));b.classList.add('active');currentSource=s.layout_file;search()};q('#sources').appendChild(b)});q('#allcount').textContent=total;q('.source[data-source=""]').onclick=()=>{document.querySelectorAll('.source').forEach(x=>x.classList.remove('active'));q('.source[data-source=""]').classList.add('active');currentSource='';search()};await loadThumbStatus()}
+async function search(){try{let j=await api(`/api/search?q=${encodeURIComponent(q('#search').value)}&source=${encodeURIComponent(currentSource)}&category=${encodeURIComponent(currentCat)}`);currentDetails=j.details;render()}catch(e){toast(e.message)}}
+function setFilter(cat,src,btn,label){currentCat=cat;currentSource=src;document.querySelectorAll('.source,.cat').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');q('#filterlabel').textContent=label?'in '+label:'';search()}
+function mkCat(cls,label,count,key,full){let b=document.createElement('button');b.className=cls;b.dataset.cat=key;b.innerHTML=`${esc(label)} <span class="count">${count}</span>`;if(currentCat===key)b.classList.add('active');b.onclick=()=>setFilter(key,'',b,full);return b}
+async function loadSources(){let j=await api('/api/status');q('#libpath').textContent=j.library_root||'No library selected';q('#sources').innerHTML='';q('#cats').innerHTML='';let total=0;j.sources.forEach(s=>{total+=s.detail_count||0;let b=document.createElement('button');b.className='source';b.innerHTML=`${esc(s.layout_filename)} <span class="count">${s.detail_count||0}</span>`;b.title=s.layout_file;if(currentSource===s.layout_file)b.classList.add('active');b.onclick=()=>setFilter('',s.layout_file,b,s.layout_filename);q('#sources').appendChild(b)});(j.categories||[]).forEach(g=>{q('#cats').appendChild(mkCat('cat',g.name,g.count,g.key,g.name));(g.children||[]).forEach(c=>q('#cats').appendChild(mkCat('cat sub',c.sub,c.count,c.key,g.name+' › '+c.sub)))});q('#allcount').textContent=total;let all=q('.cat[data-cat=""]');all.onclick=()=>setFilter('','',all,'');if(!currentCat&&!currentSource)all.classList.add('active');await loadThumbStatus()}
 async function loadThumbStatus(){try{let s=await api('/api/thumbnail-status');q('#hiddenlayers').value=(s.hidden_layers||['GUIDES']).join(', ');q('#thumbstatus').textContent=`${s.full_preview_count}/${s.detail_count} full previews · ${s.render_manifest_count} rendered master${s.render_manifest_count==1?'':'s'} ready`;}catch(e){}}
 async function choose(){try{let j=await api('/api/choose-library',{method:'POST'});if(j.library_root){q('#libpath').textContent=j.library_root;startIndex(j.library_root)}}catch(e){toast(e.message)}}async function startIndex(root){try{await api('/api/index',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({library_root:root})});pollIndex()}catch(e){toast(e.message)}}async function pollIndex(){let j=await api('/api/index-status'),p=q('#progress'),bar=p.firstElementChild;if(j.running){p.style.display='block';bar.style.width=(j.total?100*j.done/j.total:2)+'%';q('#indexstatus').textContent=`Indexing ${j.done}/${j.total}: ${j.current||j.message}`;setTimeout(pollIndex,500)}else{p.style.display='none';q('#indexstatus').textContent=j.message||'';await loadSources();await search();if(j.errors?.length)toast(`${j.errors.length} file(s) had indexing errors. Open Diagnostics (bottom of the left panel) for the list.`);loadDiagBadge()}}
 async function openDetail(d){try{await api('/api/open-detail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({detail_key:d.detail_key})});toast(`Opened lightweight staging detail (${d.viewport_count} viewport${d.viewport_count==1?'':'s'}). Copy it normally, close staging, then paste into your project.`)}catch(e){toast(e.message)}}async function openMaster(d){try{await api('/api/open-master',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({detail_key:d.detail_key})})}catch(e){toast(e.message)}}async function openSkp(d){try{await api('/api/open-skp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({detail_key:d.detail_key})})}catch(e){toast(e.message)}}
@@ -1267,14 +1396,14 @@ class Handler(BaseHTTPRequestHandler):
         u = urllib.parse.urlparse(self.path)
         if u.path == "/":
             b = INDEX_HTML.encode("utf-8"); self.send_response(200); self.send_header("Content-Type", "text/html; charset=utf-8"); self.send_header("Content-Length", str(len(b))); self.end_headers(); self.wfile.write(b); return
-        if u.path == "/api/status": self.send_json({"library_root": DB.get_config().get("library_root", ""), "sources": library_sources()}); return
+        if u.path == "/api/status": self.send_json({"library_root": DB.get_config().get("library_root", ""), "sources": library_sources(), "categories": library_categories()}); return
         if u.path == "/api/thumbnail-status": self.send_json(thumbnail_status()); return
         if u.path == "/api/diagnostics": self.send_json(diagnostics()); return
         if u.path == "/api/index-status":
             with INDEX_LOCK: state = dict(INDEX_STATE)
             self.send_json(state); return
         if u.path == "/api/search":
-            qs = urllib.parse.parse_qs(u.query); self.send_json({"details": search_details(qs.get("q", [""])[0], qs.get("source", [""])[0])}); return
+            qs = urllib.parse.parse_qs(u.query); self.send_json({"details": search_details(qs.get("q", [""])[0], qs.get("source", [""])[0], category=qs.get("category", [""])[0])}); return
         if u.path.startswith("/cache/"):
             rel = urllib.parse.unquote(u.path[len("/cache/"):]); p = DB.preview_root / rel
             try:
@@ -1343,7 +1472,12 @@ def main(argv=None):
     if removed: log_info(f"Startup cleanup: deleted {removed} staging file(s) older than 24 hours")
     if args.library:
         DB.save_config({"library_root": args.library}); threading.Thread(target=index_library, args=(args.library,), daemon=True).start()
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler); url = f"http://127.0.0.1:{args.port}/"; print(f"{APP_NAME} running at {url}"); print(f"Local data: {DB.root}"); print(f"Log file: {LOG_PATH or 'not available - ' + LOG_SETUP_ERROR}"); print("Close this console window or press Ctrl+C to stop.")
+    try:
+        server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    except OSError as exc:
+        msg = f"Could not start: port {args.port} is already in use. Detail Manager (or an older copy of it) is probably already running - close that window first. ({exc})"
+        print(msg); log_error(msg); return 1
+    url = f"http://127.0.0.1:{args.port}/"; print(f"{APP_NAME} running at {url}"); print(f"Local data: {DB.root}"); print(f"Log file: {LOG_PATH or 'not available - ' + LOG_SETUP_ERROR}"); print("Close this console window or press Ctrl+C to stop.")
     if not args.no_browser: threading.Timer(0.6, lambda: webbrowser.open(url)).start()
     try: server.serve_forever()
     except KeyboardInterrupt: pass
