@@ -41,7 +41,7 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
   - [ ] R2 The thumbnail worker still writes to the old `ZE Detail Manager Prototype 0.1` folder. Point it at the right data folder before the next render (with S2). Until then, masters changed on Z: show the viewport-only fallback thumbnail (2 found on 2026-11-18)
 
 - **F Field reports (from daily use)**
-  - [~] F1 (user, 2026-11-18) Searching "hydronics" also found Traditional (no hydronics) details: the TRAD expansion said "Traditional Framing (No Hydronics)". FIXED on branch `fix/abbreviation-noise`: TRAD = "Traditional Framing"; same fix for FILL (was adding "California") and TAIL (was adding "Eave"). Rule for the list: an expansion must not add words the detail does not have (tested). Editing `abbreviations.json` now makes the next Refresh Index re-read every master once (thumbnails kept). User check pending
+  - [x] F1 (user, 2026-11-18; verified the same day, merged and published) Searching "hydronics" also found Traditional (no hydronics) details: the TRAD expansion said "Traditional Framing (No Hydronics)". FIXED on branch `fix/abbreviation-noise`: TRAD = "Traditional Framing"; same fix for FILL (was adding "California") and TAIL (was adding "Eave"). Rule for the list: an expansion must not add words the detail does not have (tested). Editing `abbreviations.json` now makes the next Refresh Index re-read every master once (thumbnails kept).
 
 ## 0.3 - standalone program and rollout
 - [ ] P1 Program window instead of a browser tab (same screens, no local web server)
