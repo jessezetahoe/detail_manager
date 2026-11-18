@@ -23,10 +23,20 @@ class TestAbbreviations(unittest.TestCase):
     def test_whitespace_collapsed(self):
         self.assertEqual(dm.expand_abbreviations("  FLR   TO  FND "), "Floor TO Foundation")
 
+    def test_no_words_that_are_not_in_the_detail(self):
+        # An expansion must not add search words the detail does not have:
+        # "TRAD" once added "(No Hydronics)", so searching hydronics found traditional details.
+        for k, v in dm.ABBREVIATIONS.items():
+            self.assertNotRegex(v, r"\(|e\.g\.", f"{k}: {v}")
+        self.assertNotIn("Hydronics", dm.ABBREVIATIONS["TRAD"])
+
+    def test_abbreviations_are_part_of_the_read_rules_key(self):
+        self.assertTrue(dm.READ_RULES_KEY.startswith(f"{dm.INDEX_VERSION}:"))
+
     def test_master_title_strips_numeric_prefix(self):
         self.assertEqual(dm.master_intended_title("(13) ZE STD KING STUD"), "ZE Standard KING STUD")
         self.assertEqual(dm.master_intended_title("(03) FLR TO FLR TRAD EXT SJ WSW (New Details!)"),
-                         "Floor TO Floor Traditional Framing (No Hydronics) Exterior Solid Joist Wood Strong Wall (New Details!)")
+                         "Floor TO Floor Traditional Framing Exterior Solid Joist Wood Strong Wall (New Details!)")
 
 
 class TestRtf(unittest.TestCase):

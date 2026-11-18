@@ -26,6 +26,11 @@ class TestSearch(unittest.TestCase):
         self.assertTrue(r)
         self.assertEqual(r[0]["primary_scene_name"], "Grade Beam at Garage")
 
+    def test_hydronics_does_not_find_traditional_details(self):
+        hits = {r["layout_filename"] for r in dm.search_details("hydronics")}
+        self.assertTrue(hits)
+        self.assertFalse([h for h in hits if "TRAD" in h], hits)
+
     def test_metadata_terms(self):
         # word only present in the King Stud footnotes
         self.assertEqual(set(names(dm.search_details("stitched"))), {"(13) ZE STD KING STUD.layout"})

@@ -75,7 +75,7 @@ DEFAULT_ABBREVIATIONS = {
     "DECK": "Decking",
     "DRAN": "Drain",
     "EXT": "Exterior",
-    "FILL": "Fillings (e.g. California Fill)",
+    "FILL": "Fill",
     "FILR": "Filler",
     "FLAT": "Flat Rafter / Joist",
     "FLR": "Floor",
@@ -119,11 +119,11 @@ DEFAULT_ABBREVIATIONS = {
     "STL": "Steel",
     "STLP": "Steel Post",
     "STRP": "Strap",
-    "TAIL": "Truss Tail (e.g. at Eave)",
+    "TAIL": "Truss Tail",
     "TJ": "Truss Joist",
     "TJI": "I-Joist",
     "TPL": "Triple Detail",
-    "TRAD": "Traditional Framing (No Hydronics)",
+    "TRAD": "Traditional Framing",
     "TRSS": "Truss",
     "TYP": "Typical",
     "WDP": "Wood Post",
@@ -151,6 +151,10 @@ def load_abbreviations() -> dict:
 
 
 ABBREVIATIONS = load_abbreviations()
+# What a master's index entry depends on besides the file itself. Stored per master;
+# when it changes (new reading rules, or abbreviations.json edited), the next
+# Refresh Index re-reads unchanged masters once and keeps their thumbnails.
+READ_RULES_KEY = f"{INDEX_VERSION}:" + hashlib.sha1(json.dumps(ABBREVIATIONS, sort_keys=True).encode("utf-8")).hexdigest()[:10]
 
 
 def expand_abbreviations(text: str) -> str:
@@ -687,7 +691,7 @@ def index_library(library_root: str):
         for i, p in enumerate(files, 1):
             path_str, st = str(p), p.stat(); old = existing.get(path_str)
             file_same = bool(old and old.get("size_bytes") == st.st_size and old.get("mtime_ns") == st.st_mtime_ns and not old.get("last_error"))
-            unchanged = file_same and int(old.get("index_version") or 0) == INDEX_VERSION
+            unchanged = file_same and str(old.get("index_version") or "") == READ_RULES_KEY
             with INDEX_LOCK: INDEX_STATE.update({"done": i-1, "current": p.name})
             if unchanged:
                 with INDEX_LOCK: INDEX_STATE["unchanged"] += 1
@@ -708,7 +712,7 @@ def index_library(library_root: str):
                 for k in keys:
                     with contextlib.suppress(sqlite3.OperationalError): con.execute("DELETE FROM detail_search WHERE detail_key=?", (k,))
                 con.execute("DELETE FROM viewports WHERE detail_key IN (SELECT detail_key FROM details WHERE layout_file=?)", (path_str,)); con.execute("DELETE FROM details WHERE layout_file=?", (path_str,)); con.execute("DELETE FROM skp_references WHERE layout_file=?", (path_str,)); con.execute("DELETE FROM layout_files WHERE layout_file=?", (path_str,))
-                con.execute("INSERT INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version) VALUES (?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, summary["size_bytes"], summary["mtime_ns"], summary["page_count"], summary["detail_count"], summary["skp_reference_count"], datetime.now(timezone.utc).isoformat(), "", INDEX_VERSION))
+                con.execute("INSERT INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version) VALUES (?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, summary["size_bytes"], summary["mtime_ns"], summary["page_count"], summary["detail_count"], summary["skp_reference_count"], datetime.now(timezone.utc).isoformat(), "", READ_RULES_KEY))
                 for rid, r in summary["skp_references"].items(): con.execute("INSERT INTO skp_references VALUES (?,?,?,?)", (path_str, rid, r.get("externalTarget", ""), r.get("internalTarget", "")))
                 for d in details:
                     con.execute("INSERT INTO details (detail_key,layout_file,layout_filename,page_ref_id,page_xml,page_name,page_index,group_index,viewport_count,primary_viewport_id,primary_scene_name,primary_scene_pid,display_title,expanded_title,master_title,skp_paths_exact,bounds_json,full_preview_relpath,searchable_text,raw_text,clean_text) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (d["detail_key"], d["layout_file"], d["layout_filename"], d["page_ref_id"], d["page_xml"], d["page_name"], d["page_index"], d["group_index"], d["viewport_count"], d["primary_viewport_id"], d["primary_scene_name"], d["primary_scene_pid"], d["display_title"], d["expanded_title"], d["master_title"], json.dumps(d["skp_paths_exact"]), json.dumps(d["bounds"]), d["full_preview_relpath"], d["searchable_text"], d["raw_text"], d["clean_text"]))
@@ -724,7 +728,7 @@ def index_library(library_root: str):
             except Exception as exc:
                 con.rollback(); shutil.rmtree(temp_preview, ignore_errors=True); msg = f"{type(exc).__name__}: {exc}"
                 if not old:
-                    con.execute("INSERT OR REPLACE INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version) VALUES (?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, st.st_size, st.st_mtime_ns, 0, 0, 0, datetime.now(timezone.utc).isoformat(), msg, INDEX_VERSION)); con.commit()
+                    con.execute("INSERT OR REPLACE INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version) VALUES (?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, st.st_size, st.st_mtime_ns, 0, 0, 0, datetime.now(timezone.utc).isoformat(), msg, READ_RULES_KEY)); con.commit()
                 with INDEX_LOCK: INDEX_STATE["errors"].append({"file": path_str, "error": msg})
                 log_error(f"Index failed for {path_str}: {msg}" + (" (earlier index data for this master was kept)" if old else ""))
             finally:
