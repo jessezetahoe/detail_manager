@@ -58,6 +58,8 @@ DESTINATIONS = {
 
 
 DEFAULT_ABBREVIATIONS = {
+    "2PLY": "Double Ply",
+    "3PLY": "Triple Ply",
     "ALT": "Alternative or Optional",
     "BEAM": "Beam",
     "BEAR": "Bearing",
@@ -164,7 +166,7 @@ def expand_abbreviations(text: str) -> str:
     def repl(match: re.Match) -> str:
         token = match.group(0)
         return ABBREVIATIONS.get(token.upper(), token)
-    return re.sub(r"\s+", " ", re.sub(r"\b[A-Za-z][A-Za-z0-9]*\b", repl, text)).strip()
+    return re.sub(r"\s+", " ", re.sub(r"\b[A-Za-z0-9]*[A-Za-z][A-Za-z0-9]*\b", repl, text)).strip()
 
 
 def master_intended_title(layout_stem: str) -> str:

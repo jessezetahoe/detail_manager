@@ -42,6 +42,7 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
 
 - **F Field reports (from daily use)**
   - [x] F1 (user, 2026-11-18; verified the same day, merged and published) Searching "hydronics" also found Traditional (no hydronics) details: the TRAD expansion said "Traditional Framing (No Hydronics)". FIXED on branch `fix/abbreviation-noise`: TRAD = "Traditional Framing"; same fix for FILL (was adding "California") and TAIL (was adding "Eave"). Rule for the list: an expansion must not add words the detail does not have (tested). Editing `abbreviations.json` now makes the next Refresh Index re-read every master once (thumbnails kept).
+  - [~] F2 (user, 2026-11-18) 3PLY should also be found by "triple", 2PLY by "double". BUILT on branch `fix/field-reports` (collects field fixes until the user has time to check them; not urgent for the daily copy): 2PLY = Double Ply, 3PLY = Triple Ply; abbreviation codes may now start with a digit. Scene names written "3 Ply" (with a space) are covered through the master title, which every detail of that master carries
 
 ## 0.3 - standalone program and rollout
 - [ ] P1 Program window instead of a browser tab (same screens, no local web server)

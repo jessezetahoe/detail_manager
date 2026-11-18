@@ -17,6 +17,11 @@ class TestAbbreviations(unittest.TestCase):
         self.assertEqual(dm.expand_abbreviations("Pe2Pe Wd Bm"), "Pe2Pe Wd Bm")
         self.assertEqual(dm.expand_abbreviations("FLRS"), "FLRS")
 
+    def test_tokens_starting_with_a_digit(self):
+        self.assertEqual(dm.expand_abbreviations("FLR TO 3PLY BEAM"), "Floor TO Triple Ply Beam")
+        self.assertEqual(dm.expand_abbreviations("2PLY"), "Double Ply")
+        self.assertEqual(dm.expand_abbreviations("2X6 Pe2Pe 4PLY"), "2X6 Pe2Pe 4PLY")  # unlisted stays
+
     def test_case_insensitive_lookup(self):
         self.assertEqual(dm.expand_abbreviations("flr"), "Floor")
 
