@@ -91,6 +91,15 @@ class TestIncremental(unittest.TestCase):
         self.assertEqual((s["changed"], s["reread"]), (1, 0))
         self.assertFalse(full_dir.exists() or render_dir.exists())
 
+    def test_backup_files_never_indexed(self):
+        shutil.copy2(self.copy, self.lib / ("Backup of " + self.copy.name))
+        s = self.run_index()
+        self.assertEqual(s["changed"], 1)  # the real master only
+        con = dm.DB.connect()
+        names = [r[0] for r in con.execute("SELECT layout_filename FROM layout_files")]
+        con.close()
+        self.assertNotIn("Backup of " + self.copy.name, names)
+
     def test_older_database_gets_the_version_column(self):
         con = dm.DB.connect()
         cols = {r[1] for r in con.execute("PRAGMA table_info(layout_files)")}

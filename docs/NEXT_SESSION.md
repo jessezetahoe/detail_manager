@@ -10,13 +10,15 @@ Its data: `%LOCALAPPDATA%\ZE Detail Manager`. It only changes when Claude publis
 clean notes (raw text kept), category sidebar.
 **Development copy:** `RUN_DEV.bat` (port 8769, data in `%LOCALAPPDATA%\ZE Detail Manager Dev`).
 **Tests:** `cd /d C:\sketchup_dev\detail_manager` then `py -m unittest discover -s tests` (63 tests, about 40 s, expect `OK`).
-**To test Old Projects (development copy):** run the tests (79); double-click `RUN_DEV.bat`; open *Library and admin tools*, click *Choose Old Projects Folder* and pick `C:\\sketchup_dev\\detail_manager\\tests\\fixtures\\projects`; click Refresh Index (about 2 minutes: the library is re-read once for the new title rule, plus the 19 job files); use the Library / Old Projects / Both switch.
+**To test Old Projects (development copy):** run the tests (79); double-click `RUN_DEV.bat`; open *Library and admin tools*, click *Choose Non-Library Details Folder* and pick `C:\\sketchup_dev\\detail_manager\\tests\\fixtures\\projects`; click Refresh Index (about 2 minutes: the library is re-read once for the new title rule, plus the 19 job files); use the Library / Old Projects / Both switch.
 **Push after a session:** `cd /d C:\sketchup_dev\detail_manager` then `git push origin main`.
 
 ## The list, in order
 | # | Tag | Item | Size | What I need from you |
 |---|---|---|---|---|
-| 0 | O2-O4, F2 | **Old Projects: BUILT on branch `feature/old-projects`, waiting for your test** (also carries the double/triple search fix). Steps in the chat of 2026-11-18 / below | M | Your test |
+| 0 | O2-O4, O9, F2, F3 | **Non-Library Details: BUILT on branch `feature/old-projects`, user re-check pending** (rename, backups skipped, badge in Both, job folders) | S | Your re-check |
+| 0b | C1 | Clipboard check: copy a detail in LayOut, then `py tools\clipboard_probe.py` | S | 2 minutes |
+| 0c | O8 | Duplicates as one card with an "In N jobs" tally; most-used list for library candidates | M | Your go on the proposal |
 | 1 | M3 | **Tighter search.** Rank title first, then scene, then notes; stop the master file name from matching every detail the same; fewer loose matches from notes | M | 3 to 5 real searches where the results felt too broad or in the wrong order |
 | 2 | U1, U3 | **Slim cards and fuller detail window.** Card: thumbnail, title, scene line, framing type with Hydronics. Everything else (source, page, all scenes, paths, notes, raw text) in the detail window | M | Look at it and say what to trim |
 | 3 | U4 | More than 80 results (load more as you scroll) | S | nothing |

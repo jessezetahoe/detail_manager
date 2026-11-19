@@ -42,9 +42,10 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
   - [ ] R2 The thumbnail worker still writes to the old `ZE Detail Manager Prototype 0.1` folder. Point it at the right data folder before the next render (with S2). Until then, masters changed on Z: show the viewport-only fallback thumbnail (2 found on 2026-11-18)
 
 - **F Field reports (from daily use)**
+  - [~] F3 (user, 2026-11-19) LayOut backup files in the library folder ("Backup of (01) FND CONC WSP.layout" and 2 more) were indexed as masters. Now always skipped in both folders: names "Backup of *", "*~.layout", "~$*" (setting `skip_file_patterns`). Already-indexed backups drop out on the next refresh. Built on `feature/old-projects`, user check pending
   - [x] F1 (user, 2026-11-18; verified the same day, merged and published) Searching "hydronics" also found Traditional (no hydronics) details: the TRAD expansion said "Traditional Framing (No Hydronics)". FIXED on branch `fix/abbreviation-noise`: TRAD = "Traditional Framing"; same fix for FILL (was adding "California") and TAIL (was adding "Eave"). Rule for the list: an expansion must not add words the detail does not have (tested). Editing `abbreviations.json` now makes the next Refresh Index re-read every master once (thumbnails kept).
   - [~] F2 (user, 2026-11-18) 3PLY should also be found by "triple", 2PLY by "double". BUILT on branch `fix/field-reports` (collects field fixes until the user has time to check them; not urgent for the daily copy): 2PLY = Double Ply, 3PLY = Triple Ply; abbreviation codes may now start with a digit. Scene names written "3 Ply" (with a space) are covered through the master title, which every detail of that master carries
-- **O Old Projects (decided 2026-11-18)**
+- **O Non-Library Details (called "Old Projects" until 2026-11-19; decided 2026-11-18)**
   - Approach: read the job LayOut files directly (no PDF re-export). Old Projects = ONE flat drop folder: after a job is finished, its LayOut file is copied in. Every file name starts with the job number, so no duplicates and no subfolders. Leaving a job out = removing its file. Never scan the full projects folder (about 2,000 jobs x 110 to 330 details). Backups never enter the folder. Final program: one Old Projects folder on the server, published with the index like the library
   - Facts from the user: details are grouped (loose viewports are rare: skip them, count them in Diagnostics); every detail has a drawn title of some kind; scene names in jobs are usually SketchUp defaults ("Scene 3"), so never show those as the card's scene line or use them as a title; pasted library details still point to the library models
   - [x] O1 Checked 19 job files (2026-11-18). Results: `docs/reviews/old_projects_check.md`
@@ -53,7 +54,12 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
   - [~] O4 BUILT: title box after N.T.S. accepted when the one before is not a title (library unchanged, goldens identical); default scene names never a title nor a card line; fallback = best other text, then page name
   - [ ] O5 Full thumbnails for job details (now the SketchUp-view-only fallback, without labels): comes with the SketchUp render menu (S2/R2)
   - [ ] O6 Show the job detail number (801, 1002 ...) on job cards
-  - [ ] O7 Decide where the real Old Projects drop folder lives (server path), and who adds finished jobs
+  - [x] O7 (user, 2026-11-19) The folder is the one where job-specific details are already kept, each job in its own folder, so they are never archived. The user adds jobs. Job number now also taken from the job folder name when the file name has none
+  - [~] O9 (user, 2026-11-19) Renamed in the program to "Non-Library Details" (switch: Library / Non-Library / Both); in Both, job cards carry an orange NON-LIBRARY · JOB badge. Built, user check pending
+  - [ ] O8 (user, 2026-11-19) Do not show details that are exactly the same; show a tally instead ("in 40 of 50 jobs") and use it to find the most common details to add to the library. Proposal: "exactly the same" = same SketchUp model and scene for every view AND the same notes; one card per group with "In N jobs" (click: list of jobs, open any copy); a "Most used" sort to list library candidates; job copies of a library detail hidden in Both (the library card says "also used in N jobs"). Sample (3 jobs): 567 details -> 41 groups shared by 2+ jobs on models and scenes, 16 on identical text. Waiting for the user's go
+
+- **C Clipboard (fewer steps than the staging file)**
+  - [ ] C1 Find out what LayOut puts on the Windows clipboard when a detail is copied (`tools/clipboard_probe.py`, read only; the user runs it once after copying a detail in LayOut). If the format can be reproduced, Open Detail could become "Copy Detail": the user only presses Ctrl+V in the project. Never AutoHotkey or keystroke automation. If it cannot be reproduced, the staging file stays
 
 ## 0.3 - standalone program and rollout
 - [ ] P1 Program window instead of a browser tab (same screens, no local web server)

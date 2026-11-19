@@ -30,6 +30,18 @@ class TestJobNames(unittest.TestCase):
         self.assertEqual(dm.job_number("(03) FLR TO FLR.layout"), "")
         self.assertEqual(dm.job_number("12 short.layout"), "")
 
+    def test_job_number_from_job_folder(self):
+        self.assertEqual(dm.job_number_for("Z:/Jobs Details/1875/1875 S2.1.layout"), "1875")
+        self.assertEqual(dm.job_number_for("Z:/Jobs Details/1875 Smith Residence/Details.layout"), "1875")
+        self.assertEqual(dm.job_number_for("Z:\\Jobs Details\\1926\\Sheets\\S2.layout"), "1926")
+        self.assertEqual(dm.job_number_for("Z:/Jobs Details/misc/Details.layout"), "")
+
+    def test_backup_files_are_skipped(self):
+        for n in ("Backup of (01) FND CONC WSP.layout", "backup of 1875 S2.1.layout", "1875 S2.1~.layout", "~$temp.layout"):
+            self.assertTrue(dm.is_skipped_file(n), n)
+        for n in ("(01) FND CONC WSP.layout", "1875 S2.1-S2.4.layout", "Backups Index.layout"):
+            self.assertFalse(dm.is_skipped_file(n), n)
+
     def test_sheet_label(self):
         self.assertEqual(dm.sheet_label({"page_name": "S2.6", "layout_filename": "1875 S2.5-S2.8.layout"}), "S2.6")
         self.assertEqual(dm.sheet_label({"page_name": "", "layout_filename": "1757 S0.1.layout"}), "S0.1")
@@ -100,7 +112,7 @@ class TestTwoSources(unittest.TestCase):
 
     def test_refresh_reads_both(self):
         self.assertEqual(self.state["errors"], [])
-        self.assertIn("Old Projects:", self.state["message"])
+        self.assertIn("Non-Library:", self.state["message"])
 
     def test_sources_stay_separate(self):
         lib = dm.search_details("")
@@ -170,7 +182,7 @@ class TestTwoSources(unittest.TestCase):
         self.assertIn("NOT reachable", s["message"])
         after = dm.diagnostics()
         self.assertEqual((after["detail_count"], after["project_file_count"]), (before["detail_count"], before["project_file_count"]))
-        self.assertTrue(any("Old Projects skipped" in x["message"] for x in after["log"]))
+        self.assertTrue(any("Non-Library Details skipped" in x["message"] for x in after["log"]))
 
 
 if __name__ == "__main__":
