@@ -63,9 +63,10 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
   - [x] C1 (2026-11-19) RESULT: LayOut 2025 puts its own private format on the clipboard, `LayOutData_25_0` (4.7 MB for one detail): a binary dump of LayOut's internal objects, tied to the LayOut version. Rebuilding it from outside would be fragile and break with LayOut updates: NOT pursued. Original note: find out what LayOut puts on the Windows clipboard when a detail is copied (`tools/clipboard_probe.py`, read only; the user runs it once after copying a detail in LayOut). If the format can be reproduced, Open Detail could become "Copy Detail": the user only presses Ctrl+V in the project. Never AutoHotkey or keystroke automation. If it cannot be reproduced, the staging file stays
 
   - [x] C2 REJECTED by the user (2026-11-19): scrapbooks slow LayOut down too much (the old way of working). The staging file stays; it is also the most future-proof for new LayOut versions. Was: Scrapbook idea (instead of the clipboard): "Send to Scrapbook" writes the chosen detail(s) as pages of ONE scrapbook file ("Detail Manager.layout" in a local scrapbook folder); in LayOut the user drags the detail from the Scrapbooks panel into the project. Could become a detail basket (several details at once). Needs a hand test first: (1) does the Scrapbooks panel show a changed file without restarting LayOut; (2) does dragging from a scrapbook keep one shared SketchUp reference like copy/paste does
-  - [ ] C3 (user, 2026-11-19) Detail cart: pick several details, send them to staging at once; the cart empties after sending. Proposal in the chat of 2026-11-19 (one staging file per master; questions K1, K2)
+  - [~] C3 Detail cart. BUILT 2026-11-19 (branch `feature/cart`), user test pending. "+ Cart" on every card and in the detail window; cart bar at the bottom (thumbnails, remove one, Clear Cart, Open All in LayOut). Open All makes ONE staging file per detail (staging code unchanged) and opens each in LayOut; the cart then empties; any detail that fails stays in the cart with the reason (also in Diagnostics). Kept in `cart.json` in the data folder (survives closing; details no longer in the index are dropped with a notice). Up to 25 details. Decisions (user, 2026-11-19): no multi-page staging files (flipping pages is slower); several staging files are fine, cleaned up later
+  - [ ] C4 LATER RELEASE: several details in one staging file (one page, or merged across masters)
 - **X Later ideas**
-  - [ ] X1 (user, 2026-11-19, "have to think about this more") Retired details: a RETIRED overlay on the thumbnail (and hidden by default, with a "replaced by" link). Options: marked in the master itself (a RETIRED layer or text inside the group, kept by whoever maintains the library), or a small list kept with the published index
+  - [ ] X1 (user, 2026-11-19, "have to think about this more") Retired details: RETIRED overlay on the thumbnail, maybe hidden by default with a "replaced by" link. DECIDED: never written into the masters; kept as Detail Manager library data (published with the index) and must survive master updates (match by detail id, with models+scenes as the fallback when a detail moves)
 
 ## 0.3 - standalone program and rollout
 - [ ] P1 Program window instead of a browser tab (same screens, no local web server)
@@ -89,6 +90,6 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
 - Q1 Which computers have Python now, and which version? (`py --version`). Only matters until P2
 - Q2 ANSWERED 2026-11-15: yes, slimmer card; framing type plus Hydronics where it occurs
 - Q3 ANSWERED 2026-11-15: see U2
-- K1 Cart: are details from several masters in one go typical? (decides whether one combined staging file is worth the risk)
-- K2 Cart: keep the cart when Detail Manager is closed? Default: yes, until sent
+- K1 ANSWERED: it depends (C4 deferred)
+- K2 ANSWERED: keep the cart when closed, as long as it causes no other issues; add Clear Cart (done)
 - Q4 ANSWERED 2026-11-15: the POC 07A index on this computer (182 masters, 5,254 details, built in August) is believed to be the one in daily use

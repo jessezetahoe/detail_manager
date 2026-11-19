@@ -10,14 +10,14 @@ Its data: `%LOCALAPPDATA%\ZE Detail Manager`. It only changes when Claude publis
 **Done and verified:** regression tests, diagnostics log and button, real titles with the scene line,
 clean notes (raw text kept), category sidebar.
 **Development copy:** `RUN_DEV.bat` (port 8769, data in `%LOCALAPPDATA%\ZE Detail Manager Dev`).
-**Tests:** `cd /d C:\sketchup_dev\detail_manager` then `py -m unittest discover -s tests` (63 tests, about 40 s, expect `OK`).
+**Tests:** `cd /d C:\sketchup_dev\detail_manager` then `py -m unittest discover -s tests` (93 tests, about 65 s, expect `OK`).
 **To test Old Projects (development copy):** run the tests (79); double-click `RUN_DEV.bat`; open *Library and admin tools*, click *Choose Non-Library Details Folder* and pick `C:\\sketchup_dev\\detail_manager\\tests\\fixtures\\projects`; click Refresh Index (about 2 minutes: the library is re-read once for the new title rule, plus the 19 job files); use the Library / Old Projects / Both switch.
 **Push after a session:** `cd /d C:\sketchup_dev\detail_manager` then `git push origin main`.
 
 ## The list, in order
 | # | Tag | Item | Size | What I need from you |
 |---|---|---|---|---|
-| 0 | C3 | **Detail cart** (several details to staging at once) | M | Answers to K1, K2 |
+| 0 | C3 | **Detail cart: BUILT on branch `feature/cart`, waiting for your test** | S | Your test |
 | 1 | M3 | **Tighter search.** Rank title first, then scene, then notes; stop the master file name from matching every detail the same; fewer loose matches from notes | M | 3 to 5 real searches where the results felt too broad or in the wrong order |
 | 2 | U1, U3 | **Slim cards and fuller detail window.** Card: thumbnail, title, scene line, framing type with Hydronics. Everything else (source, page, all scenes, paths, notes, raw text) in the detail window | M | Look at it and say what to trim |
 | 3 | U4 | More than 80 results (load more as you scroll) | S | nothing |
