@@ -35,6 +35,7 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
 - **S SketchUp helper**
   - [ ] S1 Open SketchUp Source to the exact scene; scene buttons for multi-view details
   - [ ] S2 Thumbnail rendering from a menu item instead of the Ruby Console (admin only)
+  - [ ] S3 Faster Open Detail on big files: read only the parts of the master the staging file keeps (now the whole file is read, 253 MB for the largest job file; matters over the network). Touches staging: needs a LayOut 2025 check
 
 - **R Releases**
   - [x] R1 Daily-use copy (2026-11-18): `C:\sketchup_dev\detail_manager_release`, made by `tools/publish_local_release.sh` from a committed version (VERSION.txt says which). Own data folder `%LOCALAPPDATA%\ZE Detail Manager` (copied once from the Dev folder), port 8768 like the old program. Development (`RUN_DEV.bat`, Dev folder, port 8769) can no longer affect daily work
@@ -46,10 +47,13 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
 - **O Old Projects (decided 2026-11-18)**
   - Approach: read the job LayOut files directly (no PDF re-export). Old Projects = ONE flat drop folder: after a job is finished, its LayOut file is copied in. Every file name starts with the job number, so no duplicates and no subfolders. Leaving a job out = removing its file. Never scan the full projects folder (about 2,000 jobs x 110 to 330 details). Backups never enter the folder. Final program: one Old Projects folder on the server, published with the index like the library
   - Facts from the user: details are grouped (loose viewports are rare: skip them, count them in Diagnostics); every detail has a drawn title of some kind; scene names in jobs are usually SketchUp defaults ("Scene 3"), so never show those as the card's scene line or use them as a title; pasted library details still point to the library models
-  - [ ] O1 Check 4 to 6 sample job files (`tests/fixtures/projects/`, waiting for the user): grouping, loose viewports, title found beside N.T.S. or not, links back to library models, read time, job number pattern in the file name
-  - [ ] O2 Old Projects as a second source: own folder setting, job number from the file name, "JOB ARCHIVE" badge, Library / Old Projects / Both switch (U5), its own categories or a job filter
-  - [ ] O3 Details that point to library models: mark "also in the Library", show the library version first
-  - [ ] O4 Default scene names ("Scene 12") hidden from cards and never used as a title; if no N.T.S. title, choose the best other text
+  - [x] O1 Checked 19 job files (2026-11-18). Results: `docs/reviews/old_projects_check.md`
+  - [~] O2 Old Projects as a second source. BUILT 2026-11-18 overnight (branch `feature/old-projects`, which also carries F2), user test pending: Old Projects folder setting (admin tools), Refresh Index reads both folders (each only removes its own masters; an unreachable Old Projects folder leaves everything as it was), Library / Old Projects / Both switch at the top of the sidebar (only shown once Old Projects has files), job list with counts (newest job first), orange JOB badge with job number and sheet on each card, "Both" ranks library details ahead of equally good job details
+  - [~] O3 BUILT: card line "Same as Library: <title>" when the job detail uses the same model AND scene as a library detail; otherwise the model kind (Custom model / Old library model / Library model). Library models = models any library master uses. The old-library folder is a setting (`old_library_model_folders`, default `Z:/Google Drive/ZE Sketchup/ZE Detail Scrapbooks`). Not yet: hiding job duplicates when the library version is in the same results
+  - [~] O4 BUILT: title box after N.T.S. accepted when the one before is not a title (library unchanged, goldens identical); default scene names never a title nor a card line; fallback = best other text, then page name
+  - [ ] O5 Full thumbnails for job details (now the SketchUp-view-only fallback, without labels): comes with the SketchUp render menu (S2/R2)
+  - [ ] O6 Show the job detail number (801, 1002 ...) on job cards
+  - [ ] O7 Decide where the real Old Projects drop folder lives (server path), and who adds finished jobs
 
 ## 0.3 - standalone program and rollout
 - [ ] P1 Program window instead of a browser tab (same screens, no local web server)

@@ -35,7 +35,7 @@ PORT_DEFAULT = 8768
 # Raise this whenever the rules for reading a master change (titles, text...).
 # Masters indexed under an older number are re-read on the next refresh even
 # though the file itself has not changed; their thumbnails are kept.
-INDEX_VERSION = 3
+INDEX_VERSION = 4
 
 NS = {
     "e": "http://sketchup.google.com/schemas/layout/1.0/entities",
@@ -389,23 +389,38 @@ def clean_text_blocks(text_items: Sequence[str]) -> List[str]:
     return [t for t in text_items if not is_noise_text(t)]
 
 
+def is_default_scene(name: str) -> bool:
+    """SketchUp's automatic scene names say nothing about the detail."""
+    n = (name or "").strip()
+    return not n or bool(re.fullmatch(r"(scene|page)\s*\d*|last saved sketchup view", n, re.I))
+
+
 def infer_title_with_source(text_items: Sequence[str], scene_names: Sequence[str], page_name: str) -> Tuple[str, str]:
     """Return (title, source). source is 'drawing' (the title drawn on the detail),
-    'scene' (SketchUp scene name) or 'page'."""
+    'scene' (SketchUp scene name), 'text' (best other text on the detail) or 'page'."""
     # The library draws the title and "N.T.S." as two separate text boxes, the
     # title first. Use N.T.S. only as the marker; it is not part of the title.
+    # Job files sometimes have the boxes the other way round, so the box just
+    # after N.T.S. is the second choice (only when the one before is not a title).
     for i, block in enumerate(text_items):
-        if i > 0 and _is_nts(block):
-            candidate = re.sub(r"\s+", " ", text_items[i - 1]).strip()
-            if _plausible_title(candidate):
-                return candidate, "drawing"
+        if not _is_nts(block):
+            continue
+        for j in (i - 1, i + 1):
+            if 0 <= j < len(text_items):
+                candidate = re.sub(r"\s+", " ", text_items[j]).strip()
+                if _plausible_title(candidate):
+                    return candidate, "drawing"
     for block in reversed(text_items):
         lines = [re.sub(r"\s+", " ", x).strip() for x in block.splitlines() if x.strip()]
         for i, line in enumerate(lines):
             if _is_nts(line) and i > 0 and _plausible_title(lines[i - 1]):
                 return lines[i - 1], "drawing"
     for scene in scene_names:
-        if scene.strip(): return scene.strip(), "scene"
+        if not is_default_scene(scene): return scene.strip(), "scene"
+    for block in text_items:
+        candidate = re.sub(r"\s+", " ", block).strip()
+        if _plausible_title(candidate) and len(re.findall(r"[A-Za-z]", candidate)) >= 4:
+            return candidate, "text"
     return (page_name, "page") if page_name else ("Untitled Detail", "page")
 
 
@@ -517,8 +532,14 @@ class LibraryDB:
         detail_cols = {r[1] for r in cur.execute("PRAGMA table_info(details)")}
         for col in ("raw_text", "clean_text"):
             if col not in detail_cols: cur.execute(f"ALTER TABLE details ADD COLUMN {col} TEXT DEFAULT ''")
-        if "index_version" not in {r[1] for r in cur.execute("PRAGMA table_info(layout_files)")}:
+        lf_cols = {r[1] for r in cur.execute("PRAGMA table_info(layout_files)")}
+        if "index_version" not in lf_cols:
             cur.execute("ALTER TABLE layout_files ADD COLUMN index_version INTEGER DEFAULT 0")
+        if "source_kind" not in lf_cols:
+            cur.execute("ALTER TABLE layout_files ADD COLUMN source_kind TEXT DEFAULT 'library'")
+        if "skipped_viewports" not in lf_cols:
+            cur.execute("ALTER TABLE layout_files ADD COLUMN skipped_viewports INTEGER DEFAULT 0")
+        cur.execute("CREATE INDEX IF NOT EXISTS viewports_scene_pid ON viewports(scene_pid)")
         with contextlib.suppress(sqlite3.OperationalError):
             cur.execute("CREATE VIRTUAL TABLE IF NOT EXISTS detail_search USING fts5(detail_key UNINDEXED, searchable_text)")
         con.commit(); con.close()
@@ -632,6 +653,7 @@ def parse_layout(layout_path: Path, preview_dir: Path) -> Tuple[dict, List[dict]
             elif kind == "imageFileReference": image_refs[rid] = rec
             elif kind == "vectorFileReference": vector_refs[rid] = rec
         details = []
+        skipped_viewports = 0  # SketchUp viewports not inside a top-level group: not a detail, counted for Diagnostics
         ordered_pages = [pr.get(R_ID, "") for pr in doc_root.findall(".//ld:pageRef", NS)]
         for page_index, page_ref_id in enumerate(ordered_pages, start=1):
             pref = page_refs.get(page_ref_id)
@@ -643,7 +665,8 @@ def parse_layout(layout_path: Path, preview_dir: Path) -> Tuple[dict, List[dict]
             if top_list is None: continue
             group_index = 0
             for entity in list(top_list):
-                if entity.tag != f"{{{NS['e']}}}group": continue
+                if entity.tag != f"{{{NS['e']}}}group":
+                    skipped_viewports += sum(1 for _ in entity.iter(f"{{{NS['e']}}}skpModelRef")); continue
                 group_index += 1
                 models = list(entity.iter(f"{{{NS['e']}}}skpModelRef"))
                 if not models: continue
@@ -673,73 +696,113 @@ def parse_layout(layout_path: Path, preview_dir: Path) -> Tuple[dict, List[dict]
                 clean = clean_text_blocks(texts)
                 searchable = "\n".join(filter(None, [layout_path.stem, master_title, page_name, expand_abbreviations(page_name), title, expanded_title, *scene_names, *(expand_abbreviations(x) for x in scene_names), *clean]))
                 details.append({"detail_key": detail_key, "layout_file": layout_file, "layout_filename": layout_path.name, "page_ref_id": page_ref_id, "page_xml": page_xml, "page_name": page_name, "page_index": page_index, "group_index": group_index, "viewport_count": len(viewports), "primary_viewport_id": primary["viewport_id"], "primary_scene_name": primary["scene_name"], "primary_scene_pid": primary["scene_pid"], "display_title": title, "expanded_title": expanded_title, "master_title": master_title, "skp_paths_exact": skp_paths, "bounds": group_bounds(entity), "full_preview_relpath": "", "searchable_text": searchable, "raw_text": "\n".join(texts), "clean_text": "\n".join(clean), "viewports": viewports})
-        return ({"layout_file": layout_file, "layout_filename": layout_path.name, "size_bytes": stat.st_size, "mtime_ns": stat.st_mtime_ns, "page_count": len(ordered_pages), "detail_count": len(details), "skp_reference_count": len(skp_refs), "skp_references": skp_refs}, details)
+        return ({"layout_file": layout_file, "layout_filename": layout_path.name, "size_bytes": stat.st_size, "mtime_ns": stat.st_mtime_ns, "page_count": len(ordered_pages), "detail_count": len(details), "skp_reference_count": len(skp_refs), "skp_references": skp_refs, "skipped_viewports": skipped_viewports}, details)
 
 
-def index_library(library_root: str):
+SOURCE_LIBRARY, SOURCE_PROJECTS = "library", "projects"
+SOURCE_NAMES = {SOURCE_LIBRARY: "Library", SOURCE_PROJECTS: "Old Projects"}
+
+
+def _norm_for_compare(path: str) -> str:
+    # Only for comparing folders. Stored paths are never changed.
+    return str(path or "").replace("\\", "/").rstrip("/").lower()
+
+
+def _is_inside(path: str, folder: str) -> bool:
+    if not folder:
+        return False
+    p, f = _norm_for_compare(path), _norm_for_compare(folder)
+    return p == f or p.startswith(f + "/")
+
+
+def _index_root(con: sqlite3.Connection, root_str: str, kind: str, other_root: str) -> int:
+    """Index one folder (the library, or the Old Projects folder). Masters that
+    disappeared from THIS folder are removed; the other source is never touched."""
+    root = Path(root_str)
+    # Safety: an unreachable folder must never be read as "every master was deleted".
+    if not root.is_dir(): raise FileNotFoundError(f"{SOURCE_NAMES[kind]} folder not reachable: {root_str}")
+    log_info(f"Index refresh started ({SOURCE_NAMES[kind]}): {root_str}")
+    files = sorted(p for p in root.rglob("*.layout") if p.is_file() and not _is_inside(str(p), other_root))
+    existing = {r["layout_file"]: dict(r) for r in con.execute("SELECT * FROM layout_files WHERE COALESCE(source_kind,'library')=?", (kind,))}
+    discovered = {str(p): p for p in files}
+    for old in list(existing):
+        if old not in discovered:
+            DB.remove_layout(con, old); log_info(f"Removed from index (no longer in the {SOURCE_NAMES[kind]} folder): {old}")
+    con.commit()
+    with INDEX_LOCK:
+        base_done = INDEX_STATE["done"]
+        INDEX_STATE["total"] += len(files); INDEX_STATE["message"] = f"Found {len(files)} LayOut files ({SOURCE_NAMES[kind]})"
+    for i, p in enumerate(files, 1):
+        path_str, st = str(p), p.stat(); old = existing.get(path_str)
+        file_same = bool(old and old.get("size_bytes") == st.st_size and old.get("mtime_ns") == st.st_mtime_ns and not old.get("last_error"))
+        unchanged = file_same and str(old.get("index_version") or "") == READ_RULES_KEY
+        with INDEX_LOCK: INDEX_STATE.update({"done": base_done + i - 1, "current": p.name})
+        if unchanged:
+            with INDEX_LOCK: INDEX_STATE["unchanged"] += 1
+            continue
+        temp_preview = DB.preview_root / (path_key(path_str) + "_tmp"); final_preview = DB.preview_root / path_key(path_str)
+        shutil.rmtree(temp_preview, ignore_errors=True); temp_preview.mkdir(parents=True, exist_ok=True)
+        try:
+            summary, details = parse_layout(p, temp_preview)
+            for d in details:
+                for vp in d["viewports"]:
+                    if vp["preview_relpath"]: vp["preview_relpath"] = vp["preview_relpath"].replace(path_key(path_str)+"_tmp/", path_key(path_str)+"/", 1)
+            if file_same:
+                # Only the reading rules changed, not the master: keep its full thumbnails.
+                kept = {r[0]: r[1] or "" for r in con.execute("SELECT detail_key, full_preview_relpath FROM details WHERE layout_file=?", (path_str,))}
+                for d in details: d["full_preview_relpath"] = kept.get(d["detail_key"], "")
+            con.execute("BEGIN")
+            keys = [r[0] for r in con.execute("SELECT detail_key FROM details WHERE layout_file=?", (path_str,))]
+            for k in keys:
+                with contextlib.suppress(sqlite3.OperationalError): con.execute("DELETE FROM detail_search WHERE detail_key=?", (k,))
+            con.execute("DELETE FROM viewports WHERE detail_key IN (SELECT detail_key FROM details WHERE layout_file=?)", (path_str,)); con.execute("DELETE FROM details WHERE layout_file=?", (path_str,)); con.execute("DELETE FROM skp_references WHERE layout_file=?", (path_str,)); con.execute("DELETE FROM layout_files WHERE layout_file=?", (path_str,))
+            con.execute("INSERT INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version,source_kind,skipped_viewports) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, summary["size_bytes"], summary["mtime_ns"], summary["page_count"], summary["detail_count"], summary["skp_reference_count"], datetime.now(timezone.utc).isoformat(), "", READ_RULES_KEY, kind, summary["skipped_viewports"]))
+            for rid, r in summary["skp_references"].items(): con.execute("INSERT INTO skp_references VALUES (?,?,?,?)", (path_str, rid, r.get("externalTarget", ""), r.get("internalTarget", "")))
+            for d in details:
+                con.execute("INSERT INTO details (detail_key,layout_file,layout_filename,page_ref_id,page_xml,page_name,page_index,group_index,viewport_count,primary_viewport_id,primary_scene_name,primary_scene_pid,display_title,expanded_title,master_title,skp_paths_exact,bounds_json,full_preview_relpath,searchable_text,raw_text,clean_text) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (d["detail_key"], d["layout_file"], d["layout_filename"], d["page_ref_id"], d["page_xml"], d["page_name"], d["page_index"], d["group_index"], d["viewport_count"], d["primary_viewport_id"], d["primary_scene_name"], d["primary_scene_pid"], d["display_title"], d["expanded_title"], d["master_title"], json.dumps(d["skp_paths_exact"]), json.dumps(d["bounds"]), d["full_preview_relpath"], d["searchable_text"], d["raw_text"], d["clean_text"]))
+                with contextlib.suppress(sqlite3.OperationalError): con.execute("INSERT INTO detail_search(detail_key, searchable_text) VALUES (?,?)", (d["detail_key"], d["searchable_text"]))
+                for vp in d["viewports"]: con.execute("INSERT INTO viewports VALUES (?,?,?,?,?,?,?,?)", (d["detail_key"], vp["viewport_id"], vp["scene_name"], vp["scene_pid"], vp["skp_ref_id"], vp["image_ref_id"], vp["vector_ref_id"], vp["preview_relpath"]))
+            con.commit()
+            shutil.rmtree(final_preview, ignore_errors=True)
+            temp_preview.rename(final_preview)
+            if not file_same:
+                shutil.rmtree(DB.full_preview_root / path_key(path_str), ignore_errors=True)
+                shutil.rmtree(DB.render_root / path_key(path_str), ignore_errors=True)
+            with INDEX_LOCK: INDEX_STATE["reread" if file_same else "changed"] += 1
+        except Exception as exc:
+            con.rollback(); shutil.rmtree(temp_preview, ignore_errors=True); msg = f"{type(exc).__name__}: {exc}"
+            if not old:
+                con.execute("INSERT OR REPLACE INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version,source_kind,skipped_viewports) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, st.st_size, st.st_mtime_ns, 0, 0, 0, datetime.now(timezone.utc).isoformat(), msg, READ_RULES_KEY, kind, 0)); con.commit()
+            with INDEX_LOCK: INDEX_STATE["errors"].append({"file": path_str, "error": msg})
+            log_error(f"Index failed for {path_str}: {msg}" + (" (earlier index data for this master was kept)" if old else ""))
+        finally:
+            with INDEX_LOCK: INDEX_STATE["done"] = base_done + i
+    return len(files)
+
+
+def index_library(library_root: str, projects_root: Optional[str] = None):
     with INDEX_LOCK: INDEX_STATE.update({"running": True, "total": 0, "done": 0, "current": "", "message": "Scanning library...", "errors": [], "changed": 0, "unchanged": 0, "reread": 0})
     try:
-        root = Path(library_root)
-        # Safety: an unreachable library must never be read as "every master was deleted".
-        if not root.is_dir(): raise FileNotFoundError(f"Library folder not reachable: {library_root}")
-        log_info(f"Index refresh started: {library_root}")
-        files = sorted(p for p in root.rglob("*.layout") if p.is_file()); con = DB.connect()
-        existing = {r["layout_file"]: dict(r) for r in con.execute("SELECT * FROM layout_files")}; discovered = {str(p): p for p in files}
-        for old in list(existing):
-            if old not in discovered:
-                DB.remove_layout(con, old); log_info(f"Removed from index (master no longer in library): {old}")
-        con.commit()
-        with INDEX_LOCK: INDEX_STATE.update({"total": len(files), "message": f"Found {len(files)} LayOut files"})
-        for i, p in enumerate(files, 1):
-            path_str, st = str(p), p.stat(); old = existing.get(path_str)
-            file_same = bool(old and old.get("size_bytes") == st.st_size and old.get("mtime_ns") == st.st_mtime_ns and not old.get("last_error"))
-            unchanged = file_same and str(old.get("index_version") or "") == READ_RULES_KEY
-            with INDEX_LOCK: INDEX_STATE.update({"done": i-1, "current": p.name})
-            if unchanged:
-                with INDEX_LOCK: INDEX_STATE["unchanged"] += 1
-                continue
-            temp_preview = DB.preview_root / (path_key(path_str) + "_tmp"); final_preview = DB.preview_root / path_key(path_str)
-            shutil.rmtree(temp_preview, ignore_errors=True); temp_preview.mkdir(parents=True, exist_ok=True)
-            try:
-                summary, details = parse_layout(p, temp_preview)
-                for d in details:
-                    for vp in d["viewports"]:
-                        if vp["preview_relpath"]: vp["preview_relpath"] = vp["preview_relpath"].replace(path_key(path_str)+"_tmp/", path_key(path_str)+"/", 1)
-                if file_same:
-                    # Only the reading rules changed, not the master: keep its full thumbnails.
-                    kept = {r[0]: r[1] or "" for r in con.execute("SELECT detail_key, full_preview_relpath FROM details WHERE layout_file=?", (path_str,))}
-                    for d in details: d["full_preview_relpath"] = kept.get(d["detail_key"], "")
-                con.execute("BEGIN")
-                keys = [r[0] for r in con.execute("SELECT detail_key FROM details WHERE layout_file=?", (path_str,))]
-                for k in keys:
-                    with contextlib.suppress(sqlite3.OperationalError): con.execute("DELETE FROM detail_search WHERE detail_key=?", (k,))
-                con.execute("DELETE FROM viewports WHERE detail_key IN (SELECT detail_key FROM details WHERE layout_file=?)", (path_str,)); con.execute("DELETE FROM details WHERE layout_file=?", (path_str,)); con.execute("DELETE FROM skp_references WHERE layout_file=?", (path_str,)); con.execute("DELETE FROM layout_files WHERE layout_file=?", (path_str,))
-                con.execute("INSERT INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version) VALUES (?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, summary["size_bytes"], summary["mtime_ns"], summary["page_count"], summary["detail_count"], summary["skp_reference_count"], datetime.now(timezone.utc).isoformat(), "", READ_RULES_KEY))
-                for rid, r in summary["skp_references"].items(): con.execute("INSERT INTO skp_references VALUES (?,?,?,?)", (path_str, rid, r.get("externalTarget", ""), r.get("internalTarget", "")))
-                for d in details:
-                    con.execute("INSERT INTO details (detail_key,layout_file,layout_filename,page_ref_id,page_xml,page_name,page_index,group_index,viewport_count,primary_viewport_id,primary_scene_name,primary_scene_pid,display_title,expanded_title,master_title,skp_paths_exact,bounds_json,full_preview_relpath,searchable_text,raw_text,clean_text) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (d["detail_key"], d["layout_file"], d["layout_filename"], d["page_ref_id"], d["page_xml"], d["page_name"], d["page_index"], d["group_index"], d["viewport_count"], d["primary_viewport_id"], d["primary_scene_name"], d["primary_scene_pid"], d["display_title"], d["expanded_title"], d["master_title"], json.dumps(d["skp_paths_exact"]), json.dumps(d["bounds"]), d["full_preview_relpath"], d["searchable_text"], d["raw_text"], d["clean_text"]))
-                    with contextlib.suppress(sqlite3.OperationalError): con.execute("INSERT INTO detail_search(detail_key, searchable_text) VALUES (?,?)", (d["detail_key"], d["searchable_text"]))
-                    for vp in d["viewports"]: con.execute("INSERT INTO viewports VALUES (?,?,?,?,?,?,?,?)", (d["detail_key"], vp["viewport_id"], vp["scene_name"], vp["scene_pid"], vp["skp_ref_id"], vp["image_ref_id"], vp["vector_ref_id"], vp["preview_relpath"]))
-                con.commit()
-                shutil.rmtree(final_preview, ignore_errors=True)
-                temp_preview.rename(final_preview)
-                if not file_same:
-                    shutil.rmtree(DB.full_preview_root / path_key(path_str), ignore_errors=True)
-                    shutil.rmtree(DB.render_root / path_key(path_str), ignore_errors=True)
-                with INDEX_LOCK: INDEX_STATE["reread" if file_same else "changed"] += 1
-            except Exception as exc:
-                con.rollback(); shutil.rmtree(temp_preview, ignore_errors=True); msg = f"{type(exc).__name__}: {exc}"
-                if not old:
-                    con.execute("INSERT OR REPLACE INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version) VALUES (?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, st.st_size, st.st_mtime_ns, 0, 0, 0, datetime.now(timezone.utc).isoformat(), msg, READ_RULES_KEY)); con.commit()
-                with INDEX_LOCK: INDEX_STATE["errors"].append({"file": path_str, "error": msg})
-                log_error(f"Index failed for {path_str}: {msg}" + (" (earlier index data for this master was kept)" if old else ""))
-            finally:
-                with INDEX_LOCK: INDEX_STATE["done"] = i
-        con.close(); DB.save_config({"library_root": library_root})
+        con = DB.connect()
+        try:
+            n_lib = _index_root(con, library_root, SOURCE_LIBRARY, projects_root or "")
+            DB.save_config({"library_root": library_root})
+            proj_note = ""
+            if projects_root:
+                try:
+                    n_proj = _index_root(con, projects_root, SOURCE_PROJECTS, library_root)
+                    proj_note = f"; Old Projects: {n_proj} file(s)"
+                except FileNotFoundError as exc:
+                    # The library part still counts; Old Projects keep their earlier index.
+                    proj_note = "; Old Projects folder NOT reachable (kept as it was)"
+                    log_error(f"Old Projects skipped: {exc}")
+                    with INDEX_LOCK: INDEX_STATE["errors"].append({"file": projects_root, "error": f"{type(exc).__name__}: {exc}"})
+        finally:
+            con.close()
         with INDEX_LOCK:
             reread_note = f", {INDEX_STATE['reread']} re-read with the new rules (thumbnails kept)" if INDEX_STATE["reread"] else ""
-            INDEX_STATE["message"] = f"Refresh complete: {INDEX_STATE['changed']} changed, {INDEX_STATE['unchanged']} unchanged{reread_note}"
-            summary_line = f"Index refresh complete: {len(files)} master(s), {INDEX_STATE['changed']} changed, {INDEX_STATE['unchanged']} unchanged{reread_note}, {len(INDEX_STATE['errors'])} error(s)"
+            INDEX_STATE["message"] = f"Refresh complete: {INDEX_STATE['changed']} changed, {INDEX_STATE['unchanged']} unchanged{reread_note}{proj_note}"
+            summary_line = f"Index refresh complete: {n_lib} library master(s){proj_note}, {INDEX_STATE['changed']} changed, {INDEX_STATE['unchanged']} unchanged{reread_note}, {len(INDEX_STATE['errors'])} error(s)"
         log_info(summary_line)
     except Exception as exc:
         # Runs on a background thread: without this the failure would vanish.
@@ -1038,41 +1101,127 @@ def safe_search_query(q: str) -> str:
 def category_layout_files(category: str) -> List[str]:
     cats = categories_config()
     con = DB.connect()
-    rows = con.execute("SELECT layout_file, layout_filename FROM layout_files").fetchall()
+    rows = con.execute("SELECT layout_file, layout_filename FROM layout_files WHERE COALESCE(source_kind,'library')='library'").fetchall()
     con.close()
     return [r[0] for r in rows if category_matches(r[1], category, cats)]
 
 
-def search_details(q: str = "", source: str = "", limit: int = 80, category: str = "") -> List[dict]:
-    cat_files = category_layout_files(category) if category else None
+def job_number(filename: str) -> str:
+    """Old Projects files start with the job number: '1757 S0.1.layout' -> '1757'."""
+    m = re.match(r"^\s*(\d{3,6})(?=\D|$)", filename or "")
+    return m.group(1) if m else ""
+
+
+def job_layout_files(job: str) -> List[str]:
+    con = DB.connect()
+    rows = con.execute("SELECT layout_file, layout_filename FROM layout_files WHERE source_kind='projects'").fetchall()
+    con.close()
+    return [r[0] for r in rows if job_number(r[1]) == job]
+
+
+def sheet_label(item: dict) -> str:
+    page = (item.get("page_name") or "").strip()
+    if page:
+        return page
+    m = re.match(r"^\s*\d{3,6}\s+(.+?)\.layout$", item.get("layout_filename") or "", re.I)
+    return m.group(1) if m else ""
+
+
+DEFAULT_OLD_LIBRARY_MODEL_FOLDERS = ["Z:/Google Drive/ZE Sketchup/ZE Detail Scrapbooks"]
+
+
+def library_model_paths(con: sqlite3.Connection) -> set:
+    """Every SketchUp model path used by a library master (compare form only)."""
+    rows = con.execute("SELECT DISTINCT r.external_path_exact FROM skp_references r JOIN layout_files lf ON lf.layout_file=r.layout_file WHERE COALESCE(lf.source_kind,'library')='library'")
+    return {_norm_for_compare(r[0]) for r in rows if r[0]}
+
+
+def model_tags(paths: Sequence[str], lib_paths: Optional[set] = None) -> List[str]:
+    """Where an Old Projects detail's SketchUp models live: a model the library uses,
+    the old library, or a job's own (custom) models."""
+    lib_paths = lib_paths or set()
+    cfg = DB.get_config()
+    lib = cfg.get("library_root", "")
+    old_folders = cfg.get("old_library_model_folders") or DEFAULT_OLD_LIBRARY_MODEL_FOLDERS
+    tags = []
+    for path in paths:
+        if not path:
+            continue
+        if _norm_for_compare(path) in lib_paths or _is_inside(path, lib): tag = "Library model"
+        elif any(_is_inside(path, f) for f in old_folders): tag = "Old library model"
+        else: tag = "Custom model"
+        if tag not in tags: tags.append(tag)
+    return tags
+
+
+def library_match(con: sqlite3.Connection, item: dict) -> Optional[dict]:
+    """The library detail an Old Projects detail was pasted from: same SketchUp model
+    (exact reference path) and same scene. None when there is no such detail."""
+    refs = {r[0]: r[1] for r in con.execute("SELECT skp_ref_id, external_path_exact FROM skp_references WHERE layout_file=?", (item["layout_file"],))}
+    for vp in item.get("viewports", []):
+        path, pid = refs.get(vp.get("skp_ref_id"), ""), vp.get("scene_pid") or ""
+        if not path or not pid:
+            continue
+        row = con.execute(
+            "SELECT d.detail_key, d.display_title, d.layout_filename FROM viewports v "
+            "JOIN details d ON d.detail_key=v.detail_key "
+            "JOIN layout_files lf ON lf.layout_file=d.layout_file AND COALESCE(lf.source_kind,'library')='library' "
+            "JOIN skp_references r ON r.layout_file=d.layout_file AND r.skp_ref_id=v.skp_ref_id "
+            "WHERE v.scene_pid=? AND r.external_path_exact=? LIMIT 1", (pid, path)).fetchone()
+        if row:
+            return {"detail_key": row[0], "title": row[1], "layout_filename": row[2]}
+    return None
+
+
+def _source_kinds(src: str) -> List[str]:
+    return {"projects": [SOURCE_PROJECTS], "both": [SOURCE_LIBRARY, SOURCE_PROJECTS]}.get(src, [SOURCE_LIBRARY])
+
+
+def search_details(q: str = "", source: str = "", limit: int = 80, category: str = "", src: str = "library", job: str = "") -> List[dict]:
+    """src: 'library' (default), 'projects' (Old Projects) or 'both'."""
+    cat_files = category_layout_files(category) if category else (job_layout_files(job) if job else None)
     if cat_files == []:
         return []
     cat_sql = f"d.layout_file IN ({','.join('?' * len(cat_files))})" if cat_files else ""
-    con = DB.connect(); params, joins, where = [], "", []; order = "d.layout_filename,d.page_name,d.group_index"
+    kinds = _source_kinds(src)
+    kind_sql = f"COALESCE(lf.source_kind,'library') IN ({','.join('?' * len(kinds))})"
+    # In "Both", library details rank ahead of Old Projects details of similar relevance.
+    weight = "(CASE WHEN COALESCE(lf.source_kind,'library')='projects' THEN 0.75 ELSE 1.0 END)"
+    later = "(CASE WHEN COALESCE(lf.source_kind,'library')='projects' THEN 1 ELSE 0 END)"
+    con = DB.connect(); params, joins, where = [], "", []; order = later + ",d.layout_filename,d.page_name,d.group_index"
     if q.strip():
         ftsq = safe_search_query(q)
         if ftsq:
-            joins = " JOIN detail_search s ON s.detail_key=d.detail_key "; where.append("s.searchable_text MATCH ?"); params.append(ftsq); order = "bm25(detail_search),d.layout_filename,d.page_name,d.group_index"
+            joins = " JOIN detail_search s ON s.detail_key=d.detail_key "; where.append("s.searchable_text MATCH ?"); params.append(ftsq); order = f"bm25(detail_search)*{weight},d.layout_filename,d.page_name,d.group_index"
+    where.append(kind_sql); params += kinds
     if source: where.append("d.layout_file=?"); params.append(source)
     if cat_files: where.append(cat_sql); params += cat_files
-    sql = "SELECT d.* FROM details d" + joins + ((" WHERE " + " AND ".join(where)) if where else "") + " ORDER BY " + order + " LIMIT ?"; params.append(limit)
+    base = "SELECT d.*, COALESCE(lf.source_kind,'library') AS source_kind FROM details d JOIN layout_files lf ON lf.layout_file=d.layout_file"
+    sql = base + joins + ((" WHERE " + " AND ".join(where)) if where else "") + " ORDER BY " + order + " LIMIT ?"; params.append(limit)
     try: rows = con.execute(sql, params).fetchall()
     except sqlite3.OperationalError:
-        params, where = [], []
+        params, where = list(kinds), [kind_sql]
         if q.strip(): where.append("d.searchable_text LIKE ?"); params.append(f"%{q}%")
         if source: where.append("d.layout_file=?"); params.append(source)
         if cat_files: where.append(cat_sql); params += cat_files
-        sql = "SELECT d.* FROM details d" + ((" WHERE " + " AND ".join(where)) if where else "") + " ORDER BY d.layout_filename,d.page_name,d.group_index LIMIT ?"; params.append(limit); rows = con.execute(sql, params).fetchall()
+        sql = base + ((" WHERE " + " AND ".join(where)) if where else "") + " ORDER BY " + later + ",d.layout_filename,d.page_name,d.group_index LIMIT ?"; params.append(limit); rows = con.execute(sql, params).fetchall()
     out = []
+    lib_paths = None
     for r in rows:
-        item = dict(r); item["skp_paths_exact"] = json.loads(item["skp_paths_exact"] or "[]"); item["viewports"] = [dict(x) for x in con.execute("SELECT * FROM viewports WHERE detail_key=? ORDER BY rowid", (r["detail_key"],))]; item["scene_label"] = scene_label(item); item["notes_text"] = notes_text(item); out.append(item)
+        item = dict(r); item["skp_paths_exact"] = json.loads(item["skp_paths_exact"] or "[]"); item["viewports"] = [dict(x) for x in con.execute("SELECT * FROM viewports WHERE detail_key=? ORDER BY rowid", (r["detail_key"],))]; item["scene_label"] = scene_label(item); item["notes_text"] = notes_text(item)
+        if item.get("source_kind") == SOURCE_PROJECTS:
+            item["job_number"] = job_number(item["layout_filename"]); item["sheet"] = sheet_label(item)
+            if lib_paths is None: lib_paths = library_model_paths(con)
+            item["model_tags"] = model_tags(item["skp_paths_exact"], lib_paths); item["library_match"] = library_match(con, item)
+        out.append(item)
     con.close(); return out
 
 
 def scene_label(item: dict) -> str:
     """Short second line for a card: the SketchUp scene in plain words. Empty when
     it would only repeat the title (details whose title came from the scene)."""
-    scene = expand_abbreviations(item.get("primary_scene_name") or "")
+    raw_scene = item.get("primary_scene_name") or ""
+    scene = "" if is_default_scene(raw_scene) else expand_abbreviations(raw_scene)
     if not scene or scene in {item.get("expanded_title"), item.get("display_title")}:
         return ""
     extra = max(0, int(item.get("viewport_count") or 1) - 1)
@@ -1093,7 +1242,7 @@ def library_categories() -> List[dict]:
     Only categories that contain details are listed."""
     cats = categories_config()
     con = DB.connect()
-    rows = con.execute("SELECT layout_filename, detail_count FROM layout_files WHERE detail_count>0").fetchall()
+    rows = con.execute("SELECT layout_filename, detail_count FROM layout_files WHERE detail_count>0 AND COALESCE(source_kind,'library')='library'").fetchall()
     con.close()
     groups: Dict[str, dict] = {}
     for filename, count in rows:
@@ -1113,6 +1262,19 @@ def library_categories() -> List[dict]:
         del g["subs"]
         out.append(g)
     return out
+
+
+def library_jobs() -> List[dict]:
+    """Old Projects jobs with detail counts, newest job number first."""
+    con = DB.connect()
+    rows = con.execute("SELECT layout_filename, detail_count FROM layout_files WHERE source_kind='projects' AND detail_count>0").fetchall()
+    con.close()
+    jobs: Dict[str, dict] = {}
+    for filename, count in rows:
+        j = job_number(filename) or "no number"
+        g = jobs.setdefault(j, {"job": j, "count": 0, "files": 0})
+        g["count"] += count or 0; g["files"] += 1
+    return sorted(jobs.values(), key=lambda g: (not g["job"].isdigit(), -int(g["job"]) if g["job"].isdigit() else 0, g["job"]))
 
 
 def library_sources() -> List[dict]:
@@ -1333,6 +1495,8 @@ def diagnostics(max_lines: int = 300) -> dict:
     full = con.execute("SELECT COUNT(*) FROM details WHERE COALESCE(full_preview_relpath,'')<>''").fetchone()[0]
     last_indexed = con.execute("SELECT MAX(last_indexed_utc) FROM layout_files").fetchone()[0] or ""
     failed = [dict(r) for r in con.execute("SELECT layout_filename,layout_file,last_error,last_indexed_utc FROM layout_files WHERE COALESCE(last_error,'')<>'' ORDER BY layout_filename")]
+    skipped = [dict(r) for r in con.execute("SELECT layout_filename,layout_file,skipped_viewports FROM layout_files WHERE COALESCE(skipped_viewports,0)>0 ORDER BY layout_filename")]
+    project_files = con.execute("SELECT COUNT(*), COALESCE(SUM(detail_count),0) FROM layout_files WHERE source_kind='projects'").fetchone()
     con.close()
     worker = None
     worker_path = DB.thumbnail_job_root / "last_worker_result.json"
@@ -1344,45 +1508,53 @@ def diagnostics(max_lines: int = 300) -> dict:
             worker = {"completed_at": "", "successes": 0, "failures": [{"file": str(worker_path), "error": f"Could not read worker result: {type(exc).__name__}: {exc}"}]}
     try: reachable = bool(library_root) and Path(library_root).is_dir()
     except Exception: reachable = False
+    projects_root = cfg.get("projects_root", "")
+    try: projects_reachable = bool(projects_root) and Path(projects_root).is_dir()
+    except Exception: projects_reachable = False
     log = read_log_tail(max_lines)
     return {
         "app": APP_NAME, "python": sys.version.split()[0], "data_dir": str(DB.root),
         "log_path": str(LOG_PATH) if LOG_PATH else "", "log_setup_error": LOG_SETUP_ERROR,
         "library_root": library_root, "library_reachable": reachable,
         "master_count": masters, "detail_count": details, "full_preview_count": full, "last_indexed_utc": last_indexed,
-        "failed_masters": failed, "worker": worker, "log": log,
-        "problem_count": len(failed) + (len(worker["failures"]) if worker else 0) + (0 if reachable or not library_root else 1) + (1 if LOG_SETUP_ERROR else 0),
+        "failed_masters": failed, "worker": worker, "log": log, "skipped_viewports": skipped,
+        "projects_root": projects_root, "projects_reachable": projects_reachable, "project_file_count": project_files[0], "project_detail_count": project_files[1],
+        "problem_count": len(failed) + (len(worker["failures"]) if worker else 0) + (0 if reachable or not library_root else 1) + (0 if projects_reachable or not projects_root else 1) + (1 if LOG_SETUP_ERROR else 0),
     }
 
 
 INDEX_HTML = r'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Detail Manager Prototype 0.1</title>
 <style>
-:root{--card-w:420px;--bg:#f4f5f7;--panel:#fff;--border:#d7dbe0;--text:#20242a;--muted:#67717e;--accent:#315b86;--shadow:0 2px 10px rgba(0,0,0,.08)}*{box-sizing:border-box}body{margin:0;font:14px/1.35 "Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden}header{height:74px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:12px 18px}.brand{font-weight:700;font-size:19px;white-space:nowrap}.search{flex:1;min-width:280px;height:42px;border:1px solid #aeb6c0;border-radius:7px;padding:0 14px;font-size:17px}button{border:1px solid #aab2bc;background:#fff;border-radius:6px;padding:8px 12px;cursor:pointer;font-weight:600}button:hover{background:#f2f5f8}button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.sizebox{display:flex;align-items:center;gap:8px;white-space:nowrap;color:var(--muted)}.app{display:grid;grid-template-columns:285px 1fr;height:calc(100vh - 74px)}aside{background:#fff;border-right:1px solid var(--border);overflow:auto;padding:14px}.aside-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:5px 0 8px}.pathbox{font-size:12px;word-break:break-all;background:#f8f9fb;border:1px solid var(--border);border-radius:5px;padding:8px;margin-bottom:8px}.source,.cat{display:block;width:100%;text-align:left;border:0;border-radius:4px;padding:7px 8px;font-weight:400}.source.active,.cat.active{background:#e8eef5;font-weight:600}.cat{font-size:14px}.cat.sub{padding-left:24px;font-size:13px;color:#3d4753}.source{font-size:12px}.adv{margin-top:14px;border-top:1px solid var(--border);padding-top:10px}.adv>summary{cursor:pointer;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}.adv[open]>summary{margin-bottom:10px}#filterlabel{color:var(--text);font-weight:600}.count{float:right;color:var(--muted)}.thumbtools{border:1px solid var(--border);border-radius:7px;padding:10px;background:#f8f9fb}.thumbtools input[type=text]{width:100%;padding:7px 8px;border:1px solid #b9c0c8;border-radius:5px;margin:4px 0 8px}.thumbtools button{width:100%;margin-top:6px}.smallnote{font-size:11px;color:var(--muted);margin-top:7px}.thumbstatus{font-size:12px;margin:7px 0;color:#45515e}main{overflow:auto;padding:16px 18px 50px}.statusline{display:flex;gap:16px;align-items:center;color:var(--muted);margin:0 0 13px}.notice{background:#edf4fb;border:1px solid #b8cee3;border-radius:6px;padding:8px 10px;color:#2f4d69}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(var(--card-w),100%),1fr));gap:16px;align-items:start}.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;min-width:0}.thumb{height:calc(var(--card-w)*.72);min-height:250px;max-height:485px;background:#e9ebee;display:grid;grid-template-columns:1fr;grid-auto-rows:minmax(0,1fr);gap:2px;align-items:stretch;justify-content:stretch;overflow:hidden;cursor:pointer;position:relative}.thumb.fallback.count-2,.thumb.fallback.count-3,.thumb.fallback.count-4{grid-template-columns:repeat(2,minmax(0,1fr))}.thumb.fallback.count-5,.thumb.fallback.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}.thumb img{width:100%;height:100%;min-width:0;min-height:0;object-fit:contain;background:white}.thumb.full{background:white;padding:10px}.thumb.full img{max-width:100%;max-height:100%}.previewbadge{position:absolute;right:7px;bottom:7px;background:rgba(30,36,43,.78);color:#fff;border-radius:4px;padding:3px 6px;font-size:10px;pointer-events:none}.meta{padding:11px 12px}.title{font-size:16px;font-weight:700;margin:0 0 4px}.rawtitle{color:#4e5966;font-size:12px;margin-bottom:4px}.mastertitle{color:var(--muted);font-size:12px;margin-bottom:3px}.sub{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.actions button{padding:6px 9px;font-size:12px}.empty{padding:50px;text-align:center;color:var(--muted);font-size:17px}#progress{height:4px;background:#e2e6eb;position:fixed;left:285px;right:0;top:74px;z-index:10;display:none}#progress>div{height:100%;background:var(--accent);width:0}.modalback{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;z-index:50;padding:25px}.modal{width:min(1600px,97vw);height:min(960px,95vh);background:#fff;border-radius:9px;box-shadow:0 15px 50px rgba(0,0,0,.3);display:grid;grid-template-columns:minmax(720px,1.8fr) minmax(370px,.62fr);overflow:hidden}.modalview{background:#eceff2;padding:16px;overflow:auto;display:flex;align-items:center;justify-content:center}.modalimgs{display:grid;grid-template-columns:1fr;grid-auto-rows:minmax(280px,1fr);gap:8px;width:100%;height:100%}.modalimgs.fallback.count-2,.modalimgs.fallback.count-3,.modalimgs.fallback.count-4{grid-template-columns:repeat(2,minmax(0,1fr))}.modalimgs.fallback.count-5,.modalimgs.fallback.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}.modalimgs img{width:100%;height:100%;min-width:0;min-height:280px;object-fit:contain;background:white;border:1px solid #c8cdd3}.modalimgs.full{background:white;padding:14px}.modalinfo{padding:18px;overflow:auto;position:relative}.close{position:absolute;right:12px;top:10px;font-size:22px;border:0}.modalinfo h2{padding-right:35px;margin-top:3px;margin-bottom:3px}.detailtext{white-space:pre-wrap;background:#f7f8fa;border:1px solid var(--border);padding:10px;border-radius:5px;max-height:300px;overflow:auto;font-size:12px}.kv{margin:8px 0}.kv b{display:block;font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}.badge{display:inline-block;min-width:18px;padding:1px 6px;border-radius:9px;background:#b3261e;color:#fff;font-size:11px;margin-left:6px}.diag{width:min(1100px,95vw);height:min(820px,92vh);background:#fff;border-radius:9px;box-shadow:0 15px 50px rgba(0,0,0,.3);padding:18px;overflow:auto;position:relative}.diag h2{margin:2px 0 10px}.diag h3{margin:16px 0 6px;font-size:14px}.diag table{border-collapse:collapse;width:100%;font-size:12px}.diag td,.diag th{border-bottom:1px solid var(--border);padding:4px 6px;text-align:left;vertical-align:top}.diag .ok{color:#1e6b34}.diag .bad{color:#b3261e;font-weight:600}.diag .lvl-ERROR td{color:#b3261e}.diag .lvl-WARNING td{color:#8a5a00}.diag .path{word-break:break-all}.toast{position:fixed;right:24px;bottom:24px;background:#20242a;color:#fff;padding:12px 16px;border-radius:7px;display:none;max-width:680px;z-index:80;box-shadow:var(--shadow)}@media(max-width:1100px){.app{grid-template-columns:230px 1fr}#progress{left:230px}.modal{grid-template-columns:1fr}.modalinfo{display:none}}
+:root{--card-w:420px;--bg:#f4f5f7;--panel:#fff;--border:#d7dbe0;--text:#20242a;--muted:#67717e;--accent:#315b86;--shadow:0 2px 10px rgba(0,0,0,.08)}*{box-sizing:border-box}body{margin:0;font:14px/1.35 "Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden}header{height:74px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:12px 18px}.brand{font-weight:700;font-size:19px;white-space:nowrap}.search{flex:1;min-width:280px;height:42px;border:1px solid #aeb6c0;border-radius:7px;padding:0 14px;font-size:17px}button{border:1px solid #aab2bc;background:#fff;border-radius:6px;padding:8px 12px;cursor:pointer;font-weight:600}button:hover{background:#f2f5f8}button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.sizebox{display:flex;align-items:center;gap:8px;white-space:nowrap;color:var(--muted)}.app{display:grid;grid-template-columns:285px 1fr;height:calc(100vh - 74px)}aside{background:#fff;border-right:1px solid var(--border);overflow:auto;padding:14px}.aside-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:5px 0 8px}.pathbox{font-size:12px;word-break:break-all;background:#f8f9fb;border:1px solid var(--border);border-radius:5px;padding:8px;margin-bottom:8px}.source,.cat{display:block;width:100%;text-align:left;border:0;border-radius:4px;padding:7px 8px;font-weight:400}.source.active,.cat.active{background:#e8eef5;font-weight:600}.cat{font-size:14px}.cat.sub{padding-left:24px;font-size:13px;color:#3d4753}.source{font-size:12px}.adv{margin-top:14px;border-top:1px solid var(--border);padding-top:10px}.adv>summary{cursor:pointer;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}.adv[open]>summary{margin-bottom:10px}#filterlabel{color:var(--text);font-weight:600}.srcswitch{display:flex;border:1px solid #aab2bc;border-radius:7px;overflow:hidden;margin:0 0 14px}.srcswitch button{flex:1;border:0;border-radius:0;padding:7px 4px;font-size:12px;background:#fff}.srcswitch button+button{border-left:1px solid #aab2bc}.srcswitch button.on{background:var(--accent);color:#fff}.jobbadge{position:absolute;left:7px;top:7px;background:#9a4b00;color:#fff;border-radius:4px;padding:3px 7px;font-size:11px;font-weight:700;letter-spacing:.03em;pointer-events:none}.jobtags{color:#9a4b00;font-size:12px;margin-bottom:3px}.count{float:right;color:var(--muted)}.thumbtools{border:1px solid var(--border);border-radius:7px;padding:10px;background:#f8f9fb}.thumbtools input[type=text]{width:100%;padding:7px 8px;border:1px solid #b9c0c8;border-radius:5px;margin:4px 0 8px}.thumbtools button{width:100%;margin-top:6px}.smallnote{font-size:11px;color:var(--muted);margin-top:7px}.thumbstatus{font-size:12px;margin:7px 0;color:#45515e}main{overflow:auto;padding:16px 18px 50px}.statusline{display:flex;gap:16px;align-items:center;color:var(--muted);margin:0 0 13px}.notice{background:#edf4fb;border:1px solid #b8cee3;border-radius:6px;padding:8px 10px;color:#2f4d69}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(var(--card-w),100%),1fr));gap:16px;align-items:start}.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;min-width:0}.thumb{height:calc(var(--card-w)*.72);min-height:250px;max-height:485px;background:#e9ebee;display:grid;grid-template-columns:1fr;grid-auto-rows:minmax(0,1fr);gap:2px;align-items:stretch;justify-content:stretch;overflow:hidden;cursor:pointer;position:relative}.thumb.fallback.count-2,.thumb.fallback.count-3,.thumb.fallback.count-4{grid-template-columns:repeat(2,minmax(0,1fr))}.thumb.fallback.count-5,.thumb.fallback.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}.thumb img{width:100%;height:100%;min-width:0;min-height:0;object-fit:contain;background:white}.thumb.full{background:white;padding:10px}.thumb.full img{max-width:100%;max-height:100%}.previewbadge{position:absolute;right:7px;bottom:7px;background:rgba(30,36,43,.78);color:#fff;border-radius:4px;padding:3px 6px;font-size:10px;pointer-events:none}.meta{padding:11px 12px}.title{font-size:16px;font-weight:700;margin:0 0 4px}.rawtitle{color:#4e5966;font-size:12px;margin-bottom:4px}.mastertitle{color:var(--muted);font-size:12px;margin-bottom:3px}.sub{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.actions button{padding:6px 9px;font-size:12px}.empty{padding:50px;text-align:center;color:var(--muted);font-size:17px}#progress{height:4px;background:#e2e6eb;position:fixed;left:285px;right:0;top:74px;z-index:10;display:none}#progress>div{height:100%;background:var(--accent);width:0}.modalback{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;z-index:50;padding:25px}.modal{width:min(1600px,97vw);height:min(960px,95vh);background:#fff;border-radius:9px;box-shadow:0 15px 50px rgba(0,0,0,.3);display:grid;grid-template-columns:minmax(720px,1.8fr) minmax(370px,.62fr);overflow:hidden}.modalview{background:#eceff2;padding:16px;overflow:auto;display:flex;align-items:center;justify-content:center}.modalimgs{display:grid;grid-template-columns:1fr;grid-auto-rows:minmax(280px,1fr);gap:8px;width:100%;height:100%}.modalimgs.fallback.count-2,.modalimgs.fallback.count-3,.modalimgs.fallback.count-4{grid-template-columns:repeat(2,minmax(0,1fr))}.modalimgs.fallback.count-5,.modalimgs.fallback.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}.modalimgs img{width:100%;height:100%;min-width:0;min-height:280px;object-fit:contain;background:white;border:1px solid #c8cdd3}.modalimgs.full{background:white;padding:14px}.modalinfo{padding:18px;overflow:auto;position:relative}.close{position:absolute;right:12px;top:10px;font-size:22px;border:0}.modalinfo h2{padding-right:35px;margin-top:3px;margin-bottom:3px}.detailtext{white-space:pre-wrap;background:#f7f8fa;border:1px solid var(--border);padding:10px;border-radius:5px;max-height:300px;overflow:auto;font-size:12px}.kv{margin:8px 0}.kv b{display:block;font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}.badge{display:inline-block;min-width:18px;padding:1px 6px;border-radius:9px;background:#b3261e;color:#fff;font-size:11px;margin-left:6px}.diag{width:min(1100px,95vw);height:min(820px,92vh);background:#fff;border-radius:9px;box-shadow:0 15px 50px rgba(0,0,0,.3);padding:18px;overflow:auto;position:relative}.diag h2{margin:2px 0 10px}.diag h3{margin:16px 0 6px;font-size:14px}.diag table{border-collapse:collapse;width:100%;font-size:12px}.diag td,.diag th{border-bottom:1px solid var(--border);padding:4px 6px;text-align:left;vertical-align:top}.diag .ok{color:#1e6b34}.diag .bad{color:#b3261e;font-weight:600}.diag .lvl-ERROR td{color:#b3261e}.diag .lvl-WARNING td{color:#8a5a00}.diag .path{word-break:break-all}.toast{position:fixed;right:24px;bottom:24px;background:#20242a;color:#fff;padding:12px 16px;border-radius:7px;display:none;max-width:680px;z-index:80;box-shadow:var(--shadow)}@media(max-width:1100px){.app{grid-template-columns:230px 1fr}#progress{left:230px}.modal{grid-template-columns:1fr}.modalinfo{display:none}}
 </style></head><body>
 <header><div class="brand">Detail Manager <span style="font-weight:400;color:#788391">Prototype 0.1</span></div><input id="search" class="search" placeholder="Search: floor, FLR, retaining wall, RET, I-joist, TJI..." autofocus><div class="sizebox"><span>Thumbnail</span><input id="size" type="range" min="320" max="640" value="420" step="20"><span id="sizeval">420</span></div><button id="refresh">Refresh Index</button></header><div id="progress"><div></div></div>
-<div class="app"><aside><div class="aside-title">Categories</div><button class="cat active" data-cat="">All Details <span id="allcount" class="count"></span></button><div id="cats"></div><details class="adv"><summary>Source files (advanced)</summary><div id="sources"></div></details><details class="adv"><summary>Library and admin tools</summary><div class="aside-title">Library</div><div id="libpath" class="pathbox">No library selected</div><button id="choose" style="width:100%;margin-bottom:12px">Choose Library Folder</button><div class="aside-title" style="margin-top:12px">Full Thumbnails</div><div class="thumbtools"><label style="font-size:11px;color:#67717e">Hide exact LayOut layer name(s)</label><input id="hiddenlayers" type="text" value="GUIDES" title="Comma-separated exact layer names"><div id="thumbstatus" class="thumbstatus"></div><div class="smallnote"><b>07A:</b> Tight crop uses 0.01&quot; top and 0.025&quot; left/right/bottom margins; white padding is added in the card instead of capturing adjacent page content.</div><button id="preparethumbs" class="primary">1. Prepare Render Queue</button><div class="smallnote">2. In SketchUp Ruby Console, load <b>thumbnail_worker.rb</b>. It renders the queued masters read-only with these layers hidden.</div><button id="processthumbs">3. Process Rendered Thumbnails</button></div><div class="aside-title" style="margin-top:18px">Temp</div><button id="cleanup" style="width:100%">Clean Staging Files</button></details><button id="diagbtn" style="width:100%;margin-top:14px">Diagnostics<span id="diagbadge" class="badge" style="display:none"></span></button></aside>
+<div class="app"><aside><div id="srcswitch" class="srcswitch" style="display:none"><button data-src="library" class="on">Library</button><button data-src="projects">Old Projects</button><button data-src="both">Both</button></div><div id="catbox"><div class="aside-title">Categories</div><button class="cat active" data-cat="">All Details <span id="allcount" class="count"></span></button><div id="cats"></div></div><div id="jobsbox" style="display:none;margin-top:10px"><div class="aside-title">Old Projects: Jobs</div><button class="cat" data-job="">All Jobs <span id="alljobs" class="count"></span></button><div id="jobs"></div></div><details class="adv"><summary>Source files (advanced)</summary><div id="sources"></div></details><details class="adv"><summary>Library and admin tools</summary><div class="aside-title">Library</div><div id="libpath" class="pathbox">No library selected</div><button id="choose" style="width:100%;margin-bottom:12px">Choose Library Folder</button><div class="aside-title">Old Projects folder</div><div id="projpath" class="pathbox">Not set</div><button id="chooseproj" style="width:100%;margin-bottom:12px">Choose Old Projects Folder</button><div class="aside-title" style="margin-top:12px">Full Thumbnails</div><div class="thumbtools"><label style="font-size:11px;color:#67717e">Hide exact LayOut layer name(s)</label><input id="hiddenlayers" type="text" value="GUIDES" title="Comma-separated exact layer names"><div id="thumbstatus" class="thumbstatus"></div><div class="smallnote"><b>07A:</b> Tight crop uses 0.01&quot; top and 0.025&quot; left/right/bottom margins; white padding is added in the card instead of capturing adjacent page content.</div><button id="preparethumbs" class="primary">1. Prepare Render Queue</button><div class="smallnote">2. In SketchUp Ruby Console, load <b>thumbnail_worker.rb</b>. It renders the queued masters read-only with these layers hidden.</div><button id="processthumbs">3. Process Rendered Thumbnails</button></div><div class="aside-title" style="margin-top:18px">Temp</div><button id="cleanup" style="width:100%">Clean Staging Files</button></details><button id="diagbtn" style="width:100%;margin-top:14px">Diagnostics<span id="diagbadge" class="badge" style="display:none"></span></button></aside>
 <main><div class="statusline"><span id="resultcount"></span><span id="filterlabel"></span><span id="indexstatus"></span></div><div id="grid" class="grid"></div></main></div>
 <div id="modalback" class="modalback"><div class="modal"><div class="modalview"><div id="modalimgs" class="modalimgs"></div></div><div class="modalinfo"><button id="close" class="close">×</button><h2 id="modaltitle"></h2><div id="modalraw" class="rawtitle"></div><div id="modalmeta"></div><h3>Notes on the detail</h3><div id="modaltext" class="detailtext"></div><details style="margin-top:8px"><summary style="cursor:pointer;color:var(--muted);font-size:12px">Everything read from the LayOut file (raw)</summary><div id="modalrawtext" class="detailtext" style="margin-top:6px"></div></details><div class="actions" style="margin-top:14px"><button id="modalopen" class="primary">Open Detail</button><button id="modalmaster">Open Master LayOut</button><button id="modalskp">Open SketchUp Source</button></div></div></div></div><div id="diagback" class="modalback"><div class="diag"><button id="diagclose" class="close">×</button><h2>Diagnostics</h2><div id="diagbody"></div></div></div><div id="toast" class="toast"></div>
 <script>
-let currentSource='',currentCat='',currentDetails=[],modalDetail=null,timer=null;const q=s=>document.querySelector(s),grid=q('#grid');function esc(s){return (s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function api(url,opt){const r=await fetch(url,opt),j=await r.json();if(!r.ok)throw new Error(j.error||r.statusText);return j}function toast(msg){const t=q('#toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',8500)}function vclass(d){return 'count-'+Math.min(Math.max(d.viewports.length,1),6)}
+let currentSource='',currentCat='',currentJob='',currentSrc='library',currentDetails=[],modalDetail=null,timer=null;const q=s=>document.querySelector(s),grid=q('#grid');function esc(s){return (s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function api(url,opt){const r=await fetch(url,opt),j=await r.json();if(!r.ok)throw new Error(j.error||r.statusText);return j}function toast(msg){const t=q('#toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',8500)}function vclass(d){return 'count-'+Math.min(Math.max(d.viewports.length,1),6)}
 function thumbHtml(d,modal=false){if(d.full_preview_relpath){return `<img loading="lazy" src="/fullcache/${encodeURI(d.full_preview_relpath)}" title="Full LayOut detail"><span class="previewbadge">Full LayOut Preview</span>`}if(!d.viewports.length)return '<div style="color:#777">No preview</div>';let imgs=d.viewports.slice(0,6).map(v=>v.preview_relpath?`<img loading="lazy" src="/cache/${encodeURI(v.preview_relpath)}" title="${esc(v.scene_name)}">`:'').join('');return imgs+`<span class="previewbadge">Viewport Cache</span>`}
-function render(){q('#resultcount').textContent=`${currentDetails.length} result${currentDetails.length==1?'':'s'}`;grid.innerHTML='';if(!currentDetails.length){grid.innerHTML='<div class="empty">No details found.</div>';return}currentDetails.forEach(d=>{let c=document.createElement('article');c.className='card';let full=!!d.full_preview_relpath;c.innerHTML=`<div class="thumb ${full?'full':'fallback '+vclass(d)}">${thumbHtml(d)}</div><div class="meta"><div class="title">${esc(d.expanded_title||d.display_title)}</div>${d.scene_label?`<div class="rawtitle">${esc(d.scene_label)}</div>`:''}<div class="mastertitle">${esc(d.master_title||'')}</div><div class="sub">${esc(d.layout_filename)} · ${esc(d.page_name)} · ${d.viewport_count} viewport${d.viewport_count==1?'':'s'}</div><div class="actions"><button class="od primary">Open Detail</button><button class="om">Master</button><button class="info">Preview</button></div></div>`;c.querySelector('.thumb').onclick=()=>openModal(d);c.querySelector('.info').onclick=()=>openModal(d);c.querySelector('.od').onclick=e=>{e.stopPropagation();openDetail(d)};c.querySelector('.om').onclick=e=>{e.stopPropagation();openMaster(d)};grid.appendChild(c)})}
-async function search(){try{let j=await api(`/api/search?q=${encodeURIComponent(q('#search').value)}&source=${encodeURIComponent(currentSource)}&category=${encodeURIComponent(currentCat)}`);currentDetails=j.details;render()}catch(e){toast(e.message)}}
-function setFilter(cat,src,btn,label){currentCat=cat;currentSource=src;document.querySelectorAll('.source,.cat').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');q('#filterlabel').textContent=label?'in '+label:'';search()}
+function render(){q('#resultcount').textContent=`${currentDetails.length} result${currentDetails.length==1?'':'s'}`;grid.innerHTML='';if(!currentDetails.length){grid.innerHTML='<div class="empty">No details found.</div>';return}currentDetails.forEach(d=>{let c=document.createElement('article');c.className='card';let full=!!d.full_preview_relpath;let proj=d.source_kind==='projects';c.innerHTML=`<div class="thumb ${full?'full':'fallback '+vclass(d)}">${thumbHtml(d)}${proj?`<span class="jobbadge">JOB ${esc(d.job_number||'?')}${d.sheet?' · '+esc(d.sheet):''}</span>`:''}</div><div class="meta"><div class="title">${esc(d.expanded_title||d.display_title)}</div>${proj?`<div class="jobtags">${d.library_match?'Same as Library: '+esc(d.library_match.title):esc((d.model_tags||[]).join(' · '))}</div>`:''}${d.scene_label?`<div class="rawtitle">${esc(d.scene_label)}</div>`:''}<div class="mastertitle">${esc(d.master_title||'')}</div><div class="sub">${esc(d.layout_filename)} · ${esc(d.page_name)} · ${d.viewport_count} viewport${d.viewport_count==1?'':'s'}</div><div class="actions"><button class="od primary">Open Detail</button><button class="om">Master</button><button class="info">Preview</button></div></div>`;c.querySelector('.thumb').onclick=()=>openModal(d);c.querySelector('.info').onclick=()=>openModal(d);c.querySelector('.od').onclick=e=>{e.stopPropagation();openDetail(d)};c.querySelector('.om').onclick=e=>{e.stopPropagation();openMaster(d)};grid.appendChild(c)})}
+async function search(){try{let j=await api(`/api/search?q=${encodeURIComponent(q('#search').value)}&source=${encodeURIComponent(currentSource)}&category=${encodeURIComponent(currentCat)}&src=${currentSrc}&job=${encodeURIComponent(currentJob)}`);currentDetails=j.details;render()}catch(e){toast(e.message)}}
+function setFilter(cat,src,btn,label,job){currentCat=cat;currentSource=src;currentJob=job||'';document.querySelectorAll('.source,.cat').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');q('#filterlabel').textContent=label?'in '+label:'';search()}
 function mkCat(cls,label,count,key,full){let b=document.createElement('button');b.className=cls;b.dataset.cat=key;b.innerHTML=`${esc(label)} <span class="count">${count}</span>`;if(currentCat===key)b.classList.add('active');b.onclick=()=>setFilter(key,'',b,full);return b}
-async function loadSources(){let j=await api('/api/status');q('#libpath').textContent=j.library_root||'No library selected';q('#sources').innerHTML='';q('#cats').innerHTML='';let total=0;j.sources.forEach(s=>{total+=s.detail_count||0;let b=document.createElement('button');b.className='source';b.innerHTML=`${esc(s.layout_filename)} <span class="count">${s.detail_count||0}</span>`;b.title=s.layout_file;if(currentSource===s.layout_file)b.classList.add('active');b.onclick=()=>setFilter('',s.layout_file,b,s.layout_filename);q('#sources').appendChild(b)});(j.categories||[]).forEach(g=>{q('#cats').appendChild(mkCat('cat',g.name,g.count,g.key,g.name));(g.children||[]).forEach(c=>q('#cats').appendChild(mkCat('cat sub',c.sub,c.count,c.key,g.name+' › '+c.sub)))});q('#allcount').textContent=total;let all=q('.cat[data-cat=""]');all.onclick=()=>setFilter('','',all,'');if(!currentCat&&!currentSource)all.classList.add('active');await loadThumbStatus()}
+function mkJob(j){let b=document.createElement('button');b.className='cat';b.dataset.job=j.job;b.innerHTML=`Job ${esc(j.job)} <span class="count">${j.count}</span>`;b.title=`${j.files} file(s)`;if(currentJob===j.job)b.classList.add('active');b.onclick=()=>setFilter('','',b,'Job '+j.job,j.job);return b}
+function showSrc(){q('#catbox').style.display=currentSrc==='projects'?'none':'block';q('#jobsbox').style.display=currentSrc==='library'?'none':'block';document.querySelectorAll('#srcswitch button').forEach(b=>b.classList.toggle('on',b.dataset.src===currentSrc))}
+function setSrc(v){currentSrc=v;showSrc();setFilter('','',v==='projects'?q('.cat[data-job=""]'):q('.cat[data-cat=""]'),'')}
+async function loadSources(){let j=await api('/api/status');q('#libpath').textContent=j.library_root||'No library selected';q('#projpath').textContent=j.projects_root||'Not set';q('#sources').innerHTML='';q('#cats').innerHTML='';q('#jobs').innerHTML='';let total=0;j.sources.forEach(s=>{total+=s.detail_count||0;let b=document.createElement('button');b.className='source';b.innerHTML=`${esc(s.layout_filename)} <span class="count">${s.detail_count||0}</span>`;b.title=s.layout_file;if(currentSource===s.layout_file)b.classList.add('active');b.onclick=()=>setFilter('',s.layout_file,b,s.layout_filename);q('#sources').appendChild(b)});let libTotal=0;(j.categories||[]).forEach(g=>{libTotal+=g.count;q('#cats').appendChild(mkCat('cat',g.name,g.count,g.key,g.name));(g.children||[]).forEach(c=>q('#cats').appendChild(mkCat('cat sub',c.sub,c.count,c.key,g.name+' \u203a '+c.sub)))});let jobs=j.jobs||[],jobTotal=0;jobs.forEach(x=>{jobTotal+=x.count;q('#jobs').appendChild(mkJob(x))});q('#allcount').textContent=libTotal;q('#alljobs').textContent=jobTotal;q('#srcswitch').style.display=jobs.length?'flex':'none';if(!jobs.length&&currentSrc!=='library'){currentSrc='library'}showSrc();let all=q('.cat[data-cat=""]');all.onclick=()=>setFilter('','',all,'');let allj=q('.cat[data-job=""]');allj.onclick=()=>setFilter('','',allj,'');if(!currentCat&&!currentSource&&!currentJob)(currentSrc==='projects'?allj:all).classList.add('active');await loadThumbStatus()}
 async function loadThumbStatus(){try{let s=await api('/api/thumbnail-status');q('#hiddenlayers').value=(s.hidden_layers||['GUIDES']).join(', ');q('#thumbstatus').textContent=`${s.full_preview_count}/${s.detail_count} full previews · ${s.render_manifest_count} rendered master${s.render_manifest_count==1?'':'s'} ready`;}catch(e){}}
 async function choose(){try{let j=await api('/api/choose-library',{method:'POST'});if(j.library_root){q('#libpath').textContent=j.library_root;startIndex(j.library_root)}}catch(e){toast(e.message)}}async function startIndex(root){try{await api('/api/index',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({library_root:root})});pollIndex()}catch(e){toast(e.message)}}async function pollIndex(){let j=await api('/api/index-status'),p=q('#progress'),bar=p.firstElementChild;if(j.running){p.style.display='block';bar.style.width=(j.total?100*j.done/j.total:2)+'%';q('#indexstatus').textContent=`Indexing ${j.done}/${j.total}: ${j.current||j.message}`;setTimeout(pollIndex,500)}else{p.style.display='none';q('#indexstatus').textContent=j.message||'';await loadSources();await search();if(j.errors?.length)toast(`${j.errors.length} file(s) had indexing errors. Open Diagnostics (bottom of the left panel) for the list.`);loadDiagBadge()}}
 async function openDetail(d){try{await api('/api/open-detail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({detail_key:d.detail_key})});toast(`Opened lightweight staging detail (${d.viewport_count} viewport${d.viewport_count==1?'':'s'}). Copy it normally, close staging, then paste into your project.`)}catch(e){toast(e.message)}}async function openMaster(d){try{await api('/api/open-master',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({detail_key:d.detail_key})})}catch(e){toast(e.message)}}async function openSkp(d){try{await api('/api/open-skp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({detail_key:d.detail_key})})}catch(e){toast(e.message)}}
-function openModal(d){modalDetail=d;q('#modaltitle').textContent=d.expanded_title||d.display_title;q('#modalraw').textContent=d.scene_label||'';let full=!!d.full_preview_relpath;q('#modalimgs').className='modalimgs '+(full?'full':'fallback '+vclass(d));q('#modalimgs').innerHTML=thumbHtml(d,true);let paths=d.skp_paths_exact||[];q('#modalmeta').innerHTML=`<div class="kv"><b>Intended Master Title</b>${esc(d.master_title||'')}</div><div class="kv"><b>Source LayOut</b>${esc(d.layout_filename)}</div><div class="kv"><b>Page</b>${esc(d.page_name)}</div><div class="kv"><b>Scene(s)</b>${d.viewports.map(v=>esc(v.scene_name)).join('<br>')}</div><div class="kv"><b>SketchUp reference path</b>${paths.map(esc).join('<br>')}</div>`;q('#modaltext').textContent=d.clean_text?(d.notes_text||'(no notes)'):(d.searchable_text||'');q('#modalrawtext').textContent=d.raw_text||'(refresh the index to see the raw text)';q('#modalback').style.display='flex'}q('#close').onclick=()=>q('#modalback').style.display='none';q('#modalback').onclick=e=>{if(e.target===q('#modalback'))q('#modalback').style.display='none'};q('#modalopen').onclick=()=>modalDetail&&openDetail(modalDetail);q('#modalmaster').onclick=()=>modalDetail&&openMaster(modalDetail);q('#modalskp').onclick=()=>modalDetail&&openSkp(modalDetail);
-q('#search').oninput=()=>{clearTimeout(timer);timer=setTimeout(search,180)};q('#size').oninput=e=>{let v=e.target.value;document.documentElement.style.setProperty('--card-w',v+'px');q('#sizeval').textContent=v};q('#choose').onclick=choose;q('#refresh').onclick=async()=>{let j=await api('/api/status');j.library_root?startIndex(j.library_root):choose()};q('#cleanup').onclick=async()=>{let j=await api('/api/cleanup',{method:'POST'});toast(`Deleted ${j.deleted} staging file(s).`)};
+function openModal(d){modalDetail=d;q('#modaltitle').textContent=d.expanded_title||d.display_title;q('#modalraw').textContent=d.scene_label||'';let full=!!d.full_preview_relpath;q('#modalimgs').className='modalimgs '+(full?'full':'fallback '+vclass(d));q('#modalimgs').innerHTML=thumbHtml(d,true);let paths=d.skp_paths_exact||[];q('#modalmeta').innerHTML=(d.source_kind==='projects'?`<div class="kv"><b>Old Projects</b>Job ${esc(d.job_number||'?')}${d.sheet?', sheet '+esc(d.sheet):''}</div><div class="kv"><b>SketchUp models</b>${esc((d.model_tags||[]).join(', '))}${d.library_match?'<br>Same as Library detail: '+esc(d.library_match.title)+' ('+esc(d.library_match.layout_filename)+')':''}</div>`:'')+`<div class="kv"><b>Intended Master Title</b>${esc(d.master_title||'')}</div><div class="kv"><b>Source LayOut</b>${esc(d.layout_filename)}</div><div class="kv"><b>Page</b>${esc(d.page_name)}</div><div class="kv"><b>Scene(s)</b>${d.viewports.map(v=>esc(v.scene_name)).join('<br>')}</div><div class="kv"><b>SketchUp reference path</b>${paths.map(esc).join('<br>')}</div>`;q('#modaltext').textContent=d.clean_text?(d.notes_text||'(no notes)'):(d.searchable_text||'');q('#modalrawtext').textContent=d.raw_text||'(refresh the index to see the raw text)';q('#modalback').style.display='flex'}q('#close').onclick=()=>q('#modalback').style.display='none';q('#modalback').onclick=e=>{if(e.target===q('#modalback'))q('#modalback').style.display='none'};q('#modalopen').onclick=()=>modalDetail&&openDetail(modalDetail);q('#modalmaster').onclick=()=>modalDetail&&openMaster(modalDetail);q('#modalskp').onclick=()=>modalDetail&&openSkp(modalDetail);
+q('#search').oninput=()=>{clearTimeout(timer);timer=setTimeout(search,180)};q('#size').oninput=e=>{let v=e.target.value;document.documentElement.style.setProperty('--card-w',v+'px');q('#sizeval').textContent=v};q('#choose').onclick=choose;q('#chooseproj').onclick=async()=>{try{let j=await api('/api/choose-projects',{method:'POST'});q('#projpath').textContent=j.projects_root||'Not set';if(j.projects_root)toast('Old Projects folder set. Click Refresh Index to read it.')}catch(e){toast(e.message)}};document.querySelectorAll('#srcswitch button').forEach(b=>b.onclick=()=>setSrc(b.dataset.src));q('#refresh').onclick=async()=>{let j=await api('/api/status');j.library_root?startIndex(j.library_root):choose()};q('#cleanup').onclick=async()=>{let j=await api('/api/cleanup',{method:'POST'});toast(`Deleted ${j.deleted} staging file(s).`)};
 q('#preparethumbs').onclick=async()=>{try{let hidden=q('#hiddenlayers').value.split(',').map(x=>x.trim()).filter(Boolean);let j=await api('/api/prepare-thumbnails',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hidden_layers:hidden})});toast(`Prepared ${j.job_count} master file(s). Now load thumbnail_worker.rb in the SketchUp Ruby Console.`);await loadThumbStatus()}catch(e){toast(e.message)}};
 q('#processthumbs').onclick=async()=>{try{q('#indexstatus').textContent='Processing full-detail thumbnails...';let j=await api('/api/process-thumbnails',{method:'POST'});let probs=(j.warnings?.length||0)+(j.skipped_files?.length||0);toast(`Created/updated ${j.processed_details} full previews from ${j.processed_files} master file(s).${probs?' '+probs+' warning(s) or skipped file(s) - see Diagnostics.':''}`);loadDiagBadge();await loadThumbStatus();await search();q('#indexstatus').textContent='Full thumbnails processed';}catch(e){toast(e.message);q('#indexstatus').textContent=''}};
 async function loadDiagBadge(){try{let d=await api('/api/diagnostics');let b=q('#diagbadge');b.textContent=d.problem_count;b.style.display=d.problem_count?'inline-block':'none';return d}catch(e){return null}}
 function diagRows(rows){return rows.map(r=>`<tr><th style="width:190px">${esc(r[0])}</th><td class="path">${r[1]}</td></tr>`).join('')}
-async function openDiag(){let d=await loadDiagBadge();if(!d){toast('Diagnostics could not be loaded.');return}let probsOnly=q('#diagprob')?q('#diagprob').checked:true;let log=(d.log||[]).filter(x=>!probsOnly||x.level!=='INFO').slice(-150).reverse();let h=`<table>${diagRows([['Program',esc(d.app)+' (Python '+esc(d.python)+')'],['Library folder',esc(d.library_root||'none chosen')+(d.library_root?(d.library_reachable?' <span class="ok">reachable</span>':' <span class="bad">NOT reachable - check the drive</span>'):'')],['Indexed',`${d.master_count} master file(s), ${d.detail_count} detail(s), ${d.full_preview_count} full thumbnail(s)`],['Last index (UTC)',esc(d.last_indexed_utc||'never')],['Data folder',esc(d.data_dir)],['Log file',d.log_path?esc(d.log_path):'<span class="bad">not available: '+esc(d.log_setup_error)+'</span>']])}</table><div class="actions"><button id="diagopen">Open Log Folder</button><button id="diagrefresh">Refresh</button></div>`;
+async function openDiag(){let d=await loadDiagBadge();if(!d){toast('Diagnostics could not be loaded.');return}let probsOnly=q('#diagprob')?q('#diagprob').checked:true;let log=(d.log||[]).filter(x=>!probsOnly||x.level!=='INFO').slice(-150).reverse();let h=`<table>${diagRows([['Program',esc(d.app)+' (Python '+esc(d.python)+')'],['Library folder',esc(d.library_root||'none chosen')+(d.library_root?(d.library_reachable?' <span class="ok">reachable</span>':' <span class="bad">NOT reachable - check the drive</span>'):'')],['Indexed',`${d.master_count} master file(s), ${d.detail_count} detail(s), ${d.full_preview_count} full thumbnail(s)`],['Old Projects folder',d.projects_root?esc(d.projects_root)+(d.projects_reachable?' <span class="ok">reachable</span>':' <span class="bad">NOT reachable</span>')+` (${d.project_file_count} file(s), ${d.project_detail_count} detail(s))`:'not set'],['Last index (UTC)',esc(d.last_indexed_utc||'never')],['Data folder',esc(d.data_dir)],['Log file',d.log_path?esc(d.log_path):'<span class="bad">not available: '+esc(d.log_setup_error)+'</span>']])}</table><div class="actions"><button id="diagopen">Open Log Folder</button><button id="diagrefresh">Refresh</button></div>`;
 h+=`<h3>Master files that could not be indexed (${d.failed_masters.length})</h3>`+(d.failed_masters.length?`<table>${d.failed_masters.map(f=>`<tr><td title="${esc(f.layout_file)}">${esc(f.layout_filename)}</td><td class="bad">${esc(f.last_error)}</td></tr>`).join('')}</table>`:'<div class="ok">None.</div>');
+h+=`<h3>SketchUp views not inside a detail group (skipped)</h3>`+(d.skipped_viewports.length?`<table>${d.skipped_viewports.map(f=>`<tr><td title="${esc(f.layout_file)}">${esc(f.layout_filename)}</td><td>${f.skipped_viewports} view(s)</td></tr>`).join('')}</table>`:'<div class="ok">None.</div>');
 h+=`<h3>Last thumbnail render in SketchUp</h3>`+(d.worker?`<div>${esc(d.worker.completed_at)}: ${d.worker.successes} rendered, ${d.worker.failures.length} failed</div>`+(d.worker.failures.length?`<table>${d.worker.failures.map(f=>`<tr><td class="path">${esc(f.file)}</td><td class="bad">${esc(f.error)}</td></tr>`).join('')}</table>`:''):'<div>No render has been run from this data folder yet.</div>');
 h+=`<h3>Recent log entries <label style="font-weight:400;margin-left:10px"><input type="checkbox" id="diagprob" ${probsOnly?'checked':''}> problems only</label></h3>`+(log.length?`<table>${log.map(x=>`<tr class="lvl-${esc(x.level)}"><td style="white-space:nowrap">${esc(x.time)}</td><td>${esc(x.level)}</td><td class="path">${esc(x.message)}</td></tr>`).join('')}</table>`:`<div class="ok">${probsOnly?'No warnings or errors in the log.':'The log is empty.'}</div>`);
 q('#diagbody').innerHTML=h;q('#diagback').style.display='flex';q('#diagprob').onchange=openDiag;q('#diagrefresh').onclick=openDiag;q('#diagopen').onclick=async()=>{try{await api('/api/open-log-folder',{method:'POST'})}catch(e){toast(e.message)}}}
@@ -1402,14 +1574,14 @@ class Handler(BaseHTTPRequestHandler):
         u = urllib.parse.urlparse(self.path)
         if u.path == "/":
             b = INDEX_HTML.encode("utf-8"); self.send_response(200); self.send_header("Content-Type", "text/html; charset=utf-8"); self.send_header("Content-Length", str(len(b))); self.end_headers(); self.wfile.write(b); return
-        if u.path == "/api/status": self.send_json({"library_root": DB.get_config().get("library_root", ""), "sources": library_sources(), "categories": library_categories()}); return
+        if u.path == "/api/status": cfg = DB.get_config(); self.send_json({"library_root": cfg.get("library_root", ""), "projects_root": cfg.get("projects_root", ""), "sources": library_sources(), "categories": library_categories(), "jobs": library_jobs()}); return
         if u.path == "/api/thumbnail-status": self.send_json(thumbnail_status()); return
         if u.path == "/api/diagnostics": self.send_json(diagnostics()); return
         if u.path == "/api/index-status":
             with INDEX_LOCK: state = dict(INDEX_STATE)
             self.send_json(state); return
         if u.path == "/api/search":
-            qs = urllib.parse.parse_qs(u.query); self.send_json({"details": search_details(qs.get("q", [""])[0], qs.get("source", [""])[0], category=qs.get("category", [""])[0])}); return
+            qs = urllib.parse.parse_qs(u.query); self.send_json({"details": search_details(qs.get("q", [""])[0], qs.get("source", [""])[0], category=qs.get("category", [""])[0], src=qs.get("src", ["library"])[0], job=qs.get("job", [""])[0])}); return
         if u.path.startswith("/cache/"):
             rel = urllib.parse.unquote(u.path[len("/cache/"):]); p = DB.preview_root / rel
             try:
@@ -1439,7 +1611,17 @@ class Handler(BaseHTTPRequestHandler):
                 if not root or not Path(root).is_dir(): raise ValueError("Choose a valid library folder")
                 with INDEX_LOCK:
                     if INDEX_STATE["running"]: raise ValueError("Index refresh is already running")
-                threading.Thread(target=index_library, args=(root,), daemon=True).start(); self.send_json({"started": True}); return
+                threading.Thread(target=index_library, args=(root, DB.get_config().get("projects_root") or None), daemon=True).start(); self.send_json({"started": True}); return
+            if u.path == "/api/choose-projects":
+                import tkinter as tk
+                from tkinter import filedialog
+                r = tk.Tk(); r.withdraw(); r.attributes('-topmost', True); folder = filedialog.askdirectory(title="Choose the Old Projects folder (finished job LayOut files)"); r.destroy()
+                if folder:
+                    lib = DB.get_config().get("library_root", "")
+                    if lib and _norm_for_compare(folder) == _norm_for_compare(lib):
+                        raise ValueError("The Old Projects folder cannot be the library folder itself")
+                    DB.save_config({"projects_root": folder}); log_info(f"Old Projects folder set: {folder}")
+                self.send_json({"projects_root": folder or DB.get_config().get("projects_root", "")}); return
             if u.path == "/api/prepare-thumbnails":
                 payload = self.read_json()
                 hidden = payload.get("hidden_layers", thumbnail_hidden_layers())
@@ -1477,7 +1659,7 @@ def main(argv=None):
     removed = cleanup_staging(24)
     if removed: log_info(f"Startup cleanup: deleted {removed} staging file(s) older than 24 hours")
     if args.library:
-        DB.save_config({"library_root": args.library}); threading.Thread(target=index_library, args=(args.library,), daemon=True).start()
+        DB.save_config({"library_root": args.library}); threading.Thread(target=index_library, args=(args.library, DB.get_config().get("projects_root") or None), daemon=True).start()
     try:
         server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     except OSError as exc:

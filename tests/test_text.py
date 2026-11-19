@@ -96,8 +96,9 @@ class TestInferTitle(unittest.TestCase):
         for junk in ("7", "XXX", "N.T.S."):
             self.assertEqual(dm.infer_title_with_source([junk, "N.T.S."], ["Scene A"], "Pg"), ("Scene A", "scene"), junk)
 
-    def test_nts_first_has_no_title(self):
-        self.assertEqual(dm.infer_title(["N.T.S.", "Something"], ["Scene A"], "Pg"), "Scene A")
+    def test_title_after_nts_when_none_before(self):
+        # Job files sometimes have the title box after N.T.S.
+        self.assertEqual(dm.infer_title_with_source(["N.T.S.", "Something"], ["Scene A"], "Pg"), ("Something", "drawing"))
 
     def test_falls_back_to_page_name(self):
         self.assertEqual(dm.infer_title_with_source([], [], "Page 3"), ("Page 3", "page"))
