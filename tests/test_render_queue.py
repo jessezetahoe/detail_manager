@@ -16,7 +16,7 @@ class TestRenderQueue(unittest.TestCase):
         dm.DB.save_config({"thumbnail_last_queued_layers": None, "thumbnail_hidden_layers": ["GUIDES"]})
         self.queue = dm.DB.thumbnail_job_root / "queue.json"
         con = dm.DB.connect()
-        con.execute("UPDATE details SET full_preview_relpath=''"); con.commit()  # start with no thumbnails
+        con.execute("UPDATE details SET full_preview_relpath='', render_note=''"); con.commit()  # start with no thumbnails
         self.masters = [r[0] for r in con.execute("SELECT layout_file FROM layout_files WHERE detail_count>0 ORDER BY layout_filename")]
         con.close()
 
@@ -61,6 +61,14 @@ class TestRenderQueue(unittest.TestCase):
         self.assertEqual(r["job_count"], len(self.masters))
         r = dm.prepare_thumbnail_queue(["GUIDES", "NOTES"])
         self.assertEqual(r["job_count"], 0)  # same layers again: nothing new
+
+    def test_off_page_details_do_not_count(self):
+        src = self.masters[0]
+        self.give_thumbnails(self.masters[1:])
+        con = dm.DB.connect()
+        con.execute("UPDATE details SET render_note='off_page' WHERE layout_file=?", (src,)); con.commit(); con.close()
+        self.assertEqual(dm.thumbnail_status()["needs_render_count"], 0)
+        self.assertEqual(dm.prepare_thumbnail_queue()["job_count"], 0)
 
     def test_processed_masters_are_skipped(self):
         src = self.masters[0]

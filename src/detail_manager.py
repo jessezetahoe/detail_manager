@@ -531,7 +531,7 @@ class LibraryDB:
           PRIMARY KEY(detail_key, viewport_id));
         """)
         detail_cols = {r[1] for r in cur.execute("PRAGMA table_info(details)")}
-        for col in ("raw_text", "clean_text", "ms_key", "dup_key"):
+        for col in ("raw_text", "clean_text", "ms_key", "dup_key", "render_note"):
             if col not in detail_cols: cur.execute(f"ALTER TABLE details ADD COLUMN {col} TEXT DEFAULT ''")
         cur.execute("CREATE INDEX IF NOT EXISTS details_ms_key ON details(ms_key)")
         cur.execute("CREATE INDEX IF NOT EXISTS details_dup_key ON details(dup_key)")
@@ -769,8 +769,8 @@ def _index_root(con: sqlite3.Connection, root_str: str, kind: str, other_root: s
                     if vp["preview_relpath"]: vp["preview_relpath"] = vp["preview_relpath"].replace(path_key(path_str)+"_tmp/", path_key(path_str)+"/", 1)
             if file_same:
                 # Only the reading rules changed, not the master: keep its full thumbnails.
-                kept = {r[0]: r[1] or "" for r in con.execute("SELECT detail_key, full_preview_relpath FROM details WHERE layout_file=?", (path_str,))}
-                for d in details: d["full_preview_relpath"] = kept.get(d["detail_key"], "")
+                kept = {r[0]: (r[1] or "", r[2] or "") for r in con.execute("SELECT detail_key, full_preview_relpath, render_note FROM details WHERE layout_file=?", (path_str,))}
+                for d in details: d["full_preview_relpath"], d["render_note"] = kept.get(d["detail_key"], ("", ""))
             con.execute("BEGIN")
             keys = [r[0] for r in con.execute("SELECT detail_key FROM details WHERE layout_file=?", (path_str,))]
             for k in keys:
@@ -779,7 +779,7 @@ def _index_root(con: sqlite3.Connection, root_str: str, kind: str, other_root: s
             con.execute("INSERT INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version,source_kind,skipped_viewports) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, summary["size_bytes"], summary["mtime_ns"], summary["page_count"], summary["detail_count"], summary["skp_reference_count"], datetime.now(timezone.utc).isoformat(), "", READ_RULES_KEY, kind, summary["skipped_viewports"]))
             for rid, r in summary["skp_references"].items(): con.execute("INSERT INTO skp_references VALUES (?,?,?,?)", (path_str, rid, r.get("externalTarget", ""), r.get("internalTarget", "")))
             for d in details:
-                con.execute("INSERT INTO details (detail_key,layout_file,layout_filename,page_ref_id,page_xml,page_name,page_index,group_index,viewport_count,primary_viewport_id,primary_scene_name,primary_scene_pid,display_title,expanded_title,master_title,skp_paths_exact,bounds_json,full_preview_relpath,searchable_text,raw_text,clean_text,ms_key,dup_key) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (d["detail_key"], d["layout_file"], d["layout_filename"], d["page_ref_id"], d["page_xml"], d["page_name"], d["page_index"], d["group_index"], d["viewport_count"], d["primary_viewport_id"], d["primary_scene_name"], d["primary_scene_pid"], d["display_title"], d["expanded_title"], d["master_title"], json.dumps(d["skp_paths_exact"]), json.dumps(d["bounds"]), d["full_preview_relpath"], d["searchable_text"], d["raw_text"], d["clean_text"], d["ms_key"], d["dup_key"]))
+                con.execute("INSERT INTO details (detail_key,layout_file,layout_filename,page_ref_id,page_xml,page_name,page_index,group_index,viewport_count,primary_viewport_id,primary_scene_name,primary_scene_pid,display_title,expanded_title,master_title,skp_paths_exact,bounds_json,full_preview_relpath,searchable_text,raw_text,clean_text,ms_key,dup_key,render_note) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (d["detail_key"], d["layout_file"], d["layout_filename"], d["page_ref_id"], d["page_xml"], d["page_name"], d["page_index"], d["group_index"], d["viewport_count"], d["primary_viewport_id"], d["primary_scene_name"], d["primary_scene_pid"], d["display_title"], d["expanded_title"], d["master_title"], json.dumps(d["skp_paths_exact"]), json.dumps(d["bounds"]), d["full_preview_relpath"], d["searchable_text"], d["raw_text"], d["clean_text"], d["ms_key"], d["dup_key"], d.get("render_note", "")))
                 with contextlib.suppress(sqlite3.OperationalError): con.execute("INSERT INTO detail_search(detail_key, searchable_text) VALUES (?,?)", (d["detail_key"], d["searchable_text"]))
                 for vp in d["viewports"]: con.execute("INSERT INTO viewports VALUES (?,?,?,?,?,?,?,?)", (d["detail_key"], vp["viewport_id"], vp["scene_name"], vp["scene_pid"], vp["skp_ref_id"], vp["image_ref_id"], vp["vector_ref_id"], vp["preview_relpath"]))
             con.commit()
@@ -1504,8 +1504,10 @@ def save_thumbnail_hidden_layers(values: Sequence[str]) -> List[str]:
 
 # Masters with at least one detail that still lacks its full thumbnail: new masters,
 # changed masters (their thumbnails are dropped by the index) and new job files.
+# Details parked OFF the printed sheet (common in job files) never appear in the PDF;
+# after one render they are noted 'off_page' and no longer count.
 NEEDS_RENDER_SQL = ("SELECT DISTINCT layout_file FROM details WHERE COALESCE(full_preview_relpath,'')='' "
-                    "AND COALESCE(bounds_json,'null') NOT IN ('null','')")
+                    "AND COALESCE(bounds_json,'null') NOT IN ('null','') AND COALESCE(render_note,'')<>'off_page'")
 
 
 def _missing_previews(con: sqlite3.Connection, layout_file: str) -> bool:
@@ -1611,6 +1613,7 @@ def process_thumbnail_renders(
     skipped_files = []
     warnings = []
     already_done = 0
+    off_page = 0
 
     for manifest_path in manifests:
         try:
@@ -1667,6 +1670,10 @@ def process_thumbnail_renders(
                 x2 = min(page_w, x2 + margin_right)
                 y2 = min(page_h, y2 + margin_bottom)
                 if x2 <= x1 or y2 <= y1:
+                    # Parked off the printed sheet: LayOut does not print it, so there is
+                    # nothing to crop. Keep the SketchUp-view thumbnail; stop asking for a render.
+                    con.execute("UPDATE details SET render_note='off_page' WHERE detail_key=?", (detail["detail_key"],))
+                    off_page += 1
                     continue
 
                 page = doc[page_index - 1]
@@ -1698,12 +1705,13 @@ def process_thumbnail_renders(
             skipped_files.append(f"{manifest_path.name}: {type(exc).__name__}: {exc}")
 
     con.close()
-    log_info(f"Thumbnails processed: {processed_details} detail(s) from {processed_files} master(s); {already_done} already done; {len(skipped_files)} skipped, {len(warnings)} warning(s)")
+    log_info(f"Thumbnails processed: {processed_details} detail(s) from {processed_files} master(s); {already_done} already done; {off_page} detail(s) off the printed sheet; {len(skipped_files)} skipped, {len(warnings)} warning(s)")
     for item in skipped_files: log_warning(f"Thumbnail skipped: {item}")
     for item in warnings: log_warning(f"Thumbnail warning: {item}")
     return {
         "processed_files": processed_files,
         "already_done": already_done,
+        "off_page": off_page,
         "processed_details": processed_details,
         "skipped_files": skipped_files,
         "warnings": warnings,
@@ -1780,7 +1788,7 @@ async function openDetail(d){try{await api('/api/open-detail',{method:'POST',hea
 function openModal(d){modalDetail=d;q('#modaltitle').textContent=d.expanded_title||d.display_title;q('#modalraw').textContent=d.scene_label||'';let full=!!d.full_preview_relpath;q('#modalimgs').className='modalimgs '+(full?'full':'fallback '+vclass(d));q('#modalimgs').innerHTML=thumbHtml(d,true);let paths=d.skp_paths_exact||[];q('#modalmeta').innerHTML=(d.source_kind==='projects'?`<div class="kv"><b>Non-Library Detail</b>Job ${esc(d.job_number||'?')}${d.sheet?', sheet '+esc(d.sheet):''}</div><div class="kv"><b>SketchUp models</b>${esc((d.model_tags||[]).join(', '))}${d.library_match?'<br>Same as Library detail: '+esc(d.library_match.title)+' ('+esc(d.library_match.layout_filename)+')':''}</div>`:'')+`<div class="kv"><b>Intended Master Title</b>${esc(d.master_title||'')}</div><div class="kv"><b>Source LayOut</b>${esc(d.layout_filename)}</div><div class="kv"><b>Page</b>${esc(d.page_name)}</div><div class="kv"><b>Scene(s)</b>${d.viewports.map(v=>esc(v.scene_name)).join('<br>')}</div><div class="kv"><b>SketchUp reference path</b>${paths.map(esc).join('<br>')}</div>`;if(d.source_kind==='projects'&&(d.jobs||[]).length){q('#modalmeta').insertAdjacentHTML('afterbegin',`<div class="kv"><b>Used in ${d.jobs.length} job${d.jobs.length==1?'':'s'}</b>${d.jobs.map(j=>j.copies.map(c=>`Job ${esc(j.job)}${c.sheet?' · '+esc(c.sheet):''}<button class="smallbtn" data-key="${esc(c.detail_key)}">Open Detail</button>`).join('<br>')).join('<br>')}</div>`)}if(d.source_kind!=='projects'&&(d.used_in_jobs||[]).length){q('#modalmeta').insertAdjacentHTML('afterbegin',`<div class="kv"><b>Also used in ${d.used_in_jobs.length} job${d.used_in_jobs.length==1?'':'s'}</b>${d.used_in_jobs.map(esc).join(', ')}</div>`)}q('#modalmeta').querySelectorAll('button[data-key]').forEach(b=>b.onclick=()=>openDetail({detail_key:b.dataset.key,viewport_count:d.viewport_count}));q('#modalcart').dataset.key=d.detail_key;markCart();q('#modaltext').textContent=d.clean_text?(d.notes_text||'(no notes)'):(d.searchable_text||'');q('#modalrawtext').textContent=d.raw_text||'(refresh the index to see the raw text)';q('#modalback').style.display='flex'}q('#close').onclick=()=>q('#modalback').style.display='none';q('#modalback').onclick=e=>{if(e.target===q('#modalback'))q('#modalback').style.display='none'};q('#modalopen').onclick=()=>modalDetail&&openDetail(modalDetail);q('#modalmaster').onclick=()=>modalDetail&&openMaster(modalDetail);q('#modalskp').onclick=()=>modalDetail&&openSkp(modalDetail);
 q('#search').oninput=()=>{clearTimeout(timer);timer=setTimeout(search,180)};q('#size').oninput=e=>{let v=e.target.value;document.documentElement.style.setProperty('--card-w',v+'px');q('#sizeval').textContent=v};q('#choose').onclick=choose;q('#modalcart').onclick=()=>modalDetail&&toggleCart(modalDetail.detail_key);q('#cartclear').onclick=async()=>{if(!cartKeys.size)return;try{showCart(await api('/api/cart/clear',{method:'POST'}));toast('Cart cleared.')}catch(e){toast(e.message)}};q('#cartsend').onclick=async()=>{if(!cartKeys.size)return;let b=q('#cartsend');b.disabled=true;b.textContent='Opening...';try{let j=await api('/api/cart/send',{method:'POST'});showCart(j.cart);let msg=`Opened ${j.opened} staging file${j.opened==1?'':'s'} in LayOut. In each one: Ctrl+A, Ctrl+C, close it, paste into your project.`;if(j.failed.length)msg+=` ${j.failed.length} could not be opened and stayed in the cart (${j.failed.map(f=>f.title).join(', ')}). See Diagnostics.`;toast(msg);loadDiagBadge()}catch(e){toast(e.message)}finally{b.disabled=false;b.textContent='Open All in LayOut'}};q('#sortsel').onchange=e=>{currentSort=e.target.value;search()};q('#chooseproj').onclick=async()=>{try{let j=await api('/api/choose-projects',{method:'POST'});q('#projpath').textContent=j.projects_root||'Not set';if(j.projects_root)toast('Non-Library Details folder set. Click Refresh Index to read it.')}catch(e){toast(e.message)}};document.querySelectorAll('#srcswitch button').forEach(b=>b.onclick=()=>setSrc(b.dataset.src));q('#refresh').onclick=async()=>{let j=await api('/api/status');j.library_root?startIndex(j.library_root):choose()};q('#cleanup').onclick=async()=>{let j=await api('/api/cleanup',{method:'POST'});toast(`Deleted ${j.deleted} staging file(s).`)};
 q('#preparethumbs').onclick=async()=>{try{let hidden=q('#hiddenlayers').value.split(',').map(x=>x.trim()).filter(Boolean);let j=await api('/api/prepare-thumbnails',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hidden_layers:hidden,force:q('#renderall').checked})});toast(j.job_count?`Queued ${j.job_count} master file(s) for rendering${j.everything?(j.layers_changed?' (everything, because the hidden layers changed)':' (everything)'):''}; ${j.already_done} already have full thumbnails. Now load thumbnail_worker.rb in the SketchUp Ruby Console.`:'Nothing to render: every master already has its full thumbnails.');q('#renderall').checked=false;await loadThumbStatus()}catch(e){toast(e.message)}};
-q('#processthumbs').onclick=async()=>{try{q('#indexstatus').textContent='Processing full-detail thumbnails...';let j=await api('/api/process-thumbnails',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({force:q('#renderall').checked})});let probs=(j.warnings?.length||0)+(j.skipped_files?.length||0);toast(`Created/updated ${j.processed_details} full previews from ${j.processed_files} master file(s); ${j.already_done||0} were already done.${probs?' '+probs+' warning(s) or skipped file(s) - see Diagnostics.':''}`);loadDiagBadge();await loadThumbStatus();await search();q('#indexstatus').textContent='Full thumbnails processed';}catch(e){toast(e.message);q('#indexstatus').textContent=''}};
+q('#processthumbs').onclick=async()=>{try{q('#indexstatus').textContent='Processing full-detail thumbnails...';let j=await api('/api/process-thumbnails',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({force:q('#renderall').checked})});let probs=(j.warnings?.length||0)+(j.skipped_files?.length||0);toast(`Created/updated ${j.processed_details} full previews from ${j.processed_files} master file(s); ${j.already_done||0} were already done.${j.off_page?' '+j.off_page+' detail(s) sit off the printed sheet, so they keep the SketchUp view.':''}${probs?' '+probs+' warning(s) or skipped file(s) - see Diagnostics.':''}`);loadDiagBadge();await loadThumbStatus();await search();q('#indexstatus').textContent='Full thumbnails processed';}catch(e){toast(e.message);q('#indexstatus').textContent=''}};
 let cartKeys=new Set();
 function markCart(){document.querySelectorAll('.cartbtn').forEach(b=>{let on=cartKeys.has(b.dataset.key);b.classList.toggle('incart',on);b.textContent=on?'✓ In Cart':'+ Cart';b.title=on?'Click to take it out of the cart':'Add to the cart, then open several at once'})}
 function showCart(c){cartKeys=new Set(c.items.map(x=>x.detail_key));q('#cartcount').textContent=`(${c.items.length})`;q('#cartitems').innerHTML=c.items.map(x=>`<div class="citem" title="${esc(x.display_title)} – ${esc(x.layout_filename)}">${x.thumb?`<img src="${encodeURI(x.thumb)}">`:''}<div class="ct">${x.job_number?'JOB '+esc(x.job_number)+' · ':''}${esc(x.display_title)}</div><button class="cx" data-key="${esc(x.detail_key)}" title="Remove">×</button></div>`).join('');q('#cartitems').querySelectorAll('.cx').forEach(b=>b.onclick=()=>toggleCart(b.dataset.key));let on=c.items.length>0;q('#cartbar').style.display=on?'flex':'none';q('main').classList.toggle('hascart',on);markCart();if(c.dropped)toast(`${c.dropped} cart item(s) were removed because the detail is no longer in the index.`)}
