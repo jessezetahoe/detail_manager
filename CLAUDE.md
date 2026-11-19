@@ -18,6 +18,12 @@ Read `docs/handoff/CLAUDE_CODE_HANDOFF.md` before modifying code.
 - Any staging change: validate package AND have the user open it in LayOut 2025.
 - Regression-check against the Z: company library (primary). The C: Distribution Library was a presentation setup; check it only when deployment changes.
 
+## How To page (user, 2026-11-19)
+- `src/how_to.html` (How To button in the program) must always match the program.
+- Every change that adds, removes or changes something a user sees or does: update the
+  How To in the SAME branch/commit (add, change or remove the text). Not a later task.
+- Before merging a feature, check the How To still describes it correctly.
+
 ## Git
 - First commit is the untouched original; never rewrite history on `main`.
 - One branch per feature (`feature/...`); merge after the user tests.

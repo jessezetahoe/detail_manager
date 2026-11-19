@@ -17,7 +17,7 @@ clean notes (raw text kept), category sidebar.
 ## The list, in order
 | # | Tag | Item | Size | What I need from you |
 |---|---|---|---|---|
-| 0 | G1, R2 | **How To page and thumbnail-worker folder fix: BUILT on branch `feature/how-to`.** Read it in the development copy (How To button); one thumbnail render when convenient | S | Your read-through |
+| 0 | R2 | One thumbnail render to confirm the worker finds the right folder (when convenient) | S | Your render |
 | 1 | M3 | **Tighter search.** Rank title first, then scene, then notes; stop the master file name from matching every detail the same; fewer loose matches from notes | M | 3 to 5 real searches where the results felt too broad or in the wrong order |
 | 2 | U1, U3 | **Slim cards and fuller detail window.** Card: thumbnail, title, scene line, framing type with Hydronics. Everything else (source, page, all scenes, paths, notes, raw text) in the detail window | M | Look at it and say what to trim |
 | 3 | U4 | More than 80 results (load more as you scroll) | S | nothing |
@@ -32,7 +32,7 @@ clean notes (raw text kept), category sidebar.
 Which masters use a given SketchUp model (L1), controlled reference updates (L2), Old Projects search (L3, L4), find details from a SketchUp view (L5), favorites (L6).
 
 ## How each step goes
-1. I build it on its own branch and run the tests.
+1. I build it on its own branch, run the tests, and update the How To page in the same change.
 2. You run the tests and try it in the development copy (exact lines given).
 3. If it is right, I merge to `main`, publish it to the daily copy, and you push.
 Anything that touches Open Detail: you also open the result in LayOut 2025.
