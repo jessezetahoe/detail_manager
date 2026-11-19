@@ -4,6 +4,7 @@ Updated 2026-11-18. Tags (M3, U1 ...) match `docs/BACKLOG.md`.
 Size: S = under an hour, M = a few hours, L = open ended.
 
 ## Where things stand
+**Daily copy has (2026-11-19):** titles, clean notes, categories, Non-Library Details (switch shows once its folder is set), tally, backups skipped.
 **In daily use:** `C:\sketchup_dev\detail_manager_release` (desktop shortcut), built from `main` at the sidebar release.
 Its data: `%LOCALAPPDATA%\ZE Detail Manager`. It only changes when Claude publishes a tested version.
 **Done and verified:** regression tests, diagnostics log and button, real titles with the scene line,
@@ -16,9 +17,7 @@ clean notes (raw text kept), category sidebar.
 ## The list, in order
 | # | Tag | Item | Size | What I need from you |
 |---|---|---|---|---|
-| 0 | O2-O4, O9, F2, F3 | **Non-Library Details: BUILT on branch `feature/old-projects`, user re-check pending** (rename, backups skipped, badge in Both, job folders) | S | Your re-check |
-| 0b | C2 | Scrapbook hand test (5 minutes, no code): see C2 in the backlog | S | Your test |
-| 0c | O8 | **Duplicates tally: BUILT on `feature/old-projects`**, check with the rest | S | Your check |
+| 0 | C3 | **Detail cart** (several details to staging at once) | M | Answers to K1, K2 |
 | 1 | M3 | **Tighter search.** Rank title first, then scene, then notes; stop the master file name from matching every detail the same; fewer loose matches from notes | M | 3 to 5 real searches where the results felt too broad or in the wrong order |
 | 2 | U1, U3 | **Slim cards and fuller detail window.** Card: thumbnail, title, scene line, framing type with Hydronics. Everything else (source, page, all scenes, paths, notes, raw text) in the detail window | M | Look at it and say what to trim |
 | 3 | U4 | More than 80 results (load more as you scroll) | S | nothing |
