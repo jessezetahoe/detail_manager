@@ -4,8 +4,10 @@ Importing this module points Detail Manager's app-data folder at a throwaway
 temp directory BEFORE detail_manager is imported, so tests never touch the
 real %LOCALAPPDATA% index, previews or staging folders.
 """
+import atexit
 import hashlib
 import os
+import shutil
 import sys
 import tempfile
 import unittest
@@ -17,6 +19,8 @@ FIXTURES = ROOT / "tests" / "fixtures" / "company"
 GOLDEN = ROOT / "tests" / "golden"
 
 _APPDATA = tempfile.mkdtemp(prefix="dm_test_appdata_")
+# The throwaway data folder (index, previews, staging files) is removed when the run ends.
+atexit.register(shutil.rmtree, _APPDATA, True)
 os.environ["LOCALAPPDATA"] = _APPDATA
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))

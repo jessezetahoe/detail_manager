@@ -124,15 +124,19 @@ table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid va
 </ul>
 
 <h2 id="thumbs">Full thumbnails (admin task)</h2>
-<p>Full thumbnails show the whole detail with labels and callouts. Until a master has them, its cards show the plain SketchUp view (badge <span class="ui">Viewport Cache</span>). Making them uses SketchUp and takes a while, so do it when you do not need SketchUp or LayOut.</p>
+<p>Full thumbnails show the whole detail with labels and callouts. Until a master has them, its cards show the plain SketchUp view (badge <span class="ui">Viewport Cache</span>). Only new and changed masters (and new job files) are rendered, so after the first time a render is quick. The line above the buttons says how many masters need rendering. Do it after a <a href="#refresh">Refresh Index</a> that found new or changed files.</p>
 <ol>
-<li>In Detail Manager: <span class="ui">Library and admin tools</span> &gt; <span class="ui">1. Prepare Render Queue</span> (the layer to hide, normally <code>GUIDES</code>, is listed above it).</li>
+<li>In Detail Manager: <span class="ui">Library and admin tools</span> &gt; <span class="ui">1. Prepare Render Queue</span>. It queues only the masters that need it (or says there is nothing to render). The layer to hide, normally <code>GUIDES</code>, is listed above it.</li>
 <li>In SketchUp: <span class="ui">Extensions</span> &gt; <span class="ui">Developer</span> &gt; <span class="ui">Ruby Console</span>, then type (with your program folder) and press Enter:<br>
 <code>load 'C:/sketchup_dev/detail_manager_release/thumbnail_worker.rb'</code><br>
 SketchUp opens each master read-only and makes a PDF of it. It shows a message when it is done.</li>
 <li>Back in Detail Manager: <span class="ui">3. Process Rendered Thumbnails</span>.</li>
 </ol>
-<div class="box warn">At the moment step 1 queues every master, not only the changed ones, so a full run takes a long time. Making it render only new and changed masters is on the to-do list. Step 3 needs PyMuPDF on the computer; if it says it is missing, run <code>py -m pip install pymupdf</code> in Command Prompt once.</div>
+<ul>
+<li>To redo every master (rarely needed), tick <span class="ui">Re-render everything</span> before step 1. Changing the hidden layer list does this by itself.</li>
+<li>Step 3 skips masters it has already turned into thumbnails.</li>
+</ul>
+<div class="box">Step 3 needs PyMuPDF on the computer. If it says it is missing, run <code>py -m pip install pymupdf</code> in Command Prompt once.</div>
 
 <h2 id="lists">Editing names and abbreviations</h2>
 <p>Two small files in the program folder (<code>C:\sketchup_dev\detail_manager_release</code>), editable with Notepad:</p>

@@ -39,7 +39,7 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
 
 - **R Releases**
   - [x] R1 Daily-use copy (2026-11-18): `C:\sketchup_dev\detail_manager_release`, made by `tools/publish_local_release.sh` from a committed version (VERSION.txt says which). Own data folder `%LOCALAPPDATA%\ZE Detail Manager` (copied once from the Dev folder), port 8768 like the old program. Development (`RUN_DEV.bat`, Dev folder, port 8769) can no longer affect daily work
-  - [~] R2 BUILT 2026-11-19 (branch `feature/how-to`): the worker now uses whichever Detail Manager data folder prepared the newest render queue (daily, Dev, or older). Needs one real render to confirm. Was: the thumbnail worker still writes to the old `ZE Detail Manager Prototype 0.1` folder. Point it at the right data folder before the next render (with S2). Until then, masters changed on Z: show the viewport-only fallback thumbnail (2 found on 2026-11-18)
+  - [~] R2 (user render from the daily copy running 2026-11-19) BUILT 2026-11-19 (branch `feature/how-to`): the worker now uses whichever Detail Manager data folder prepared the newest render queue (daily, Dev, or older). Needs one real render to confirm. Was: the thumbnail worker still writes to the old `ZE Detail Manager Prototype 0.1` folder. Point it at the right data folder before the next render (with S2). Until then, masters changed on Z: show the viewport-only fallback thumbnail (2 found on 2026-11-18)
 
 - **F Field reports (from daily use)**
   - [x] F3 (verified 2026-11-19, merged and published) (user, 2026-11-19) LayOut backup files in the library folder ("Backup of (01) FND CONC WSP.layout" and 2 more) were indexed as masters. Now always skipped in both folders: names "Backup of *", "*~.layout", "~$*" (setting `skip_file_patterns`). Already-indexed backups drop out on the next refresh. Built on `feature/old-projects`, user check pending
@@ -66,6 +66,8 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
   - [x] C3 Detail cart (verified 2026-11-19: cart survives closing; 3 details opened in staging files, copy/paste fine, groups intact; merged). "+ Cart" on every card and in the detail window; cart bar at the bottom (thumbnails, remove one, Clear Cart, Open All in LayOut). Open All makes ONE staging file per detail (staging code unchanged) and opens each in LayOut; the cart then empties; any detail that fails stays in the cart with the reason (also in Diagnostics). Kept in `cart.json` in the data folder (survives closing; details no longer in the index are dropped with a notice). Up to 25 details. Decisions (user, 2026-11-19): no multi-page staging files (flipping pages is slower); several staging files are fine, cleaned up later
   - [ ] C4 LATER RELEASE: several details in one staging file (one page, or merged across masters)
 - **X Later ideas**
+  - [ ] X2 (user idea, 2026-11-19) Job tags: state, architect, builder, city, year per job number, for sorting and filtering ("this architect always uses these custom details"; tally per architect = library candidates per client). Proposal: one `jobs.csv` at the top of the Non-Library Details folder, kept in Excel by one person. Revisit when more jobs are loaded
+  - [ ] S4 (user, 2026-11-19) The SketchUp helper (S1 open at scene, S2 render menu) goes inside the main extension for now, as its own module (own folder, own namespace, talks to Detail Manager only through its data folder) so it can be split out later
   - [ ] X1 (user, 2026-11-19, "have to think about this more") Retired details: RETIRED overlay on the thumbnail, maybe hidden by default with a "replaced by" link. DECIDED: never written into the masters; kept as Detail Manager library data (published with the index) and must survive master updates (match by detail id, with models+scenes as the fallback when a detail moves)
 
 ## 0.3 - standalone program and rollout
@@ -74,7 +76,7 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
 - [ ] P3 One published index and thumbnail set on the server; each computer keeps a local copy
 - [ ] P4 "Library update available" check and local update
 - [ ] P5 Admin/status screen (library path, versions, counts, failed masters, last render)
-- [ ] P6 Only changed masters are re-indexed and re-rendered (formalize what exists)
+- [~] P6 Render only new or changed masters. BUILT 2026-11-19 (branch `feature/render-changed`): the queue holds only masters with a detail lacking its full thumbnail (new, changed, new job files); "Re-render everything" box, also automatic when the hidden-layer list changes; nothing to render -> old queue removed; Process skips masters already processed (marker per render; the first Process after this update redoes everything once). How To updated. User test pending
 - [~] G1 User Guide. In-program How To page BUILT 2026-11-19 (`src/how_to.html`, How To button in the left panel; branch `feature/how-to`): starting, finding, getting a detail into a project, cart, Non-Library Details, when to refresh, full thumbnails, editing the lists, diagnostics, what it never does. To be revised for the company release. Python requirements still in `docs/USER_GUIDE_DRAFT.md`
 - [ ] G2 Installation / Admin Guide
 
