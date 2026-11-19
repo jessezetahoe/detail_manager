@@ -17,8 +17,8 @@ clean notes (raw text kept), category sidebar.
 | # | Tag | Item | Size | What I need from you |
 |---|---|---|---|---|
 | 0 | O2-O4, O9, F2, F3 | **Non-Library Details: BUILT on branch `feature/old-projects`, user re-check pending** (rename, backups skipped, badge in Both, job folders) | S | Your re-check |
-| 0b | C1 | Clipboard check: copy a detail in LayOut, then `py tools\clipboard_probe.py` | S | 2 minutes |
-| 0c | O8 | Duplicates as one card with an "In N jobs" tally; most-used list for library candidates | M | Your go on the proposal |
+| 0b | C2 | Scrapbook hand test (5 minutes, no code): see C2 in the backlog | S | Your test |
+| 0c | O8 | **Duplicates tally: BUILT on `feature/old-projects`**, check with the rest | S | Your check |
 | 1 | M3 | **Tighter search.** Rank title first, then scene, then notes; stop the master file name from matching every detail the same; fewer loose matches from notes | M | 3 to 5 real searches where the results felt too broad or in the wrong order |
 | 2 | U1, U3 | **Slim cards and fuller detail window.** Card: thumbnail, title, scene line, framing type with Hydronics. Everything else (source, page, all scenes, paths, notes, raw text) in the detail window | M | Look at it and say what to trim |
 | 3 | U4 | More than 80 results (load more as you scroll) | S | nothing |

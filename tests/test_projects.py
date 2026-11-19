@@ -161,6 +161,56 @@ class TestTwoSources(unittest.TestCase):
                 con.close()
                 self.assertTrue(row)
 
+    def _all_project_details(self):
+        con = dm.DB.connect()
+        rows = con.execute("SELECT d.detail_key, d.dup_key, d.ms_key, d.layout_file FROM details d JOIN layout_files lf ON lf.layout_file=d.layout_file WHERE lf.source_kind='projects'").fetchall()
+        con.close()
+        return rows
+
+    def test_exact_duplicates_become_one_card_with_job_tally(self):
+        rows = self._all_project_details()
+        expected = {}
+        for _, dup, _, lf in rows:
+            expected.setdefault(dup, set()).add(dm.job_number_for(lf))
+        r = dm.search_details("", src="projects", limit=100000)
+        keys = [x["dup_key"] for x in r]
+        self.assertEqual(len(keys), len(set(keys)), "a duplicate is shown twice")
+        self.assertEqual(set(keys), set(expected))
+        copies = 0
+        for item in r:
+            self.assertEqual(item["job_count"], len(expected[item["dup_key"]]))
+            self.assertEqual({j["job"] for j in item["jobs"]}, expected[item["dup_key"]])
+            copies += sum(len(j["copies"]) for j in item["jobs"])
+        self.assertEqual(copies, len(rows), "every copy is reachable from its card")
+        self.assertTrue(any(x["job_count"] > 1 for x in r), "sample should have details shared by jobs")
+
+    def test_most_used_first(self):
+        r = dm.search_details("", src="projects", sort="most_used", limit=100000)
+        counts = [x["job_count"] for x in r]
+        self.assertEqual(counts, sorted(counts, reverse=True))
+
+    def test_both_hides_job_copies_of_library_details(self):
+        both = dm.search_details("", src="both", limit=100000)
+        self.assertFalse([x for x in both if x["source_kind"] == "projects" and x.get("library_match")])
+        proj = dm.search_details("", src="projects", limit=100000)
+        matched = [x for x in proj if x.get("library_match")]
+        self.assertTrue(matched, "sample should contain job copies of library details")
+        lib = {x["detail_key"]: x for x in both if x["source_kind"] == "library"}
+        for m in matched:
+            lib_item = lib.get(m["library_match"]["detail_key"])
+            if lib_item is None:  # another library detail with the same models and scenes
+                continue
+            for j in m["jobs"]:
+                self.assertIn(j["job"], lib_item["used_in_jobs"])
+
+    def test_keys_are_stable_and_never_empty(self):
+        rows = self._all_project_details()
+        self.assertTrue(all(r[1] for r in rows))
+        p = min(project_files(), key=lambda p: p.stat().st_size)
+        a = [d["dup_key"] for d in parse(p)[1]]
+        b = [d["dup_key"] for d in parse(p)[1]]
+        self.assertEqual(a, b)
+
     def test_open_detail_from_a_job_file(self):
         smallest = min(project_files(), key=lambda p: p.stat().st_size)
         con = dm.DB.connect()
