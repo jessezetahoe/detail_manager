@@ -57,6 +57,7 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
   - [x] O7 (user, 2026-11-19) The folder is the one where job-specific details are already kept, each job in its own folder, so they are never archived. The user adds jobs. Job number now also taken from the job folder name when the file name has none
   - [x] O9 (verified 2026-11-19, merged and published) (user, 2026-11-19) Renamed in the program to "Non-Library Details" (switch: Library / Non-Library / Both); in Both, job cards carry an orange NON-LIBRARY · JOB badge. Built, user check pending
   - [x] O8 (verified 2026-11-19, merged and published) (user, 2026-11-19; go given the same day) Exact duplicates shown once, with a job tally. BUILT on `feature/old-projects`, user check pending. "Exactly the same" = same SketchUp models (exact reference path) and scenes for every view AND the same notes (stored per detail as `dup_key`; models+scenes alone as `ms_key`). One card per group: "In N jobs"; the detail window lists every job and sheet with its own Open Detail button. Sort "Most used in jobs" (next to the result count) lists library candidates first. In Both, job copies of a library detail (same `ms_key`) are hidden and the library card says "Also used in N jobs". Sample: 567 details -> 547 cards, 15 in 2+ jobs, 4 library copies
+  - [~] O11 (user, 2026-11-19) Details parked entirely off the printed sheet are left out when indexing (sheet size from the file's own page setup); counted per file in Diagnostics. Library never has any (tested). Branch `fix/skip-off-sheet`, user check pending
   - [ ] O10 Some job details get a note as title when there is no N.T.S. title (e.g. "backer block w/ stitching per FOOTNOTES BELOW"). Review once more jobs are in
 
 - **C Clipboard (fewer steps than the staging file)**
@@ -94,5 +95,5 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
 - Q3 ANSWERED 2026-11-15: see U2
 - K1 ANSWERED: it depends (C4 deferred)
 - K2 ANSWERED: keep the cart when closed, as long as it causes no other issues; add Clear Cart (done)
-- K3 Off-sheet job details (parked beside the page): keep them searchable (current default) or leave them out of Non-Library Details? Asked 2026-11-19
+- K3 ANSWERED 2026-11-19: leave off-sheet details out
 - Q4 ANSWERED 2026-11-15: the POC 07A index on this computer (182 masters, 5,254 details, built in August) is believed to be the one in daily use

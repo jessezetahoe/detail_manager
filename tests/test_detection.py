@@ -68,6 +68,10 @@ class TestDetection(unittest.TestCase):
                     for path in d["skp_paths_exact"]:
                         self.assertIn(path, raw.values())  # character-for-character, no normalizing
 
+    def test_library_has_nothing_off_the_sheet(self):
+        for p in fixture_files():
+            self.assertEqual(parse(p)[0]["off_sheet_details"], 0, p.name)
+
     def test_detail_key_format(self):
         for p in fixture_files():
             _, details = parse(p)

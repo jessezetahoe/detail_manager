@@ -36,7 +36,7 @@ PORT_DEFAULT = 8768
 # Raise this whenever the rules for reading a master change (titles, text...).
 # Masters indexed under an older number are re-read on the next refresh even
 # though the file itself has not changed; their thumbnails are kept.
-INDEX_VERSION = 5
+INDEX_VERSION = 6
 
 NS = {
     "e": "http://sketchup.google.com/schemas/layout/1.0/entities",
@@ -542,6 +542,8 @@ class LibraryDB:
             cur.execute("ALTER TABLE layout_files ADD COLUMN source_kind TEXT DEFAULT 'library'")
         if "skipped_viewports" not in lf_cols:
             cur.execute("ALTER TABLE layout_files ADD COLUMN skipped_viewports INTEGER DEFAULT 0")
+        if "off_sheet_details" not in lf_cols:
+            cur.execute("ALTER TABLE layout_files ADD COLUMN off_sheet_details INTEGER DEFAULT 0")
         cur.execute("CREATE INDEX IF NOT EXISTS viewports_scene_pid ON viewports(scene_pid)")
         with contextlib.suppress(sqlite3.OperationalError):
             cur.execute("CREATE VIRTUAL TABLE IF NOT EXISTS detail_search USING fts5(detail_key UNINDEXED, searchable_text)")
@@ -657,6 +659,12 @@ def parse_layout(layout_path: Path, preview_dir: Path) -> Tuple[dict, List[dict]
             elif kind == "vectorFileReference": vector_refs[rid] = rec
         details = []
         skipped_viewports = 0  # SketchUp viewports not inside a top-level group: not a detail, counted for Diagnostics
+        off_sheet = 0  # detail groups parked entirely off the sheet (job files): left out, counted for Diagnostics
+        page_info = doc_root.find(".//ld:pageInfo", NS)
+        try:
+            sheet_w, sheet_h = float(page_info.get("width")), float(page_info.get("height"))
+        except Exception:
+            sheet_w = sheet_h = None
         ordered_pages = [pr.get(R_ID, "") for pr in doc_root.findall(".//ld:pageRef", NS)]
         for page_index, page_ref_id in enumerate(ordered_pages, start=1):
             pref = page_refs.get(page_ref_id)
@@ -673,6 +681,10 @@ def parse_layout(layout_path: Path, preview_dir: Path) -> Tuple[dict, List[dict]
                 group_index += 1
                 models = list(entity.iter(f"{{{NS['e']}}}skpModelRef"))
                 if not models: continue
+                gb = group_bounds(entity)
+                if sheet_w and gb and (gb[2] <= 0 or gb[0] >= sheet_w or gb[3] <= 0 or gb[1] >= sheet_h):
+                    off_sheet += 1  # not on the printed sheet at all: scrap or parked work, not a detail to offer
+                    continue
                 viewports, skp_paths, skp_ids, scene_names = [], [], [], []
                 for sm in models:
                     skp_el = sm.find("r:skpFileReference", NS); img_el = sm.find("r:imageFileReference", NS); vec_el = sm.find("r:vectorFileReference", NS)
@@ -707,7 +719,7 @@ def parse_layout(layout_path: Path, preview_dir: Path) -> Tuple[dict, List[dict]
                 else: dup_key = "u" + hashlib.sha1(f"{layout_file}|{page_ref_id}|{primary['viewport_id']}".encode("utf-8", errors="surrogatepass")).hexdigest()[:19]
                 searchable = "\n".join(filter(None, [layout_path.stem, master_title, page_name, expand_abbreviations(page_name), title, expanded_title, *scene_names, *(expand_abbreviations(x) for x in scene_names), *clean]))
                 details.append({"detail_key": detail_key, "layout_file": layout_file, "layout_filename": layout_path.name, "page_ref_id": page_ref_id, "page_xml": page_xml, "page_name": page_name, "page_index": page_index, "group_index": group_index, "viewport_count": len(viewports), "primary_viewport_id": primary["viewport_id"], "primary_scene_name": primary["scene_name"], "primary_scene_pid": primary["scene_pid"], "display_title": title, "expanded_title": expanded_title, "master_title": master_title, "skp_paths_exact": skp_paths, "bounds": group_bounds(entity), "full_preview_relpath": "", "searchable_text": searchable, "raw_text": "\n".join(texts), "clean_text": "\n".join(clean), "ms_key": ms_key, "dup_key": dup_key, "viewports": viewports})
-        return ({"layout_file": layout_file, "layout_filename": layout_path.name, "size_bytes": stat.st_size, "mtime_ns": stat.st_mtime_ns, "page_count": len(ordered_pages), "detail_count": len(details), "skp_reference_count": len(skp_refs), "skp_references": skp_refs, "skipped_viewports": skipped_viewports}, details)
+        return ({"layout_file": layout_file, "layout_filename": layout_path.name, "size_bytes": stat.st_size, "mtime_ns": stat.st_mtime_ns, "page_count": len(ordered_pages), "detail_count": len(details), "skp_reference_count": len(skp_refs), "skp_references": skp_refs, "skipped_viewports": skipped_viewports, "off_sheet_details": off_sheet}, details)
 
 
 SOURCE_LIBRARY, SOURCE_PROJECTS = "library", "projects"
@@ -776,7 +788,7 @@ def _index_root(con: sqlite3.Connection, root_str: str, kind: str, other_root: s
             for k in keys:
                 with contextlib.suppress(sqlite3.OperationalError): con.execute("DELETE FROM detail_search WHERE detail_key=?", (k,))
             con.execute("DELETE FROM viewports WHERE detail_key IN (SELECT detail_key FROM details WHERE layout_file=?)", (path_str,)); con.execute("DELETE FROM details WHERE layout_file=?", (path_str,)); con.execute("DELETE FROM skp_references WHERE layout_file=?", (path_str,)); con.execute("DELETE FROM layout_files WHERE layout_file=?", (path_str,))
-            con.execute("INSERT INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version,source_kind,skipped_viewports) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, summary["size_bytes"], summary["mtime_ns"], summary["page_count"], summary["detail_count"], summary["skp_reference_count"], datetime.now(timezone.utc).isoformat(), "", READ_RULES_KEY, kind, summary["skipped_viewports"]))
+            con.execute("INSERT INTO layout_files (layout_file,layout_filename,size_bytes,mtime_ns,page_count,detail_count,skp_reference_count,last_indexed_utc,last_error,index_version,source_kind,skipped_viewports,off_sheet_details) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", (path_str, p.name, summary["size_bytes"], summary["mtime_ns"], summary["page_count"], summary["detail_count"], summary["skp_reference_count"], datetime.now(timezone.utc).isoformat(), "", READ_RULES_KEY, kind, summary["skipped_viewports"], summary["off_sheet_details"]))
             for rid, r in summary["skp_references"].items(): con.execute("INSERT INTO skp_references VALUES (?,?,?,?)", (path_str, rid, r.get("externalTarget", ""), r.get("internalTarget", "")))
             for d in details:
                 con.execute("INSERT INTO details (detail_key,layout_file,layout_filename,page_ref_id,page_xml,page_name,page_index,group_index,viewport_count,primary_viewport_id,primary_scene_name,primary_scene_pid,display_title,expanded_title,master_title,skp_paths_exact,bounds_json,full_preview_relpath,searchable_text,raw_text,clean_text,ms_key,dup_key,render_note) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (d["detail_key"], d["layout_file"], d["layout_filename"], d["page_ref_id"], d["page_xml"], d["page_name"], d["page_index"], d["group_index"], d["viewport_count"], d["primary_viewport_id"], d["primary_scene_name"], d["primary_scene_pid"], d["display_title"], d["expanded_title"], d["master_title"], json.dumps(d["skp_paths_exact"]), json.dumps(d["bounds"]), d["full_preview_relpath"], d["searchable_text"], d["raw_text"], d["clean_text"], d["ms_key"], d["dup_key"], d.get("render_note", "")))
@@ -1734,7 +1746,7 @@ def diagnostics(max_lines: int = 300) -> dict:
     full = con.execute("SELECT COUNT(*) FROM details WHERE COALESCE(full_preview_relpath,'')<>''").fetchone()[0]
     last_indexed = con.execute("SELECT MAX(last_indexed_utc) FROM layout_files").fetchone()[0] or ""
     failed = [dict(r) for r in con.execute("SELECT layout_filename,layout_file,last_error,last_indexed_utc FROM layout_files WHERE COALESCE(last_error,'')<>'' ORDER BY layout_filename")]
-    skipped = [dict(r) for r in con.execute("SELECT layout_filename,layout_file,skipped_viewports FROM layout_files WHERE COALESCE(skipped_viewports,0)>0 ORDER BY layout_filename")]
+    skipped = [dict(r) for r in con.execute("SELECT layout_filename,layout_file,skipped_viewports,COALESCE(off_sheet_details,0) AS off_sheet_details FROM layout_files WHERE COALESCE(skipped_viewports,0)>0 OR COALESCE(off_sheet_details,0)>0 ORDER BY layout_filename")]
     project_files = con.execute("SELECT COUNT(*), COALESCE(SUM(detail_count),0) FROM layout_files WHERE source_kind='projects'").fetchone()
     con.close()
     worker = None
@@ -1798,7 +1810,7 @@ async function loadDiagBadge(){try{let d=await api('/api/diagnostics');let b=q('
 function diagRows(rows){return rows.map(r=>`<tr><th style="width:190px">${esc(r[0])}</th><td class="path">${r[1]}</td></tr>`).join('')}
 async function openDiag(){let d=await loadDiagBadge();if(!d){toast('Diagnostics could not be loaded.');return}let probsOnly=q('#diagprob')?q('#diagprob').checked:true;let log=(d.log||[]).filter(x=>!probsOnly||x.level!=='INFO').slice(-150).reverse();let h=`<table>${diagRows([['Program',esc(d.app)+' (Python '+esc(d.python)+')'],['Library folder',esc(d.library_root||'none chosen')+(d.library_root?(d.library_reachable?' <span class="ok">reachable</span>':' <span class="bad">NOT reachable - check the drive</span>'):'')],['Indexed',`${d.master_count} master file(s), ${d.detail_count} detail(s), ${d.full_preview_count} full thumbnail(s)`],['Non-Library Details folder',d.projects_root?esc(d.projects_root)+(d.projects_reachable?' <span class="ok">reachable</span>':' <span class="bad">NOT reachable</span>')+` (${d.project_file_count} file(s), ${d.project_detail_count} detail(s))`:'not set'],['Last index (UTC)',esc(d.last_indexed_utc||'never')],['Data folder',esc(d.data_dir)],['Log file',d.log_path?esc(d.log_path):'<span class="bad">not available: '+esc(d.log_setup_error)+'</span>']])}</table><div class="actions"><button id="diagopen">Open Log Folder</button><button id="diagrefresh">Refresh</button></div>`;
 h+=`<h3>Master files that could not be indexed (${d.failed_masters.length})</h3>`+(d.failed_masters.length?`<table>${d.failed_masters.map(f=>`<tr><td title="${esc(f.layout_file)}">${esc(f.layout_filename)}</td><td class="bad">${esc(f.last_error)}</td></tr>`).join('')}</table>`:'<div class="ok">None.</div>');
-h+=`<h3>SketchUp views not inside a detail group (skipped)</h3>`+(d.skipped_viewports.length?`<table>${d.skipped_viewports.map(f=>`<tr><td title="${esc(f.layout_file)}">${esc(f.layout_filename)}</td><td>${f.skipped_viewports} view(s)</td></tr>`).join('')}</table>`:'<div class="ok">None.</div>');
+h+=`<h3>Left out: views not inside a detail group, and details parked off the sheet</h3>`+(d.skipped_viewports.length?`<table>${d.skipped_viewports.map(f=>`<tr><td title="${esc(f.layout_file)}">${esc(f.layout_filename)}</td><td>${f.skipped_viewports?f.skipped_viewports+' loose view(s)':''}${f.skipped_viewports&&f.off_sheet_details?', ':''}${f.off_sheet_details?f.off_sheet_details+' detail(s) off the sheet':''}</td></tr>`).join('')}</table>`:'<div class="ok">None.</div>');
 h+=`<h3>Last thumbnail render in SketchUp</h3>`+(d.worker?`<div>${esc(d.worker.completed_at)}: ${d.worker.successes} rendered, ${d.worker.failures.length} failed</div>`+(d.worker.failures.length?`<table>${d.worker.failures.map(f=>`<tr><td class="path">${esc(f.file)}</td><td class="bad">${esc(f.error)}</td></tr>`).join('')}</table>`:''):'<div>No render has been run from this data folder yet.</div>');
 h+=`<h3>Recent log entries <label style="font-weight:400;margin-left:10px"><input type="checkbox" id="diagprob" ${probsOnly?'checked':''}> problems only</label></h3>`+(log.length?`<table>${log.map(x=>`<tr class="lvl-${esc(x.level)}"><td style="white-space:nowrap">${esc(x.time)}</td><td>${esc(x.level)}</td><td class="path">${esc(x.message)}</td></tr>`).join('')}</table>`:`<div class="ok">${probsOnly?'No warnings or errors in the log.':'The log is empty.'}</div>`);
 q('#diagbody').innerHTML=h;q('#diagback').style.display='flex';q('#diagprob').onchange=openDiag;q('#diagrefresh').onclick=openDiag;q('#diagopen').onclick=async()=>{try{await api('/api/open-log-folder',{method:'POST'})}catch(e){toast(e.message)}}}

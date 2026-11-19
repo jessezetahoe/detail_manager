@@ -88,6 +88,20 @@ class TestProjectFiles(unittest.TestCase):
         self.assertGreater(total, 0)
         self.assertGreaterEqual(drawn / total, 0.95, f"{drawn}/{total} details with a drawn title")
 
+    def test_details_off_the_sheet_are_left_out(self):
+        import zipfile, xml.etree.ElementTree as ET
+        off = 0
+        for p in project_files():
+            with zipfile.ZipFile(p) as z:
+                pi = ET.fromstring(z.read("document.xml")).find(".//ld:pageInfo", dm.NS)
+            w, h = float(pi.get("width")), float(pi.get("height"))
+            summary, details = parse(p)
+            off += summary["off_sheet_details"]
+            for d in details:
+                x1, y1, x2, y2 = d["bounds"]
+                self.assertTrue(x2 > 0 and x1 < w and y2 > 0 and y1 < h, f"{p.name}: {d['display_title']} is off the sheet")
+        self.assertGreater(off, 0, "the sample job files have details parked off the sheet")
+
     def test_known_title_after_nts(self):
         p = PROJECTS / "1757 S0.8.layout"
         if not p.exists():

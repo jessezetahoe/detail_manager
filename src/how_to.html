@@ -101,6 +101,7 @@ table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid va
 <li>Put the job's LayOut detail file(s) in that folder: loose, or in the job's own folder. Start the file name or the folder name with the job number (<code>1875 S2.1-S2.4.layout</code> or <code>1875\...</code>).</li>
 <li>Click <span class="ui">Refresh Index</span>.</li>
 <li>To leave a job out, take its file out of the folder and refresh. Backup files (<code>Backup of ...</code>) are always ignored.</li>
+<li>Details parked off the sheet (beside the page) and SketchUp views that are not inside a detail group are left out. Diagnostics lists how many per file.</li>
 </ul>
 <h3>Reading the cards</h3>
 <ul>
@@ -135,7 +136,6 @@ SketchUp opens each master read-only and makes a PDF of it. It shows a message w
 <ul>
 <li>To redo every master (rarely needed), tick <span class="ui">Re-render everything</span> before step 1. Changing the hidden layer list does this by itself.</li>
 <li>Step 3 skips masters it has already turned into thumbnails.</li>
-<li>Details parked off the sheet (beside the page, as in some job files) are not printed by LayOut, so they keep the plain SketchUp view. They stay searchable and do not count as needing a render.</li>
 </ul>
 <div class="box">Step 3 needs PyMuPDF on the computer. If it says it is missing, run <code>py -m pip install pymupdf</code> in Command Prompt once.</div>
 
@@ -148,7 +148,7 @@ SketchUp opens each master read-only and makes a PDF of it. It shows a message w
 <p>A mistake in either file never stops the program: it uses its built-in list and says so in Diagnostics. Note: a new program version replaces these files, so tell whoever maintains Detail Manager about changes you want kept.</p>
 
 <h2 id="diag">Diagnostics and problems</h2>
-<p><span class="ui">Diagnostics</span> (bottom of the left panel) shows a red number when something needs a look: master files that could not be read, the Z: drive or job folder not reachable, views skipped because they were not inside a detail group, and the last thumbnail render. <span class="ui">Open Log Folder</span> opens the log, which helps when reporting a problem.</p>
+<p><span class="ui">Diagnostics</span> (bottom of the left panel) shows a red number when something needs a look: master files that could not be read, the Z: drive or job folder not reachable, what was left out (views not inside a detail group, details parked off the sheet), and the last thumbnail render. <span class="ui">Open Log Folder</span> opens the log, which helps when reporting a problem.</p>
 <table><tr><th>What you see</th><th>What to do</th></tr>
 <tr><td>Black window: port already in use</td><td>Detail Manager is already running; close the other black window</td></tr>
 <tr><td>No results at all</td><td>Clear the category or source filter (All Details), or switch Library / Non-Library / Both</td></tr>
