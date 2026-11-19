@@ -74,7 +74,7 @@ table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid va
 <div class="box ok">Copy and paste is the right way: LayOut then keeps one shared SketchUp reference when several details come from the same model, exactly as when copying from the masters by hand. The detail stays grouped.</div>
 <ul>
 <li><span class="ui">Master</span> opens the full master LayOut file (look only; do not save changes to masters from here).</li>
-<li><span class="ui">Open SketchUp Source</span> (detail window) opens the SketchUp model the detail comes from.</li>
+<li><span class="ui">Open in SketchUp</span> (detail window) opens the SketchUp model the detail comes from, already at the detail's scene. A detail with several views has an <span class="ui">Open in SketchUp</span> button beside each scene. Switching to the scene needs the Zachary Engineering Toolkit in SketchUp; without it the model opens as it was last saved. Library models are for looking: do not save changes to them.</li>
 <li>Temporary files are deleted automatically after 24 hours. To delete them now: <span class="ui">Library and admin tools</span> &gt; <span class="ui">Clean Staging Files</span> (close them in LayOut first).</li>
 </ul>
 
@@ -128,9 +128,8 @@ table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid va
 <p>Full thumbnails show the whole detail with labels and callouts. Until a master has them, its cards show the plain SketchUp view (badge <span class="ui">Viewport Cache</span>). Only new and changed masters (and new job files) are rendered, so after the first time a render is quick. The line above the buttons says how many masters need rendering. Do it after a <a href="#refresh">Refresh Index</a> that found new or changed files.</p>
 <ol>
 <li>In Detail Manager: <span class="ui">Library and admin tools</span> &gt; <span class="ui">1. Prepare Render Queue</span>. It queues only the masters that need it (or says there is nothing to render). The layer to hide, normally <code>GUIDES</code>, is listed above it.</li>
-<li>In SketchUp: <span class="ui">Extensions</span> &gt; <span class="ui">Developer</span> &gt; <span class="ui">Ruby Console</span>, then type (with your program folder) and press Enter:<br>
-<code>load 'C:/sketchup_dev/detail_manager_release/thumbnail_worker.rb'</code><br>
-SketchUp opens each master read-only and makes a PDF of it. It shows a message when it is done.</li>
+<li>In SketchUp: <span class="ui">Extensions</span> &gt; <span class="ui">Zachary Engineering Toolkit</span> &gt; <span class="ui">Detail Manager</span> &gt; <span class="ui">Admin</span> &gt; <span class="ui">Render Thumbnails...</span> and confirm. SketchUp opens each queued master read-only, makes a PDF of it and never saves it; the status bar shows the progress and a message says when it is done.<br>
+Without the toolkit: <span class="ui">Extensions</span> &gt; <span class="ui">Developer</span> &gt; <span class="ui">Ruby Console</span>, then type <code>load 'C:/sketchup_dev/detail_manager_release/thumbnail_worker.rb'</code> and press Enter.</li>
 <li>Back in Detail Manager: <span class="ui">3. Process Rendered Thumbnails</span>.</li>
 </ol>
 <ul>
@@ -154,6 +153,7 @@ SketchUp opens each master read-only and makes a PDF of it. It shows a message w
 <tr><td>No results at all</td><td>Clear the category or source filter (All Details), or switch Library / Non-Library / Both</td></tr>
 <tr><td>A detail you expected is missing</td><td>Refresh Index (its master may be new or changed)</td></tr>
 <tr><td>Open Detail shows an error</td><td>Check that Z: is reachable; then look in Diagnostics</td></tr>
+<tr><td>Open in SketchUp opens the model but not at the scene</td><td>The Zachary Engineering Toolkit is not installed or not loaded in that SketchUp (check Extensions &gt; Zachary Engineering Toolkit &gt; Detail Manager &gt; Helper Status), or the scene was renamed in the model</td></tr>
 <tr><td>A card has only the plain SketchUp view</td><td>Normal for new or changed masters until the next <a href="#thumbs">thumbnail render</a></td></tr>
 </table>
 

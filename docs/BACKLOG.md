@@ -33,8 +33,8 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
   - [ ] U3 Fuller detail inspector: source, page, all scenes, paths, raw and clean text
   - [ ] U4 More than 80 results (paging or load-more)
 - **S SketchUp helper**
-  - [ ] S1 Open SketchUp Source to the exact scene; scene buttons for multi-view details
-  - [ ] S2 Thumbnail rendering from a menu item instead of the Ruby Console (admin only)
+  - [~] S1 Open in SketchUp at the exact scene. BUILT 2026-11-19 (Detail Manager branch `feature/sketchup-helper` + toolkit branch `feature/detail-manager-helper`): Detail Manager writes `sketchup_request.json` (exact path, scene name and id, time) into its data folder and opens the model; the toolkit helper (watches every 1.5 s) switches the matching model to that scene (by scene id, then name; requests older than 5 minutes ignored). One button per scene in the detail window. User test in SketchUp pending
+  - [~] S2 Render Thumbnails from the toolkit menu: Extensions > Zachary Engineering Toolkit > Detail Manager > Admin > Render Thumbnails... (asks first, status-bar progress). Same work as thumbnail_worker.rb (kept for computers without the toolkit; the two are twins). User test pending
   - [ ] S3 Faster Open Detail on big files: read only the parts of the master the staging file keeps (now the whole file is read, 253 MB for the largest job file; matters over the network). Touches staging: needs a LayOut 2025 check
 
 - **R Releases**
@@ -68,7 +68,7 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
   - [ ] C4 LATER RELEASE: several details in one staging file (one page, or merged across masters)
 - **X Later ideas**
   - [ ] X2 (user idea, 2026-11-19) Job tags: state, architect, builder, city, year per job number, for sorting and filtering ("this architect always uses these custom details"; tally per architect = library candidates per client). Proposal: one `jobs.csv` at the top of the Non-Library Details folder, kept in Excel by one person. Revisit when more jobs are loaded
-  - [ ] S4 (user, 2026-11-19) The SketchUp helper (S1 open at scene, S2 render menu) goes inside the main extension for now, as its own module (own folder, own namespace, talks to Detail Manager only through its data folder) so it can be split out later
+  - [~] S4 BUILT as `zachary_plan_ext/detail_manager/` (own module ZacharyEngineering::DetailManager; three hooks: main.rb load + install, CATEGORY_ORDER). Built in a separate working folder `C:\sketchup_dev\zachary_plugin_dm` so the main toolkit checkout was not touched. Password idea (user, 2026-11-19): not needed for the helper (it never writes to the library); protect the library with Windows folder permissions; make the future publish-to-server step admin-only. (user, 2026-11-19) The SketchUp helper (S1 open at scene, S2 render menu) goes inside the main extension for now, as its own module (own folder, own namespace, talks to Detail Manager only through its data folder) so it can be split out later
   - [ ] X1 (user, 2026-11-19, "have to think about this more") Retired details: RETIRED overlay on the thumbnail, maybe hidden by default with a "replaced by" link. DECIDED: never written into the masters; kept as Detail Manager library data (published with the index) and must survive master updates (match by detail id, with models+scenes as the fallback when a detail moves)
 
 ## 0.3 - standalone program and rollout
