@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Detail Manager - How To</title>
+<style>
+:root{--text:#20242a;--muted:#5f6a77;--accent:#315b86;--border:#d7dbe0;--soft:#f4f6f9}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 "Segoe UI",Arial,sans-serif;color:var(--text);background:#fff}
+.wrap{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+nav{background:var(--soft);border-right:1px solid var(--border);padding:22px 18px;position:sticky;top:0;height:100vh;overflow:auto}
+nav b{display:block;font-size:17px;margin-bottom:12px}nav a{display:block;color:var(--accent);text-decoration:none;padding:4px 0;font-size:14px}nav a:hover{text-decoration:underline}
+main{padding:28px 40px 80px;max-width:900px}
+h1{font-size:26px;margin:0 0 4px}h2{font-size:20px;margin:36px 0 8px;padding-top:10px;border-top:1px solid var(--border)}h3{font-size:16px;margin:18px 0 6px}
+.lead{color:var(--muted);margin:0 0 18px}
+ol,ul{padding-left:22px}li{margin:4px 0}
+kbd{font:600 12px Consolas,monospace;background:#fff;border:1px solid #b9c0c8;border-bottom-width:2px;border-radius:4px;padding:1px 6px}
+code{font:13px Consolas,monospace;background:var(--soft);border:1px solid var(--border);border-radius:4px;padding:1px 5px;word-break:break-all}
+.box{border:1px solid var(--border);border-left:4px solid var(--accent);background:var(--soft);border-radius:6px;padding:10px 14px;margin:12px 0}
+.warn{border-left-color:#b3261e}.ok{border-left-color:#2f7a45}
+table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid var(--border);padding:6px 9px;text-align:left;vertical-align:top}th{background:var(--soft)}
+.ui{font-weight:600}
+@media print{nav{display:none}.wrap{display:block}main{max-width:none}}
+@media(max-width:800px){.wrap{display:block}nav{position:static;height:auto}}
+</style></head><body><div class="wrap">
+<nav><b>Detail Manager<br>How To</b>
+<a href="#start">Starting and closing</a>
+<a href="#find">Finding a detail</a>
+<a href="#insert">Getting a detail into your project</a>
+<a href="#cart">Several details at once (cart)</a>
+<a href="#nonlib">Non-Library Details (jobs)</a>
+<a href="#refresh">When to Refresh Index</a>
+<a href="#thumbs">Full thumbnails (admin)</a>
+<a href="#lists">Editing names and abbreviations</a>
+<a href="#diag">Diagnostics and problems</a>
+<a href="#rules">What Detail Manager never does</a>
+</nav>
+<main>
+<h1>Detail Manager: How To</h1>
+<p class="lead">Draft for the people using it now. It will be revised for the company release.</p>
+
+<h2 id="start">Starting and closing</h2>
+<ol>
+<li>Double-click the <span class="ui">Detail Manager</span> shortcut on your desktop. A black window opens, then Detail Manager opens in your web browser.</li>
+<li>Keep the black window open while you use Detail Manager (you can minimize it). Closing it stops the program.</li>
+<li>Only one Detail Manager can run at a time. If the black window says the port is already in use, an older one is still open: close that black window first.</li>
+</ol>
+<div class="box">Searching works straight away; there is no need to refresh every day. See <a href="#refresh">When to Refresh Index</a>.</div>
+
+<h2 id="find">Finding a detail</h2>
+<h3>Search box (top)</h3>
+<ul>
+<li>Type a few words: <code>king stud</code>, <code>retaining</code>, <code>moment frame</code>. Partial words work (<code>shea</code> finds shear).</li>
+<li>Abbreviations work both ways: <code>TJI</code> and <code>I-Joist</code>, <code>FLR</code> and <code>floor</code>, <code>3PLY</code> and <code>triple</code>.</li>
+<li>Results show the best matches first, up to 80. Add a word to narrow them down.</li>
+</ul>
+<h3>Left panel</h3>
+<ul>
+<li><span class="ui">Categories</span> narrow the results to one kind of detail (Foundation, Floor to Beam, Roof ...). Search then works inside that category. <span class="ui">All Details</span> clears it.</li>
+<li><span class="ui">Library | Non-Library | Both</span> (top of the panel, shown once job details are set up): which details to search. See <a href="#nonlib">Non-Library Details</a>.</li>
+<li><span class="ui">Source files (advanced)</span>: pick one master LayOut file. Rarely needed.</li>
+</ul>
+<h3>Cards and the detail window</h3>
+<ul>
+<li>Each card shows the picture, the title drawn on the detail, and the SketchUp scene in plain words.</li>
+<li>Click the picture (or <span class="ui">Preview</span>) to open the detail window: a larger picture, the notes on the detail, every scene and SketchUp path, and the buttons.</li>
+<li><span class="ui">Thumbnail</span> slider (top right): bigger or smaller cards.</li>
+</ul>
+
+<h2 id="insert">Getting a detail into your project</h2>
+<ol>
+<li>Click <span class="ui">Open Detail</span> on the card (or in the detail window). LayOut opens a small temporary file that holds only that detail, with all its views, labels and callouts.</li>
+<li>In that temporary file press <kbd>Ctrl</kbd>+<kbd>A</kbd> (select all), then <kbd>Ctrl</kbd>+<kbd>C</kbd> (copy).</li>
+<li>Close the temporary file. If LayOut asks to save it, choose <span class="ui">Don't Save</span>: it is only a copy.</li>
+<li>Go to your project and press <kbd>Ctrl</kbd>+<kbd>V</kbd> (paste). Move it into place.</li>
+</ol>
+<div class="box ok">Copy and paste is the right way: LayOut then keeps one shared SketchUp reference when several details come from the same model, exactly as when copying from the masters by hand. The detail stays grouped.</div>
+<ul>
+<li><span class="ui">Master</span> opens the full master LayOut file (look only; do not save changes to masters from here).</li>
+<li><span class="ui">Open SketchUp Source</span> (detail window) opens the SketchUp model the detail comes from.</li>
+<li>Temporary files are deleted automatically after 24 hours. To delete them now: <span class="ui">Library and admin tools</span> &gt; <span class="ui">Clean Staging Files</span> (close them in LayOut first).</li>
+</ul>
+
+<h2 id="cart">Several details at once (cart)</h2>
+<ol>
+<li>Click <span class="ui">+ Cart</span> on each detail you need (it turns into <span class="ui">In Cart</span>; click again to take it out). The cart bar appears at the bottom.</li>
+<li>Click <span class="ui">Open All in LayOut</span>. Each detail opens as its own temporary file, and the cart empties.</li>
+<li>In each file: <kbd>Ctrl</kbd>+<kbd>A</kbd>, <kbd>Ctrl</kbd>+<kbd>C</kbd>, close it, <kbd>Ctrl</kbd>+<kbd>V</kbd> in your project.</li>
+</ol>
+<ul>
+<li>The cart is kept when Detail Manager is closed. <span class="ui">Clear Cart</span> empties it; the &times; on a picture removes one detail.</li>
+<li>Up to 25 details at a time. If one cannot be opened, it stays in the cart and the reason is shown (also in Diagnostics).</li>
+</ul>
+
+<h2 id="nonlib">Non-Library Details (jobs)</h2>
+<p>Details drawn for jobs that are not (yet) in the library. They are searched separately and always marked with an orange <span class="ui">NON-LIBRARY &middot; JOB</span> badge.</p>
+<h3>Setting it up (once per computer)</h3>
+<ol>
+<li>Open <span class="ui">Library and admin tools</span> (left panel) &gt; <span class="ui">Choose Non-Library Details Folder</span>, and pick the folder where job-specific details are kept.</li>
+<li>Click <span class="ui">Refresh Index</span>. The <span class="ui">Library | Non-Library | Both</span> switch then appears.</li>
+</ol>
+<h3>Adding a job</h3>
+<ul>
+<li>Put the job's LayOut detail file(s) in that folder: loose, or in the job's own folder. Start the file name or the folder name with the job number (<code>1875 S2.1-S2.4.layout</code> or <code>1875\...</code>).</li>
+<li>Click <span class="ui">Refresh Index</span>.</li>
+<li>To leave a job out, take its file out of the folder and refresh. Backup files (<code>Backup of ...</code>) are always ignored.</li>
+</ul>
+<h3>Reading the cards</h3>
+<ul>
+<li><span class="ui">In 12 jobs</span>: exactly the same detail occurs in that many jobs. It is shown once; the detail window lists every job with its own Open Detail button.</li>
+<li><span class="ui">Most used in jobs</span> (next to the result count): lists the most used job details first: good candidates for the library.</li>
+<li><span class="ui">Same as Library: ...</span>: a job copy of a library detail. In <span class="ui">Both</span> these are hidden and the library card says <span class="ui">Also used in N jobs</span>.</li>
+<li><span class="ui">Custom model</span> / <span class="ui">Old library model</span>: where the detail's SketchUp model lives.</li>
+</ul>
+
+<h2 id="refresh">When to Refresh Index</h2>
+<p><span class="ui">Refresh Index</span> (top right) reads the master files again. It only reads; it never changes them. Masters that did not change are skipped, so a normal refresh takes seconds.</p>
+<table><tr><th>Refresh after ...</th><th>Why</th></tr>
+<tr><td>A library master was added, changed or removed</td><td>New and changed details appear; removed ones disappear</td></tr>
+<tr><td>Job files were added to (or taken out of) the Non-Library Details folder</td><td>Same, for job details</td></tr>
+<tr><td>Detail Manager was updated</td><td>The first refresh after an update can take about 2 minutes (it reads everything once). Pictures are kept</td></tr>
+<tr><td><code>abbreviations.json</code> was edited</td><td>Search words come from it; the next refresh reads everything once</td></tr>
+</table>
+<ul>
+<li>A changed master loses its full thumbnails until the next render (its cards show the plain SketchUp view meanwhile). See <a href="#thumbs">Full thumbnails</a>.</li>
+<li>If the Z: drive (or the job folder) cannot be reached, nothing is removed: the refresh stops and says so (and Diagnostics shows it).</li>
+</ul>
+
+<h2 id="thumbs">Full thumbnails (admin task)</h2>
+<p>Full thumbnails show the whole detail with labels and callouts. Until a master has them, its cards show the plain SketchUp view (badge <span class="ui">Viewport Cache</span>). Making them uses SketchUp and takes a while, so do it when you do not need SketchUp or LayOut.</p>
+<ol>
+<li>In Detail Manager: <span class="ui">Library and admin tools</span> &gt; <span class="ui">1. Prepare Render Queue</span> (the layer to hide, normally <code>GUIDES</code>, is listed above it).</li>
+<li>In SketchUp: <span class="ui">Extensions</span> &gt; <span class="ui">Developer</span> &gt; <span class="ui">Ruby Console</span>, then type (with your program folder) and press Enter:<br>
+<code>load 'C:/sketchup_dev/detail_manager_release/thumbnail_worker.rb'</code><br>
+SketchUp opens each master read-only and makes a PDF of it. It shows a message when it is done.</li>
+<li>Back in Detail Manager: <span class="ui">3. Process Rendered Thumbnails</span>.</li>
+</ol>
+<div class="box warn">At the moment step 1 queues every master, not only the changed ones, so a full run takes a long time. Making it render only new and changed masters is on the to-do list. Step 3 needs PyMuPDF on the computer; if it says it is missing, run <code>py -m pip install pymupdf</code> in Command Prompt once.</div>
+
+<h2 id="lists">Editing names and abbreviations</h2>
+<p>Two small files in the program folder (<code>C:\sketchup_dev\detail_manager_release</code>), editable with Notepad:</p>
+<ul>
+<li><code>categories.json</code>: the categories in the left panel and which scrapbook numbers <code>(01)</code>, <code>(02)</code> ... belong to each. Save, then reload the Detail Manager page.</li>
+<li><code>abbreviations.json</code>: what shorthand means (<code>"TJI": "I-Joist"</code>). Only add words the detail really has (no brackets or "e.g."). Save, then <span class="ui">Refresh Index</span>.</li>
+</ul>
+<p>A mistake in either file never stops the program: it uses its built-in list and says so in Diagnostics. Note: a new program version replaces these files, so tell whoever maintains Detail Manager about changes you want kept.</p>
+
+<h2 id="diag">Diagnostics and problems</h2>
+<p><span class="ui">Diagnostics</span> (bottom of the left panel) shows a red number when something needs a look: master files that could not be read, the Z: drive or job folder not reachable, views skipped because they were not inside a detail group, and the last thumbnail render. <span class="ui">Open Log Folder</span> opens the log, which helps when reporting a problem.</p>
+<table><tr><th>What you see</th><th>What to do</th></tr>
+<tr><td>Black window: port already in use</td><td>Detail Manager is already running; close the other black window</td></tr>
+<tr><td>No results at all</td><td>Clear the category or source filter (All Details), or switch Library / Non-Library / Both</td></tr>
+<tr><td>A detail you expected is missing</td><td>Refresh Index (its master may be new or changed)</td></tr>
+<tr><td>Open Detail shows an error</td><td>Check that Z: is reachable; then look in Diagnostics</td></tr>
+<tr><td>A card has only the plain SketchUp view</td><td>Normal for new or changed masters until the next <a href="#thumbs">thumbnail render</a></td></tr>
+</table>
+
+<h2 id="rules">What Detail Manager never does</h2>
+<ul>
+<li>It never saves or changes the master LayOut or SketchUp files, and never changes the SketchUp paths inside them.</li>
+<li>It never writes anything into the library or job folders. Its own data (index, pictures, temporary files, log, cart) is kept on this computer in <code>%LOCALAPPDATA%\ZE Detail Manager</code>.</li>
+<li>Once a detail is pasted into a project, Detail Manager does not manage it: later library changes do not change your project.</li>
+</ul>
+</main></div></body></html>

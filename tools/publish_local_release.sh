@@ -7,7 +7,7 @@ cd "$(dirname "$0")/.."
 [ -z "$(git status --porcelain src)" ] || { echo "src has uncommitted changes - commit first"; exit 1; }
 OUT=../detail_manager_release
 mkdir -p "$OUT"
-for f in detail_manager.py abbreviations.json categories.json thumbnail_worker.rb; do git show "HEAD:src/$f" > "$OUT/$f"; done
+for f in detail_manager.py abbreviations.json categories.json thumbnail_worker.rb how_to.html; do git show "HEAD:src/$f" > "$OUT/$f"; done
 cp tools/START_DETAIL_MANAGER.bat "$OUT/START_DETAIL_MANAGER.bat"
 printf 'Detail Manager release copy\r\nBuilt from: %s (%s)\r\nCommit date: %s\r\nPublished: %s\r\n' \
   "$(git rev-parse --abbrev-ref HEAD)" "$(git rev-parse --short HEAD)" "$(git log -1 --format=%ci)" "$(date '+%Y-%m-%d %H:%M')" > "$OUT/VERSION.txt"

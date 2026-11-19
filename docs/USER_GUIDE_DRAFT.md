@@ -1,6 +1,7 @@
 # Detail Manager - User Guide (draft)
 
 Notes collected as we build. To be written up properly for release 0.3.
+The day-to-day steps are in the program itself: How To button (`src/how_to.html`).
 
 ## What the computer needs (current prototype)
 Until the standalone program exists (planned for 0.3), each computer that runs

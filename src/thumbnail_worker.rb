@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 #
-# Detail Manager POC 07A - LayOut Thumbnail Render Worker v2
+# Detail Manager - LayOut thumbnail render worker
 #
-# Fixes:
-# - exact app-data directory now matches Detail Manager:
-#     %LOCALAPPDATA%\ZE Detail Manager POC 07A\
-# - reload-safe constant assignment (no "already initialized constant" warning)
+# Run from the SketchUp Ruby Console:  load '<program folder>/thumbnail_worker.rb'
+# Reads the render queue that Detail Manager prepared, opens each master LayOut
+# file READ-ONLY, hides the configured layers (GUIDES) in memory, exports PDF,
+# restores the layers and never saves the master.
+# Data folder: whichever Detail Manager data folder prepared the newest queue.
 #
 require 'json'
 require 'fileutils'
@@ -13,12 +14,27 @@ require 'fileutils'
 module ZEDetailManagerPOC07AThumbnailWorker
   extend self
 
-  remove_const(:APP_DIR) if const_defined?(:APP_DIR, false)
-  APP_DIR = 'ZE Detail Manager Prototype 0.1'
+  remove_const(:APP_DIRS) if const_defined?(:APP_DIRS, false)
+  # Data folders Detail Manager uses (daily copy, development copy, older builds).
+  # The worker takes the one whose render queue was prepared most recently, so it
+  # always answers the copy of Detail Manager that asked for the render.
+  APP_DIRS = [
+    'ZE Detail Manager',
+    'ZE Detail Manager Dev',
+    'ZE Detail Manager Prototype 0.1',
+    'ZE Detail Manager POC 07A'
+  ].freeze
+
+  def local_root
+    ENV['LOCALAPPDATA'] || ENV['TEMP'] || Dir.home
+  end
 
   def app_root
-    local = ENV['LOCALAPPDATA'] || ENV['TEMP'] || Dir.home
-    File.join(local, APP_DIR)
+    @app_root ||= begin
+      candidates = APP_DIRS.map { |d| File.join(local_root, d) }
+      queued = candidates.select { |d| File.file?(File.join(d, 'thumbnail_jobs', 'queue.json')) }
+      queued.empty? ? candidates.first : queued.max_by { |d| File.mtime(File.join(d, 'thumbnail_jobs', 'queue.json')) }
+    end
   end
 
   def queue_path
@@ -119,11 +135,12 @@ module ZEDetailManagerPOC07AThumbnailWorker
   end
 
   def run
+    @app_root = nil # look again on every run
     qpath = queue_path
     unless File.file?(qpath)
       UI.messagebox(
-        "POC 07A thumbnail queue not found.\n\n" \
-        "In Detail Manager POC 07A, click '1. Prepare Render Queue' first.\n\n" \
+        "Detail Manager thumbnail queue not found.\n\n" \
+        "In Detail Manager, open Library and admin tools and click '1. Prepare Render Queue' first.\n\n" \
         "Expected:\n#{qpath}"
       )
       return
@@ -134,11 +151,12 @@ module ZEDetailManagerPOC07AThumbnailWorker
     jobs = Array(queue['jobs'])
 
     if jobs.empty?
-      UI.messagebox('POC 07A thumbnail queue contains no LayOut files.')
+      UI.messagebox('The Detail Manager thumbnail queue contains no LayOut files.')
       return
     end
 
-    puts "\n=== DETAIL MANAGER POC 07A THUMBNAIL WORKER v2 ==="
+    puts "\n=== DETAIL MANAGER THUMBNAIL WORKER ==="
+    puts "Data folder: #{app_root}"
     puts "Queue: #{qpath}"
     puts "Jobs: #{jobs.length}"
 
@@ -166,14 +184,14 @@ module ZEDetailManagerPOC07AThumbnailWorker
       'failures' => failures
     }))
 
-    msg = "POC 07A thumbnail render complete.\n\n#{successes}/#{jobs.length} master file(s) rendered."
+    msg = "Detail Manager thumbnail render complete.\n\n#{successes}/#{jobs.length} master file(s) rendered."
     msg += "\n#{failures.length} failed - see Ruby Console." unless failures.empty?
     msg += "\n\nReturn to Detail Manager and click '3. Process Rendered Thumbnails'."
     UI.messagebox(msg)
   rescue => e
     puts e.full_message
     UI.messagebox(
-      "POC 07A thumbnail worker failed:\n\n#{e.class}: #{e.message}\n\n" \
+      "Detail Manager thumbnail worker failed:\n\n#{e.class}: #{e.message}\n\n" \
       "See Ruby Console for details."
     )
   end

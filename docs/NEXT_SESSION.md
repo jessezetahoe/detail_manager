@@ -17,7 +17,7 @@ clean notes (raw text kept), category sidebar.
 ## The list, in order
 | # | Tag | Item | Size | What I need from you |
 |---|---|---|---|---|
-| 0 | C3 | **Detail cart: BUILT on branch `feature/cart`, waiting for your test** | S | Your test |
+| 0 | G1, R2 | **How To page and thumbnail-worker folder fix: BUILT on branch `feature/how-to`.** Read it in the development copy (How To button); one thumbnail render when convenient | S | Your read-through |
 | 1 | M3 | **Tighter search.** Rank title first, then scene, then notes; stop the master file name from matching every detail the same; fewer loose matches from notes | M | 3 to 5 real searches where the results felt too broad or in the wrong order |
 | 2 | U1, U3 | **Slim cards and fuller detail window.** Card: thumbnail, title, scene line, framing type with Hydronics. Everything else (source, page, all scenes, paths, notes, raw text) in the detail window | M | Look at it and say what to trim |
 | 3 | U4 | More than 80 results (load more as you scroll) | S | nothing |
