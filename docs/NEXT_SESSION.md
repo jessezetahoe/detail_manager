@@ -7,7 +7,7 @@ Size: S = under an hour, M = a few hours, L = open ended.
 **Daily copy has (2026-11-19):** titles, clean notes, categories, Non-Library Details (switch shows once its folder is set), tally, backups skipped.
 **In daily use:** `C:\sketchup_dev\detail_manager_release` (desktop shortcut), built from `main` at the sidebar release.
 Its data: `%LOCALAPPDATA%\ZE Detail Manager`. It only changes when Claude publishes a tested version.
-**Done and verified:** regression tests, diagnostics log and button, real titles with the scene line,
+**Done and verified:** render only new or changed (2026-11-19); regression tests, diagnostics log and button, real titles with the scene line,
 clean notes (raw text kept), category sidebar.
 **Development copy:** `RUN_DEV.bat` (port 8769, data in `%LOCALAPPDATA%\ZE Detail Manager Dev`).
 **Tests:** `cd /d C:\sketchup_dev\detail_manager` then `py -m unittest discover -s tests` (97 tests, about 65 s, expect `OK`).
@@ -17,8 +17,8 @@ clean notes (raw text kept), category sidebar.
 ## The list, in order
 | # | Tag | Item | Size | What I need from you |
 |---|---|---|---|---|
-| 0 | R2 | Thumbnail render from the daily copy (running 2026-11-19): report the result | S | Result |
-| 0b | P6 | **Render only new or changed: BUILT on branch `feature/render-changed`**, test after the current render | S | Your test |
+| 0 | M3 | **Tighter search ranking** once you have noted 3 to 5 searches that felt off | M | Your example searches |
+| 0b | S4, S1, S2 | **SketchUp helper inside the main extension** (own module): Render Thumbnails menu, Open SketchUp at the exact scene | M | Test in SketchUp 2025 |
 | 1 | M3 | **Tighter search.** Rank title first, then scene, then notes; stop the master file name from matching every detail the same; fewer loose matches from notes | M | 3 to 5 real searches where the results felt too broad or in the wrong order |
 | 2 | U1, U3 | **Slim cards and fuller detail window.** Card: thumbnail, title, scene line, framing type with Hydronics. Everything else (source, page, all scenes, paths, notes, raw text) in the detail window | M | Look at it and say what to trim |
 | 3 | U4 | More than 80 results (load more as you scroll) | S | nothing |
