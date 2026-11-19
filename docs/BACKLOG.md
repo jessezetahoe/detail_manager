@@ -43,6 +43,13 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
 - **F Field reports (from daily use)**
   - [x] F1 (user, 2026-11-18; verified the same day, merged and published) Searching "hydronics" also found Traditional (no hydronics) details: the TRAD expansion said "Traditional Framing (No Hydronics)". FIXED on branch `fix/abbreviation-noise`: TRAD = "Traditional Framing"; same fix for FILL (was adding "California") and TAIL (was adding "Eave"). Rule for the list: an expansion must not add words the detail does not have (tested). Editing `abbreviations.json` now makes the next Refresh Index re-read every master once (thumbnails kept).
   - [~] F2 (user, 2026-11-18) 3PLY should also be found by "triple", 2PLY by "double". BUILT on branch `fix/field-reports` (collects field fixes until the user has time to check them; not urgent for the daily copy): 2PLY = Double Ply, 3PLY = Triple Ply; abbreviation codes may now start with a digit. Scene names written "3 Ply" (with a space) are covered through the master title, which every detail of that master carries
+- **O Old Projects (decided 2026-11-18)**
+  - Approach: read the job LayOut files directly (no PDF re-export). Old Projects = ONE flat drop folder: after a job is finished, its LayOut file is copied in. Every file name starts with the job number, so no duplicates and no subfolders. Leaving a job out = removing its file. Never scan the full projects folder (about 2,000 jobs x 110 to 330 details). Backups never enter the folder. Final program: one Old Projects folder on the server, published with the index like the library
+  - Facts from the user: details are grouped (loose viewports are rare: skip them, count them in Diagnostics); every detail has a drawn title of some kind; scene names in jobs are usually SketchUp defaults ("Scene 3"), so never show those as the card's scene line or use them as a title; pasted library details still point to the library models
+  - [ ] O1 Check 4 to 6 sample job files (`tests/fixtures/projects/`, waiting for the user): grouping, loose viewports, title found beside N.T.S. or not, links back to library models, read time, job number pattern in the file name
+  - [ ] O2 Old Projects as a second source: own folder setting, job number from the file name, "JOB ARCHIVE" badge, Library / Old Projects / Both switch (U5), its own categories or a job filter
+  - [ ] O3 Details that point to library models: mark "also in the Library", show the library version first
+  - [ ] O4 Default scene names ("Scene 12") hidden from cards and never used as a title; if no N.T.S. title, choose the best other text
 
 ## 0.3 - standalone program and rollout
 - [ ] P1 Program window instead of a browser tab (same screens, no local web server)
@@ -57,7 +64,7 @@ Rules that never change are in `CLAUDE.md`. Background is in `docs/handoff/`.
 ## Later
 - [ ] L1 Which masters and details use a given SketchUp model (dependency tracking)
 - [ ] L2 Controlled, explicit master reference maintenance (never automatic)
-- [ ] L3 Job Archive search = "Old Projects" (second source, clearly labelled; see U5)
+- [ ] L3 Old Projects search. MOVED UP 2026-11-18 (user's next priority; see O1 to O4 in 0.2)
 - [ ] L4 Promote to Library review queue
 - [ ] L5 Find details from a SketchUp view (image or model recognition); may move more into SketchUp
 - [ ] L6 Favorites, recently used, detail basket (only if users ask)
