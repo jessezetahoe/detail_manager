@@ -32,7 +32,7 @@ from xml.dom import minidom, Node
 
 # Bump on every publish to the daily copy (last digit: fixes; middle digit: new features)
 # and add an entry to docs/RELEASE_HISTORY.md. The data folder name never changes with it.
-APP_VERSION = "0.3.0"
+APP_VERSION = "0.3.1"
 APP_NAME = f"ZE Detail Manager {APP_VERSION}"
 APP_DIR_NAME = "ZE Detail Manager Prototype 0.1"
 PORT_DEFAULT = 8768
@@ -1472,13 +1472,18 @@ def library_categories() -> List[dict]:
 #   has none of the group's codes (library file names and scenes can disagree).
 #   other groups: file name and scene names both count.
 # ---------------------------------------------------------------------------
-def _chip(label, file=(), scene=()):
-    return {"label": label, "file": list(file), "scene": list(scene)}
+def _chip(label, file=(), scene=(), hidden=False):
+    c = {"label": label, "file": list(file), "scene": list(scene)}
+    if hidden:
+        c["hidden"] = True
+    return c
 
 
 DEFAULT_CHIP_GROUPS = [
     {"name": "Joist", "exclusive": True, "chips": [_chip("Solid Joist", ["SJ"], ["SJ"]), _chip("Truss Joist", ["TJ"], ["TJ"]), _chip("I-Joist", ["TJI"], ["TJI"])]},
-    {"name": "Floor system", "exclusive": True, "single": True, "chips": [_chip("Hydronics", ["HYD"], ["HYD"]), _chip("Traditional", ["TRAD"], ["TRAD"])]},
+    # Traditional is hidden (user, 2026-11-22: Hydronics on / NOT covers it), but TRAD in a file name
+    # still decides, so a TRAD master with a "Hyd" scene is not tagged hydronic.
+    {"name": "Floor system", "exclusive": True, "chips": [_chip("Hydronics", ["HYD"], ["HYD"]), _chip("Traditional", ["TRAD"], ["TRAD"], hidden=True)]},
     {"name": "Beam", "exclusive": True, "chips": [_chip("Double ply", ["2PLY"]), _chip("Triple ply", ["3PLY"]), _chip("Solid", ["SOLD"]), _chip("Steel", ["STL"], ["STL"])]},
     # Flush from file names only (user, 2026-11-22): in scene names "Flush" means a flush header or pocket.
     {"name": "Joist at beam", "exclusive": True, "single": True, "chips": [_chip("Flush", ["FLSH"]), _chip("Bearing", ["BEAR"])]},
@@ -1539,7 +1544,7 @@ def _validate_chips(raw) -> List[dict]:
             if cid in seen:
                 raise ValueError(f'chip "{label}" appears twice in "{name}"')
             seen.add(cid)
-            chips.append({"id": cid, "label": label, "file": file, "scene": scene})
+            chips.append({"id": cid, "label": label, "file": file, "scene": scene, "hidden": bool(c.get("hidden"))})
         if not chips:
             raise ValueError(f'group "{name}" has no chips')
         out.append({"name": name, "exclusive": bool(g.get("exclusive")), "single": bool(g.get("single")), "chips": chips})
@@ -1570,7 +1575,12 @@ def chips_config() -> List[dict]:
 
 
 def chips_for_ui() -> List[dict]:
-    return [{"name": g["name"], "single": g["single"], "chips": [{"id": c["id"], "label": c["label"]} for c in g["chips"]]} for g in chips_config()]
+    out = []
+    for g in chips_config():
+        shown = [{"id": c["id"], "label": c["label"]} for c in g["chips"] if not c["hidden"]]
+        if shown:
+            out.append({"name": g["name"], "single": g["single"], "chips": shown})
+    return out
 
 
 def _words(text: str) -> List[str]:

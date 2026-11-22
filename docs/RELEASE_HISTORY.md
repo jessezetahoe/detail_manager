@@ -4,6 +4,10 @@ Version numbers: the last digit for fixes, the middle digit for new features. Th
 shows at the top left of the program and in Diagnostics. Each publish to the daily copy
 gets a new number and an entry here; the git tag (vX.Y.Z) is set once it is verified.
 
+## 0.3.1 (2026-11-22)
+- Floor system shows just Hydronics (once = hydronic, twice = not hydronic); the Traditional
+  chip is gone. TRAD in a file name still wins over a "Hyd" scene name.
+
 ## 0.3.0 (2026-11-22)
 - Filters (chips) under the search box: Joist, Floor system, Beam, Joist at beam, Location,
   Wall (Wall above / Wall below, read from the phrases Wall Abv / Wall Blw / Wall Abv Blw), Joist direction, Foundation, Other.

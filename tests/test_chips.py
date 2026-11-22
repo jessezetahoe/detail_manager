@@ -19,17 +19,25 @@ class TestChipRules(unittest.TestCase):
     def test_shipped_file_matches_built_in_list(self):
         raw = json.loads(dm.chips_path().read_text(encoding="utf-8"))
         a, b = dm._validate_chips(raw), dm._validate_chips(dm.DEFAULT_CHIP_GROUPS)
-        self.assertEqual([(g["name"], g["exclusive"], g["single"], [(c["id"], c["file"], c["scene"]) for c in g["chips"]]) for g in a],
-                         [(g["name"], g["exclusive"], g["single"], [(c["id"], c["file"], c["scene"]) for c in g["chips"]]) for g in b])
+        self.assertEqual([(g["name"], g["exclusive"], g["single"], [(c["id"], c["file"], c["scene"]) for c in g["chips"]], [c["hidden"] for c in g["chips"]]) for g in a],
+                         [(g["name"], g["exclusive"], g["single"], [(c["id"], c["file"], c["scene"]) for c in g["chips"]], [c["hidden"] for c in g["chips"]]) for g in b])
 
     def test_single_choice_groups(self):
         single = {g["name"]: g["single"] for g in dm.chips_for_ui()}
-        for name in ("Floor system", "Joist at beam", "Location", "Joist direction"):
+        for name in ("Joist at beam", "Location", "Joist direction"):
             self.assertTrue(single[name], name)
-        for name in ("Joist", "Beam", "Wall", "Foundation", "Other"):
+        for name in ("Joist", "Floor system", "Beam", "Wall", "Foundation", "Other"):
             self.assertFalse(single[name], name)
         self.assertFalse(dm._validate_chips([{"name": "X", "chips": [{"label": "A", "file": ["A"]}]}])[0]["single"])
         self.assertIn("grp.single", dm.INDEX_HTML)
+
+    def test_traditional_hidden_but_still_decides(self):
+        ui = {g["name"]: [c["label"] for c in g["chips"]] for g in dm.chips_for_ui()}
+        self.assertEqual(ui["Floor system"], ["Hydronics"])
+        # Real master: TRAD in the file name, "Hyd" in a scene name -> not hydronic.
+        c = dm.compute_chips("(04) FLR TO STL BEAM TRAD FLSH EXT TJ.layout", ["Pa Stl Bm Nail Wall Blw Hyd"])
+        self.assertNotIn("floor-system:hydronics", c)
+        self.assertIn("floor-system:hydronics", dm.compute_chips("(04) FLR TO STL BEAM FLSH EXT TJ.layout", ["Pa Stl Bm Hyd"]))
 
     def test_file_name_decides_either_or_groups(self):
         # Real case: a Solid Joist master whose scenes say "TJI".
