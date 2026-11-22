@@ -18,7 +18,7 @@ clean notes (raw text kept), category sidebar.
 | # | Tag | Item | Size | What I need from you |
 |---|---|---|---|---|
 | 0 | M3 | **Tighter search ranking** once you have noted 3 to 5 searches that felt off | M | Your example searches |
-| 0b | S4, S1, S2 | **SketchUp helper inside the main extension** (own module): Render Thumbnails menu, Open SketchUp at the exact scene | M | Test in SketchUp 2025 |
+| 0b | F4 | Job file that would not index (XML reading error) | S | Access to that file |
 | 1 | M3 | **Tighter search.** Rank title first, then scene, then notes; stop the master file name from matching every detail the same; fewer loose matches from notes | M | 3 to 5 real searches where the results felt too broad or in the wrong order |
 | 2 | U1, U3 | **Slim cards and fuller detail window.** Card: thumbnail, title, scene line, framing type with Hydronics. Everything else (source, page, all scenes, paths, notes, raw text) in the detail window | M | Look at it and say what to trim |
 | 3 | U4 | More than 80 results (load more as you scroll) | S | nothing |
