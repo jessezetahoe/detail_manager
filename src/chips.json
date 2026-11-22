@@ -154,20 +154,23 @@
           "label": "Wall above",
           "file": [],
           "scene": [
-            "ABV"
+            "WALL ABV",
+            "WALL ABV BLW"
           ]
         },
         {
           "label": "Wall below",
           "file": [],
           "scene": [
-            "BLW"
+            "WALL BLW",
+            "WALL ABV BLW"
           ]
         },
         {
           "label": "No wall above",
           "file": [],
           "scene": [
+            "WALL BLW",
             "NW ABV"
           ]
         },
@@ -175,6 +178,7 @@
           "label": "No wall below",
           "file": [],
           "scene": [
+            "WALL ABV",
             "NW BLW"
           ]
         },
@@ -182,7 +186,8 @@
           "label": "No wall",
           "file": [],
           "scene": [
-            "NW"
+            "NW",
+            "NO WALL"
           ]
         }
       ]
@@ -357,7 +362,8 @@
           "label": "Roof outside",
           "file": [],
           "scene": [
-            "ROOF"
+            "ROOF",
+            "ROOF ABV"
           ]
         },
         {

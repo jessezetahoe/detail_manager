@@ -57,6 +57,7 @@ table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid va
 <li>Click a chip once: results <b>must have</b> it (blue). Twice: they <b>must NOT have</b> it (red, crossed out). Three times: off.</li>
 <li>The number on each chip is how many of the current results have it, so you can see how much a click narrows things. Faded chips would give no results.</li>
 <li>Chips work together with the search words, the category and Library / Non-Library / Both. <span class="ui">Clear filters</span> turns them all off.</li>
+<li>Wall chips read the wall phrases in the scene names: <i>Wall Abv</i> = Wall above + No wall below; <i>Wall Abv Blw</i> = Wall above + Wall below; <i>Wall Blw</i> = Wall below + No wall above; <i>NW ABV</i> = No wall above; <i>NW</i> or <i>No Wall</i> = No wall. Combine chips to get one case, for example Wall above + No wall below.</li>
 <li>Chips come from the master file name and the SketchUp scene names, never from the notes. Job details often have plain scene names, so fewer chips apply to them.</li>
 </ul>
 <h3>Left panel</h3>
@@ -150,7 +151,7 @@ Without the toolkit: <span class="ui">Extensions</span> &gt; <span class="ui">De
 <p>Three small files in the program folder (<code>C:\sketchup_dev\detail_manager_release</code>), editable with Notepad:</p>
 <ul>
 <li><code>categories.json</code>: the categories in the left panel and which scrapbook numbers <code>(01)</code>, <code>(02)</code> ... belong to each. Save, then reload the Detail Manager page.</li>
-<li><code>chips.json</code>: the Filters chips and the codes that switch each one on (from the file name or the scene names). A code can be several words, like <code>NW ABV</code> (No wall above); the longest code wins, so that ABV does not also count as Wall above. Save, then reload the Detail Manager page.</li>
+<li><code>chips.json</code>: the Filters chips and the codes that switch each one on (from the file name or the scene names). A code can be several words, like <code>WALL ABV BLW</code>; the longest code wins, so <i>Wall Abv Blw</i> does not also count as <i>Wall Abv</i>. Save, then reload the Detail Manager page.</li>
 <li><code>abbreviations.json</code>: what shorthand means (<code>"TJI": "I-Joist"</code>). Only add words the detail really has (no brackets or "e.g."). Save, then <span class="ui">Refresh Index</span>.</li>
 </ul>
 <p>A mistake in either file never stops the program: it uses its built-in list and says so in Diagnostics. Note: a new program version replaces these files, so tell whoever maintains Detail Manager about changes you want kept.</p>

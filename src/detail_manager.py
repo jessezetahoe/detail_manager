@@ -1482,11 +1482,16 @@ DEFAULT_CHIP_GROUPS = [
     {"name": "Beam", "exclusive": True, "chips": [_chip("Double ply", ["2PLY"]), _chip("Triple ply", ["3PLY"]), _chip("Solid", ["SOLD"]), _chip("Steel", ["STL"], ["STL"])]},
     {"name": "Joist at beam", "exclusive": True, "chips": [_chip("Flush", ["FLSH"], ["FLSH", "FLUSH"]), _chip("Bearing", ["BEAR"])]},
     {"name": "Location", "exclusive": True, "chips": [_chip("Exterior", ["EXT"], ["EXT"]), _chip("Interior", ["INT"], ["INT"])]},
-    # "NW ABV" / "NW BLW" are two-word codes: the longest code wins and each word counts once,
-    # so their ABV / BLW never switch on "Wall above" / "Wall below". "NW" alone (beams) = No wall.
-    {"name": "Wall", "exclusive": False, "chips": [_chip("Wall above", scene=["ABV"]), _chip("Wall below", scene=["BLW"]),
-                                                  _chip("No wall above", scene=["NW ABV"]), _chip("No wall below", scene=["NW BLW"]),
-                                                  _chip("No wall", scene=["NW"])]},
+    # Wall callouts are PHRASES (scan of the library, 2026-11-22): "Wall Abv" = wall above and
+    # no wall below; "Wall Abv Blw" = walls above and below; "Wall Blw" = wall below and no wall
+    # above; "NW ABV" = no wall above; "NW" / "No Wall" = no wall (beams). The longest code wins
+    # and each word counts once, so "Wall Abv Blw" never also reads as "Wall Abv". Bare ABV / BLW
+    # are not wall codes ("Roof Abv", "Grade Beam Blw Frame", "HD Abv & Blw").
+    {"name": "Wall", "exclusive": False, "chips": [_chip("Wall above", scene=["WALL ABV", "WALL ABV BLW"]),
+                                                  _chip("Wall below", scene=["WALL BLW", "WALL ABV BLW"]),
+                                                  _chip("No wall above", scene=["WALL BLW", "NW ABV"]),
+                                                  _chip("No wall below", scene=["WALL ABV", "NW BLW"]),
+                                                  _chip("No wall", scene=["NW", "NO WALL"])]},
     {"name": "Joist direction", "exclusive": False, "chips": [_chip("Parallel", scene=["PA", "PARA"]), _chip("Perpendicular", scene=["PE", "PERP"]),
                                                              _chip("Para → Para", scene=["PA2PA"]), _chip("Para → Perp", scene=["PA2PE"]),
                                                              _chip("Perp → Para", scene=["PE2PA"]), _chip("Perp → Perp", scene=["PE2PE"])]},
@@ -1494,7 +1499,7 @@ DEFAULT_CHIP_GROUPS = [
                                                         _chip("Slab", scene=["SLAB"]), _chip("Insulation", scene=["INS"]), _chip("Pony wall", scene=["PONY"]), _chip("Stem", scene=["STEM"])]},
     {"name": "Other", "exclusive": False, "chips": [_chip("Strong Wall", ["WSW"], ["WSW"]), _chip("Deck", scene=["DECK"]), _chip("Skewed", scene=["SKEW"]),
                                                    _chip("Sits on top (not hung)", scene=["TOP"]), _chip("Even elevation", scene=["EVEN"]), _chip("Continuous", scene=["CONT"]),
-                                                   _chip("Sealed", scene=["SE"]), _chip("Roof outside", scene=["ROOF"]), _chip("Knife plate", scene=["KP"])]},
+                                                   _chip("Sealed", scene=["SE"]), _chip("Roof outside", scene=["ROOF", "ROOF ABV"]), _chip("Knife plate", scene=["KP"])]},
 ]
 _CHIP_CFG_CACHE: dict = {"mtime": "unset", "groups": None, "error": ""}
 _CHIP_CACHE: dict = {"cfg": None, "by_key": {}}
