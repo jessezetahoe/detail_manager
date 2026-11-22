@@ -19,8 +19,17 @@ class TestChipRules(unittest.TestCase):
     def test_shipped_file_matches_built_in_list(self):
         raw = json.loads(dm.chips_path().read_text(encoding="utf-8"))
         a, b = dm._validate_chips(raw), dm._validate_chips(dm.DEFAULT_CHIP_GROUPS)
-        self.assertEqual([(g["name"], g["exclusive"], [(c["id"], c["file"], c["scene"]) for c in g["chips"]]) for g in a],
-                         [(g["name"], g["exclusive"], [(c["id"], c["file"], c["scene"]) for c in g["chips"]]) for g in b])
+        self.assertEqual([(g["name"], g["exclusive"], g["single"], [(c["id"], c["file"], c["scene"]) for c in g["chips"]]) for g in a],
+                         [(g["name"], g["exclusive"], g["single"], [(c["id"], c["file"], c["scene"]) for c in g["chips"]]) for g in b])
+
+    def test_single_choice_groups(self):
+        single = {g["name"]: g["single"] for g in dm.chips_for_ui()}
+        for name in ("Floor system", "Joist at beam", "Location", "Joist direction"):
+            self.assertTrue(single[name], name)
+        for name in ("Joist", "Beam", "Wall", "Foundation", "Other"):
+            self.assertFalse(single[name], name)
+        self.assertFalse(dm._validate_chips([{"name": "X", "chips": [{"label": "A", "file": ["A"]}]}])[0]["single"])
+        self.assertIn("grp.single", dm.INDEX_HTML)
 
     def test_file_name_decides_either_or_groups(self):
         # Real case: a Solid Joist master whose scenes say "TJI".

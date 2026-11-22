@@ -2,6 +2,7 @@
   "_how_to_edit": [
     "Search chips (the Filters panel). Each chip lists the codes that switch it on: 'file' = words in the master file name, 'scene' = words in the SketchUp scene names. A code can be one word or several (\"NW ABV\"); the longest code wins and each word counts once. Capitals do not matter.",
     "exclusive: true = the file name decides (scene names count only when the file name has none of the group's codes). Use it for either-or groups such as joist type.",
+    "single: true = one chip at a time in the Filters panel (choosing one switches the other off; 'must NOT have' chips can still be combined).",
     "Chips never look at the notes on a detail. After saving this file, reload the Detail Manager page.",
     "If this file has a mistake, Detail Manager uses its built-in list and notes it under Diagnostics."
   ],
@@ -42,6 +43,7 @@
     {
       "name": "Floor system",
       "exclusive": true,
+      "single": true,
       "chips": [
         {
           "label": "Hydronics",
@@ -102,6 +104,7 @@
     {
       "name": "Joist at beam",
       "exclusive": true,
+      "single": true,
       "chips": [
         {
           "label": "Flush",
@@ -122,6 +125,7 @@
     {
       "name": "Location",
       "exclusive": true,
+      "single": true,
       "chips": [
         {
           "label": "Exterior",
@@ -168,6 +172,7 @@
     {
       "name": "Joist direction",
       "exclusive": false,
+      "single": true,
       "chips": [
         {
           "label": "Parallel",
