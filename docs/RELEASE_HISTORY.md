@@ -4,6 +4,12 @@ Version numbers: the last digit for fixes, the middle digit for new features. Th
 shows at the top left of the program and in Diagnostics. Each publish to the daily copy
 gets a new number and an entry here; the git tag (vX.Y.Z) is set once it is verified.
 
+## 0.4.0 (2026-11-22)
+- Typo tolerance: a word that finds nothing as typed is matched to the nearest words in the index
+  (3-5 letters: 1 letter off; 6+: 2; a swapped pair counts once; first letter must be right;
+  1-2 letter codes and words with numbers stay exact). The result line says what was searched.
+- Results load as you scroll (80 at a time) instead of stopping at 80.
+
 ## 0.3.1 (2026-11-22)
 - Floor system shows just Hydronics (once = hydronic, twice = not hydronic); the Traditional
   chip is gone. TRAD in a file name still wins over a "Hyd" scene name.

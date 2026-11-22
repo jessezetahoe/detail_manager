@@ -9,6 +9,7 @@ import argparse
 import contextlib
 import fnmatch
 import hashlib
+import bisect
 import json
 import logging
 import mimetypes
@@ -32,7 +33,7 @@ from xml.dom import minidom, Node
 
 # Bump on every publish to the daily copy (last digit: fixes; middle digit: new features)
 # and add an entry to docs/RELEASE_HISTORY.md. The data folder name never changes with it.
-APP_VERSION = "0.3.1"
+APP_VERSION = "0.4.0"
 APP_NAME = f"ZE Detail Manager {APP_VERSION}"
 APP_DIR_NAME = "ZE Detail Manager Prototype 0.1"
 PORT_DEFAULT = 8768
@@ -883,6 +884,7 @@ def index_library(library_root: str, projects_root: Optional[str] = None):
             INDEX_STATE["errors"].append({"file": library_root, "error": msg})
     finally:
         _CHIP_CACHE["by_key"] = {}
+        _VOCAB["words"] = None
         with INDEX_LOCK: INDEX_STATE.update({"running": False, "current": ""})
 
 
@@ -1214,6 +1216,84 @@ def safe_search_query(q: str) -> str:
     return " AND ".join(f'"{t}"*' for t in re.findall(r"[A-Za-z0-9]+", q))
 
 
+# Typo tolerance. Standard practice (as in Elasticsearch "AUTO" fuzziness): words of 1-2 letters
+# must be exact, 3-5 letters may be 1 letter off, 6+ letters 2 letters off; a swapped pair counts
+# as one; the first letter must be right. Only a word that matches nothing in the index is
+# corrected, so real codes (SJ, TJI, 2PLY) and any word that already finds something never change.
+_VOCAB: Dict[str, object] = {"words": None}
+
+
+def _allowed_typos(word: str) -> int:
+    return 0 if len(word) <= 2 else 1 if len(word) <= 5 else 2
+
+
+def _typo_distance(a: str, b: str, limit: int) -> int:
+    """Edit distance with swapped neighbours counted once; returns limit+1 when over limit."""
+    if abs(len(a) - len(b)) > limit:
+        return limit + 1
+    prev2, prev = None, list(range(len(b) + 1))
+    for i in range(1, len(a) + 1):
+        cur = [i] + [0] * len(b)
+        for j in range(1, len(b) + 1):
+            cost = 0 if a[i - 1] == b[j - 1] else 1
+            cur[j] = min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost)
+            if prev2 is not None and i > 1 and j > 1 and a[i - 1] == b[j - 2] and a[i - 2] == b[j - 1]:
+                cur[j] = min(cur[j], prev2[j - 2] + 1)
+        if min(cur) > limit:
+            return limit + 1
+        prev2, prev = prev, cur
+    return prev[-1]
+
+
+def _search_vocab(con: sqlite3.Connection):
+    """Words in the search index, sorted, with how many details use each. Cached until refresh."""
+    if _VOCAB["words"] is None:
+        try:
+            con.execute("CREATE VIRTUAL TABLE IF NOT EXISTS temp.dm_vocab USING fts5vocab(main, 'detail_search', 'row')")
+            rows = con.execute("SELECT term, doc FROM temp.dm_vocab").fetchall()
+        except sqlite3.OperationalError as e:
+            log_warning(f"Typo tolerance off: {e}")
+            rows = []
+        rows = sorted((str(t), int(d)) for t, d in rows)
+        _VOCAB["words"] = [t for t, _ in rows]
+        _VOCAB["docs"] = dict(rows)
+    return _VOCAB["words"], _VOCAB["docs"]
+
+
+def typo_corrections(con: sqlite3.Connection, q: str) -> Dict[str, List[str]]:
+    """{typed word: [index words it most likely meant]} for words that match nothing."""
+    words, docs = _search_vocab(con)
+    if not words:
+        return {}
+    out: Dict[str, List[str]] = {}
+    for t in dict.fromkeys(x.lower() for x in re.findall(r"[A-Za-z0-9]+", q)):
+        limit = _allowed_typos(t)
+        if not limit or not t.isalpha():
+            continue
+        i = bisect.bisect_left(words, t)
+        if i < len(words) and words[i].startswith(t):
+            continue  # the word (or a longer word starting with it) is in the index
+        lo, hi = bisect.bisect_left(words, t[0]), bisect.bisect_left(words, chr(ord(t[0]) + 1))
+        best, found = limit + 1, []
+        for w in words[lo:hi]:
+            d = _typo_distance(t, w, min(limit, best))
+            if d < best:
+                best, found = d, [w]
+            elif d == best and d <= limit:
+                found.append(w)
+        if found and best <= limit:
+            out[t] = sorted(found, key=lambda w: -docs.get(w, 0))[:5]
+    return out
+
+
+def search_query_with_typos(q: str, fixes: Dict[str, List[str]]) -> str:
+    parts = []
+    for t in re.findall(r"[A-Za-z0-9]+", q):
+        alts = fixes.get(t.lower())
+        parts.append("(" + " OR ".join(f'"{w}"*' for w in alts) + ")" if alts else f'"{t}"*')
+    return " AND ".join(parts)
+
+
 def category_layout_files(category: str) -> List[str]:
     cats = categories_config()
     con = DB.connect()
@@ -1347,21 +1427,25 @@ def _source_kinds(src: str) -> List[str]:
 
 
 def search_details(q: str = "", source: str = "", limit: int = 80, category: str = "", src: str = "library", job: str = "", sort: str = "",
-                   chips_on: Sequence[str] = (), chips_off: Sequence[str] = ()) -> List[dict]:
+                   chips_on: Sequence[str] = (), chips_off: Sequence[str] = (), offset: int = 0) -> List[dict]:
     """src: 'library' (default), 'projects' (Non-Library Details) or 'both'.
     sort: '' (best match) or 'most_used' (most jobs first).
     chips_on: every one must apply; chips_off: none may apply."""
-    return search(q, source, limit, category, src, job, sort, chips_on, chips_off)["details"]
+    return search(q, source, limit, category, src, job, sort, chips_on, chips_off, offset)["details"]
 
 
 def search(q: str = "", source: str = "", limit: int = 80, category: str = "", src: str = "library", job: str = "", sort: str = "",
-           chips_on: Sequence[str] = (), chips_off: Sequence[str] = ()) -> dict:
-    """Full search: details shown, total matches, and how many matches carry each chip."""
+           chips_on: Sequence[str] = (), chips_off: Sequence[str] = (), offset: int = 0) -> dict:
+    """Full search: details shown, total matches, and how many matches carry each chip.
+    offset: skip that many cards (load more as the user scrolls); has_more says whether more follow."""
+    offset = max(0, int(offset or 0))
     # Duplicates are folded after the query, so ask for more rows than are shown.
-    fetch = 5000 if sort == "most_used" else (limit if src == "library" else max(limit * 5, 400))
+    # Library has no duplicates: read only the page asked for.
+    plain = src == "library" and sort != "most_used"
+    fetch = limit if plain else (5000 if sort == "most_used" else max((offset + limit) * 5, 400))
     cat_files = category_layout_files(category) if category else (job_layout_files(job) if job else None)
     if cat_files == []:
-        return {"details": [], "total": 0, "chip_counts": {}}
+        return {"details": [], "total": 0, "chip_counts": {}, "typos": {}, "has_more": False}
     cat_sql = f"d.layout_file IN ({','.join('?' * len(cat_files))})" if cat_files else ""
     kinds = _source_kinds(src)
     kind_sql = f"COALESCE(lf.source_kind,'library') IN ({','.join('?' * len(kinds))})"
@@ -1369,8 +1453,10 @@ def search(q: str = "", source: str = "", limit: int = 80, category: str = "", s
     weight = "(CASE WHEN COALESCE(lf.source_kind,'library')='projects' THEN 0.75 ELSE 1.0 END)"
     later = "(CASE WHEN COALESCE(lf.source_kind,'library')='projects' THEN 1 ELSE 0 END)"
     con = DB.connect(); params, joins, where = [], "", []; order = later + ",d.layout_filename,d.page_name,d.group_index"
+    typos: Dict[str, List[str]] = {}
     if q.strip():
-        ftsq = safe_search_query(q)
+        typos = typo_corrections(con, q)
+        ftsq = search_query_with_typos(q, typos) if typos else safe_search_query(q)
         if ftsq:
             joins = " JOIN detail_search s ON s.detail_key=d.detail_key "; where.append("s.searchable_text MATCH ?"); params.append(ftsq); order = f"bm25(detail_search)*{weight},d.layout_filename,d.page_name,d.group_index"
     where.append(kind_sql); params += kinds
@@ -1395,7 +1481,7 @@ def search(q: str = "", source: str = "", limit: int = 80, category: str = "", s
         for c in chips[k]:
             counts[c] = counts.get(c, 0) + 1
     total = len(keys)
-    shown = keys[:fetch]
+    shown = keys[offset:offset + fetch] if plain else keys[:fetch]
     full = {}
     for i in range(0, len(shown), 500):
         chunk = shown[i:i + 500]
@@ -1412,9 +1498,15 @@ def search(q: str = "", source: str = "", limit: int = 80, category: str = "", s
             if lib_paths is None: lib_paths = library_model_paths(con)
             item["model_tags"] = model_tags(item["skp_paths_exact"], lib_paths); item["library_match"] = library_match(con, item)
         out.append(item)
-    out = finish_results(con, out, src, sort, limit)
+    if plain:
+        out = finish_results(con, out, src, sort, limit)
+        has_more = offset + len(shown) < total
+    else:
+        out = finish_results(con, out, src, sort, offset + limit + 1)
+        has_more = len(out) > offset + limit or (len(shown) < total and len(out) >= offset + limit)
+        out = out[offset:offset + limit]
     con.close()
-    return {"details": out, "total": total, "chip_counts": counts}
+    return {"details": out, "total": total, "chip_counts": counts, "typos": typos, "has_more": has_more}
 
 
 def scene_label(item: dict) -> str:
@@ -2098,13 +2190,20 @@ INDEX_HTML = r'''<!doctype html>
 </style></head><body>
 <header><div class="brand">Detail Manager <span style="font-weight:400;color:#788391" title="Version">%APP_VERSION%</span></div><input id="search" class="search" placeholder="Search: floor, FLR, retaining wall, RET, I-joist, TJI..." autofocus><div class="sizebox"><span>Thumbnail</span><input id="size" type="range" min="320" max="640" value="420" step="20"><span id="sizeval">420</span></div><button id="refresh">Refresh Index</button></header><div id="progress"><div></div></div>
 <div class="app"><aside><div id="srcswitch" class="srcswitch" style="display:none"><button data-src="library" class="on">Library</button><button data-src="projects">Non-Library</button><button data-src="both">Both</button></div><div id="catbox"><div class="aside-title">Categories</div><button class="cat active" data-cat="">All Details <span id="allcount" class="count"></span></button><div id="cats"></div></div><div id="jobsbox" style="display:none;margin-top:10px"><div class="aside-title">Non-Library Details: Jobs</div><button class="cat" data-job="">All Jobs <span id="alljobs" class="count"></span></button><div id="jobs"></div></div><details class="adv"><summary>Source files (advanced)</summary><div id="sources"></div></details><details class="adv"><summary>Library and admin tools</summary><div class="aside-title">Library</div><div id="libpath" class="pathbox">No library selected</div><button id="choose" style="width:100%;margin-bottom:12px">Choose Library Folder</button><div class="aside-title">Non-Library Details folder</div><div id="projpath" class="pathbox">Not set</div><button id="chooseproj" style="width:100%;margin-bottom:12px">Choose Non-Library Details Folder</button><div class="aside-title" style="margin-top:12px">Full Thumbnails</div><div class="thumbtools"><label style="font-size:11px;color:#67717e">Hide exact LayOut layer name(s)</label><input id="hiddenlayers" type="text" value="GUIDES" title="Comma-separated exact layer names"><div id="thumbstatus" class="thumbstatus"></div><div class="smallnote"><b>07A:</b> Tight crop uses 0.01&quot; top and 0.025&quot; left/right/bottom margins; white padding is added in the card instead of capturing adjacent page content.</div><label style="display:block;font-size:12px;margin:4px 0"><input type="checkbox" id="renderall"> Re-render everything (normally only new or changed masters)</label><button id="preparethumbs" class="primary">1. Prepare Render Queue</button><div class="smallnote">2. In SketchUp Ruby Console, load <b>thumbnail_worker.rb</b>. It renders the queued masters read-only with these layers hidden.</div><button id="processthumbs">3. Process Rendered Thumbnails</button></div><div class="aside-title" style="margin-top:18px">Temp</div><button id="cleanup" style="width:100%">Clean Staging Files</button></details><button id="helpbtn" style="width:100%;margin-top:14px" onclick="window.open('/help','_blank')">How To</button><button id="diagbtn" style="width:100%;margin-top:8px">Diagnostics<span id="diagbadge" class="badge" style="display:none"></span></button></aside>
-<main><div class="filterbar"><button id="filtersbtn">Filters &#9662;</button><span id="factive" class="factive"></span><button id="fclear" class="linkbtn" style="display:none">Clear filters</button></div><div id="filterpanel" class="filterpanel"><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Click once: must have &nbsp;&middot;&nbsp; twice: must NOT have &nbsp;&middot;&nbsp; three times: off. Numbers = matches with that chip. In groups marked <b>one</b>, choosing a chip switches the other one off.</div><div id="fgroups"></div></div><div class="statusline"><span id="resultcount"></span><span id="filterlabel"></span><span id="indexstatus"></span><select id="sortsel" style="display:none;margin-left:auto"><option value="">Best match</option><option value="most_used">Most used in jobs</option></select></div><div id="grid" class="grid"></div></main></div>
+<main><div class="filterbar"><button id="filtersbtn">Filters &#9662;</button><span id="factive" class="factive"></span><button id="fclear" class="linkbtn" style="display:none">Clear filters</button></div><div id="filterpanel" class="filterpanel"><div style="font-size:12px;color:var(--muted);margin-bottom:6px">Click once: must have &nbsp;&middot;&nbsp; twice: must NOT have &nbsp;&middot;&nbsp; three times: off. Numbers = matches with that chip. In groups marked <b>one</b>, choosing a chip switches the other one off.</div><div id="fgroups"></div></div><div class="statusline"><span id="resultcount"></span><span id="filterlabel"></span><span id="indexstatus"></span><select id="sortsel" style="display:none;margin-left:auto"><option value="">Best match</option><option value="most_used">Most used in jobs</option></select></div><div id="grid" class="grid"></div><div id="more" style="height:1px"></div></main></div>
 <div id="modalback" class="modalback"><div class="modal"><div class="modalview"><div id="modalimgs" class="modalimgs"></div></div><div class="modalinfo"><button id="close" class="close">×</button><h2 id="modaltitle"></h2><div id="modalraw" class="rawtitle"></div><div id="modalmeta"></div><h3>Notes on the detail</h3><div id="modaltext" class="detailtext"></div><details style="margin-top:8px"><summary style="cursor:pointer;color:var(--muted);font-size:12px">Everything read from the LayOut file (raw)</summary><div id="modalrawtext" class="detailtext" style="margin-top:6px"></div></details><div class="actions" style="margin-top:14px"><button id="modalopen" class="primary">Open Detail</button><button id="modalcart" class="cartbtn">+ Cart</button><button id="modalmaster">Open Master LayOut</button><button id="modalskp" title="Opens the SketchUp model at this detail's scene (needs the Zachary Engineering Toolkit)">Open in SketchUp</button></div></div></div></div><div id="diagback" class="modalback"><div class="diag"><button id="diagclose" class="close">×</button><h2>Diagnostics</h2><div id="diagbody"></div></div></div><div id="cartbar" class="cartbar"><div class="ctitle">Cart <span id="cartcount"></span></div><div id="cartitems" class="cartitems"></div><button id="cartsend" class="primary">Open All in LayOut</button><button id="cartclear">Clear Cart</button></div><div id="toast" class="toast"></div>
 <script>
 let currentSource='',currentCat='',currentJob='',currentSrc='library',currentSort='',chipState={},chipDefs=[],chipCounts={},lastTotal=0,currentDetails=[],modalDetail=null,timer=null;const q=s=>document.querySelector(s),grid=q('#grid');function esc(s){return (s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}async function api(url,opt){const r=await fetch(url,opt),j=await r.json();if(!r.ok)throw new Error(j.error||r.statusText);return j}function toast(msg){const t=q('#toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',8500)}function vclass(d){return 'count-'+Math.min(Math.max(d.viewports.length,1),6)}
 function thumbHtml(d,modal=false){if(d.full_preview_relpath){return `<img loading="lazy" src="/fullcache/${encodeURI(d.full_preview_relpath)}" title="Full LayOut detail"><span class="previewbadge">Full LayOut Preview</span>`}if(!d.viewports.length)return '<div style="color:#777">No preview</div>';let imgs=d.viewports.slice(0,6).map(v=>v.preview_relpath?`<img loading="lazy" src="/cache/${encodeURI(v.preview_relpath)}" title="${esc(v.scene_name)}">`:'').join('');return imgs+`<span class="previewbadge">Viewport Cache</span>`}
-function render(){setTimeout(markCart,0);q('#resultcount').textContent=lastTotal>currentDetails.length?`${currentDetails.length} of ${lastTotal} results (best first)`:`${currentDetails.length} result${currentDetails.length==1?'':'s'}`;grid.innerHTML='';if(!currentDetails.length){grid.innerHTML='<div class="empty">No details found.</div>';return}currentDetails.forEach(d=>{let c=document.createElement('article');c.className='card';let full=!!d.full_preview_relpath;let proj=d.source_kind==='projects';c.innerHTML=`<div class="thumb ${full?'full':'fallback '+vclass(d)}">${thumbHtml(d)}${proj?`<span class="jobbadge">NON-LIBRARY \u00b7 JOB ${esc(d.job_number||'?')}${d.sheet?' · '+esc(d.sheet):''}</span>`:''}</div><div class="meta"><div class="title">${esc(d.expanded_title||d.display_title)}</div>${proj?`<div class="jobtags">${d.library_match?'Same as Library: '+esc(d.library_match.title):esc((d.model_tags||[]).join(' · '))}</div>`:''}${proj&&d.job_count>1?`<div class="tally">In ${d.job_count} jobs</div>`:''}${!proj&&(d.used_in_jobs||[]).length?`<div class="tally">Also used in ${d.used_in_jobs.length} job${d.used_in_jobs.length==1?'':'s'}</div>`:''}${d.scene_label?`<div class="rawtitle">${esc(d.scene_label)}</div>`:''}<div class="mastertitle">${esc(d.master_title||'')}</div><div class="sub">${esc(d.layout_filename)} · ${esc(d.page_name)} · ${d.viewport_count} viewport${d.viewport_count==1?'':'s'}</div><div class="actions"><button class="od primary">Open Detail</button><button class="cartbtn" data-key="${esc(d.detail_key)}">+ Cart</button><button class="om">Master</button><button class="info">Preview</button></div></div>`;c.querySelector('.thumb').onclick=()=>openModal(d);c.querySelector('.info').onclick=()=>openModal(d);c.querySelector('.od').onclick=e=>{e.stopPropagation();openDetail(d)};c.querySelector('.cartbtn').onclick=e=>{e.stopPropagation();toggleCart(d.detail_key)};c.querySelector('.om').onclick=e=>{e.stopPropagation();openMaster(d)};grid.appendChild(c)})}
-async function search(){try{let j=await api(`/api/search?q=${encodeURIComponent(q('#search').value)}&source=${encodeURIComponent(currentSource)}&category=${encodeURIComponent(currentCat)}&src=${currentSrc}&job=${encodeURIComponent(currentJob)}&sort=${currentSort}&on=${encodeURIComponent(chipList('on'))}&off=${encodeURIComponent(chipList('not'))}`);currentDetails=j.details;chipCounts=j.chip_counts||{};lastTotal=j.total||0;render();renderChips()}catch(e){toast(e.message)}}
+function setCount(){let t=lastTotal>currentDetails.length?`${currentDetails.length} of ${lastTotal} results (best first)`:`${currentDetails.length} result${currentDetails.length==1?'':'s'}`;let fx=Object.entries(typoFix||{});if(fx.length)t+=' \u00b7 also searched '+fx.map(([a,b])=>b.join('/')+' for \u201c'+a+'\u201d').join(', ');q('#resultcount').textContent=t}
+function render(){setTimeout(markCart,0);setCount();grid.innerHTML='';if(!currentDetails.length){grid.innerHTML='<div class="empty">No details found.</div>';return}addCards(currentDetails)}
+function addCards(list){list.forEach(d=>{let c=document.createElement('article');c.className='card';let full=!!d.full_preview_relpath;let proj=d.source_kind==='projects';c.innerHTML=`<div class="thumb ${full?'full':'fallback '+vclass(d)}">${thumbHtml(d)}${proj?`<span class="jobbadge">NON-LIBRARY \u00b7 JOB ${esc(d.job_number||'?')}${d.sheet?' · '+esc(d.sheet):''}</span>`:''}</div><div class="meta"><div class="title">${esc(d.expanded_title||d.display_title)}</div>${proj?`<div class="jobtags">${d.library_match?'Same as Library: '+esc(d.library_match.title):esc((d.model_tags||[]).join(' · '))}</div>`:''}${proj&&d.job_count>1?`<div class="tally">In ${d.job_count} jobs</div>`:''}${!proj&&(d.used_in_jobs||[]).length?`<div class="tally">Also used in ${d.used_in_jobs.length} job${d.used_in_jobs.length==1?'':'s'}</div>`:''}${d.scene_label?`<div class="rawtitle">${esc(d.scene_label)}</div>`:''}<div class="mastertitle">${esc(d.master_title||'')}</div><div class="sub">${esc(d.layout_filename)} · ${esc(d.page_name)} · ${d.viewport_count} viewport${d.viewport_count==1?'':'s'}</div><div class="actions"><button class="od primary">Open Detail</button><button class="cartbtn" data-key="${esc(d.detail_key)}">+ Cart</button><button class="om">Master</button><button class="info">Preview</button></div></div>`;c.querySelector('.thumb').onclick=()=>openModal(d);c.querySelector('.info').onclick=()=>openModal(d);c.querySelector('.od').onclick=e=>{e.stopPropagation();openDetail(d)};c.querySelector('.cartbtn').onclick=e=>{e.stopPropagation();toggleCart(d.detail_key)};c.querySelector('.om').onclick=e=>{e.stopPropagation();openMaster(d)};grid.appendChild(c)})}
+let searchSeq=0,hasMore=false,loadingMore=false,typoFix={};
+function searchUrl(off){return `/api/search?q=${encodeURIComponent(q('#search').value)}&source=${encodeURIComponent(currentSource)}&category=${encodeURIComponent(currentCat)}&src=${currentSrc}&job=${encodeURIComponent(currentJob)}&sort=${currentSort}&on=${encodeURIComponent(chipList('on'))}&off=${encodeURIComponent(chipList('not'))}&offset=${off}`}
+async function search(){let my=++searchSeq;try{let j=await api(searchUrl(0));if(my!==searchSeq)return;currentDetails=j.details;chipCounts=j.chip_counts||{};lastTotal=j.total||0;hasMore=!!j.has_more;typoFix=j.typos||{};render();renderChips();setTimeout(checkMore,50)}catch(e){toast(e.message)}}
+async function loadMore(){if(!hasMore||loadingMore)return;loadingMore=true;let my=searchSeq;try{let j=await api(searchUrl(currentDetails.length));if(my!==searchSeq)return;let seen=new Set(currentDetails.map(d=>d.detail_key));let add=(j.details||[]).filter(d=>!seen.has(d.detail_key));currentDetails=currentDetails.concat(add);hasMore=!!j.has_more&&add.length>0;addCards(add);setCount();setTimeout(markCart,0)}catch(e){toast(e.message)}finally{loadingMore=false;if(my===searchSeq)setTimeout(checkMore,50)}}
+function checkMore(){let m=q('#more');if(hasMore&&m&&m.getBoundingClientRect().top<window.innerHeight+600)loadMore()}
+if('IntersectionObserver' in window)new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting))loadMore()},{rootMargin:'600px'}).observe(q('#more'));
 function setFilter(cat,src,btn,label,job){currentCat=cat;currentSource=src;currentJob=job||'';document.querySelectorAll('.source,.cat').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');q('#filterlabel').textContent=label?'in '+label:'';search()}
 function mkCat(cls,label,count,key,full){let b=document.createElement('button');b.className=cls;b.dataset.cat=key;b.innerHTML=`${esc(label)} <span class="count">${count}</span>`;if(currentCat===key)b.classList.add('active');b.onclick=()=>setFilter(key,'',b,full);return b}
 function mkJob(j){let b=document.createElement('button');b.className='cat';b.dataset.job=j.job;b.innerHTML=`Job ${esc(j.job)} <span class="count">${j.count}</span>`;b.title=`${j.files} file(s)`;if(currentJob===j.job)b.classList.add('active');b.onclick=()=>setFilter('','',b,'Job '+j.job,j.job);return b}
@@ -2168,7 +2267,8 @@ class Handler(BaseHTTPRequestHandler):
             qs = urllib.parse.parse_qs(u.query)
             split = lambda name: [x for x in qs.get(name, [""])[0].split(",") if x]
             self.send_json(search(qs.get("q", [""])[0], qs.get("source", [""])[0], category=qs.get("category", [""])[0], src=qs.get("src", ["library"])[0],
-                                  job=qs.get("job", [""])[0], sort=qs.get("sort", [""])[0], chips_on=split("on"), chips_off=split("off"))); return
+                                  job=qs.get("job", [""])[0], sort=qs.get("sort", [""])[0], chips_on=split("on"), chips_off=split("off"),
+                                  offset=int(qs.get("offset", ["0"])[0] or 0) if qs.get("offset", ["0"])[0].isdigit() else 0)); return
         if u.path.startswith("/cache/"):
             rel = urllib.parse.unquote(u.path[len("/cache/"):]); p = DB.preview_root / rel
             try:

@@ -4,7 +4,7 @@ Updated 2026-11-22. Tags (M3, A3 ...) match `docs/BACKLOG.md`.
 Size: S = under an hour, M = a few hours, L = open ended.
 
 ## Where things stand
-- **Daily copy: version 0.3.1** (2026-11-22, tag v0.3.1; see `docs/RELEASE_HISTORY.md`).
+- **Daily copy: version 0.3.1** (0.4.0 with typo tolerance + scroll loading on `feature/typos-scroll`, testing) (2026-11-22, tag v0.3.1; see `docs/RELEASE_HISTORY.md`).
   `C:\sketchup_dev\detail_manager_release`, data in `%LOCALAPPDATA%\ZE Detail Manager`, port 8768.
   It only changes when Claude publishes a tested version.
 - **Has:** real titles + scene line, clean notes, categories, Non-Library Details (job files) with
@@ -22,9 +22,7 @@ Size: S = under an hour, M = a few hours, L = open ended.
 |---|---|---|---|---|
 | 1 | M3 | **Tighter search ranking**: title first, then scene, then notes; master file name no longer matches every detail equally | M | 3 to 5 real searches that felt off (from daily use) |
 | 2 | A3 | **Plain-English search**: "hanger at steel beam, wall below, I-joist" sets the chips + search words; shows what it understood as chips you can click off. Offline, rule based, editable file | M | A handful of sentences the way you would type them |
-| 3 | A4 | Typo tolerance ("hydronic", "joyst") | S | nothing |
 | 4 | U1, U3 | Slim cards (thumbnail, title, scene line, framing type + Hydronics); fuller detail window | M | Say what to trim |
-| 5 | U4 | More than 80 results (load more as you scroll) | S | nothing |
 | 6 | O6, O10 | Job cards: show the job detail number (801, 1002 ...); review job details that got a note as title | S | Once more jobs are loaded |
 | 7 | S3 | Faster Open Detail on big job files (read only what the staging file keeps) | M | Open the result in LayOut 2025 |
 | 8 | D3, D4b, T3 | Small safety items: only the program's own page may send commands; don't drop masters if the drive drops out mid-scan; thumbnail crop tests | S | nothing |
