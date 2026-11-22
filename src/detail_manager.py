@@ -1480,7 +1480,8 @@ DEFAULT_CHIP_GROUPS = [
     {"name": "Joist", "exclusive": True, "chips": [_chip("Solid Joist", ["SJ"], ["SJ"]), _chip("Truss Joist", ["TJ"], ["TJ"]), _chip("I-Joist", ["TJI"], ["TJI"])]},
     {"name": "Floor system", "exclusive": True, "chips": [_chip("Hydronics", ["HYD"], ["HYD"]), _chip("Traditional", ["TRAD"], ["TRAD"])]},
     {"name": "Beam", "exclusive": True, "chips": [_chip("Double ply", ["2PLY"]), _chip("Triple ply", ["3PLY"]), _chip("Solid", ["SOLD"]), _chip("Steel", ["STL"], ["STL"])]},
-    {"name": "Joist at beam", "exclusive": True, "chips": [_chip("Flush", ["FLSH"], ["FLSH", "FLUSH"]), _chip("Bearing", ["BEAR"])]},
+    # Flush from file names only (user, 2026-11-22): in scene names "Flush" means a flush header or pocket.
+    {"name": "Joist at beam", "exclusive": True, "chips": [_chip("Flush", ["FLSH"]), _chip("Bearing", ["BEAR"])]},
     {"name": "Location", "exclusive": True, "chips": [_chip("Exterior", ["EXT"], ["EXT"]), _chip("Interior", ["INT"], ["INT"])]},
     # Wall callouts are PHRASES (scan of the library, 2026-11-22): "Wall Abv" = wall above and
     # no wall below; "Wall Abv Blw" = walls above and below; "Wall Blw" = wall below and no wall
@@ -1492,14 +1493,18 @@ DEFAULT_CHIP_GROUPS = [
                                                   _chip("No wall above", scene=["WALL BLW", "NW ABV"]),
                                                   _chip("No wall below", scene=["WALL ABV", "NW BLW"]),
                                                   _chip("No wall", scene=["NW", "NO WALL"])]},
+    # "Pa Hang 2 Pe Top" = one side parallel and hung, the other perpendicular on top: Para → Perp (user, 2026-11-22).
     {"name": "Joist direction", "exclusive": False, "chips": [_chip("Parallel", scene=["PA", "PARA"]), _chip("Perpendicular", scene=["PE", "PERP"]),
-                                                             _chip("Para → Para", scene=["PA2PA"]), _chip("Para → Perp", scene=["PA2PE"]),
-                                                             _chip("Perp → Para", scene=["PE2PA"]), _chip("Perp → Perp", scene=["PE2PE"])]},
+                                                             _chip("Para → Para", scene=["PA2PA", "PA HANG 2 PA TOP"]), _chip("Para → Perp", scene=["PA2PE", "PA HANG 2 PE TOP"]),
+                                                             _chip("Perp → Para", scene=["PE2PA", "PE HANG 2 PA TOP"]), _chip("Perp → Perp", scene=["PE2PE", "PE HANG 2 PE TOP"])]},
     {"name": "Foundation", "exclusive": False, "chips": [_chip("Concrete", ["CONC"], ["CONC"]), _chip("CMU", ["CMU"], ["CMU"]), _chip("Retaining", ["RET"], ["RET"]),
                                                         _chip("Slab", scene=["SLAB"]), _chip("Insulation", scene=["INS"]), _chip("Pony wall", scene=["PONY"]), _chip("Stem", scene=["STEM"])]},
     {"name": "Other", "exclusive": False, "chips": [_chip("Strong Wall", ["WSW"], ["WSW"]), _chip("Deck", scene=["DECK"]), _chip("Skewed", scene=["SKEW"]),
-                                                   _chip("Sits on top (not hung)", scene=["TOP"]), _chip("Even elevation", scene=["EVEN"]), _chip("Continuous", scene=["CONT"]),
-                                                   _chip("Sealed", scene=["SE"]), _chip("Roof outside", scene=["ROOF", "ROOF ABV"]), _chip("Knife plate", scene=["KP"])]},
+                                                   _chip("Sits on top (not hung)", scene=["TOP"]), _chip("Continuous", scene=["CONT"]), _chip("Sealed", scene=["SE"]),
+                                                   # Roof on the outside of the beam/wall: "Roof Abv" (above the floor) or "Roof Even" (rafters at about
+                                                   # the floor joist elevation). "Roof (any)" = either, or a plain "Roof".
+                                                   _chip("Roof above", scene=["ROOF ABV"]), _chip("Roof even", scene=["ROOF EVEN"]),
+                                                   _chip("Roof (any)", scene=["ROOF", "ROOF ABV", "ROOF EVEN"]), _chip("Knife plate", scene=["KP"])]},
 ]
 _CHIP_CFG_CACHE: dict = {"mtime": "unset", "groups": None, "error": ""}
 _CHIP_CACHE: dict = {"cfg": None, "by_key": {}}
@@ -1596,15 +1601,20 @@ def _codes_found(words: Sequence[str], codes: set) -> set:
 
 
 def compute_chips(filename: str, scenes: Sequence[str], groups: Optional[List[dict]] = None) -> set:
+    """Each group reads the names on its own, so one group's phrase ("Pa Hang 2 Pe Top")
+    never hides a word from another group ("Top" = Sits on top)."""
     groups = groups if groups is not None else chips_config()
-    file_codes = set().union(*[c["file"] for g in groups for c in g["chips"]]) if groups else set()
-    scene_codes = set().union(*[c["scene"] for g in groups for c in g["chips"]]) if groups else set()
-    in_file = _codes_found(_name_words(filename), file_codes)
-    in_scenes = set()
-    for sc in scenes:
-        in_scenes |= _codes_found(_words(sc), scene_codes)
+    name_words = _name_words(filename)
+    scene_words = [_words(sc) for sc in scenes]
     found = set()
     for g in groups:
+        file_codes = set().union(*[c["file"] for c in g["chips"]])
+        scene_codes = set().union(*[c["scene"] for c in g["chips"]])
+        in_file = _codes_found(name_words, file_codes) if file_codes else set()
+        in_scenes = set()
+        if scene_codes:
+            for w in scene_words:
+                in_scenes |= _codes_found(w, scene_codes)
         by_file = {c["id"] for c in g["chips"] if c["file"] & in_file}
         by_scene = {c["id"] for c in g["chips"] if c["scene"] & in_scenes}
         found |= (by_file or by_scene) if g["exclusive"] else (by_file | by_scene)

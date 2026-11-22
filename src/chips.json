@@ -108,10 +108,7 @@
           "file": [
             "FLSH"
           ],
-          "scene": [
-            "FLSH",
-            "FLUSH"
-          ]
+          "scene": []
         },
         {
           "label": "Bearing",
@@ -216,28 +213,32 @@
           "label": "Para → Para",
           "file": [],
           "scene": [
-            "PA2PA"
+            "PA2PA",
+            "PA HANG 2 PA TOP"
           ]
         },
         {
           "label": "Para → Perp",
           "file": [],
           "scene": [
-            "PA2PE"
+            "PA2PE",
+            "PA HANG 2 PE TOP"
           ]
         },
         {
           "label": "Perp → Para",
           "file": [],
           "scene": [
-            "PE2PA"
+            "PE2PA",
+            "PE HANG 2 PA TOP"
           ]
         },
         {
           "label": "Perp → Perp",
           "file": [],
           "scene": [
-            "PE2PE"
+            "PE2PE",
+            "PE HANG 2 PE TOP"
           ]
         }
       ]
@@ -338,13 +339,6 @@
           ]
         },
         {
-          "label": "Even elevation",
-          "file": [],
-          "scene": [
-            "EVEN"
-          ]
-        },
-        {
           "label": "Continuous",
           "file": [],
           "scene": [
@@ -359,11 +353,26 @@
           ]
         },
         {
-          "label": "Roof outside",
+          "label": "Roof above",
+          "file": [],
+          "scene": [
+            "ROOF ABV"
+          ]
+        },
+        {
+          "label": "Roof even",
+          "file": [],
+          "scene": [
+            "ROOF EVEN"
+          ]
+        },
+        {
+          "label": "Roof (any)",
           "file": [],
           "scene": [
             "ROOF",
-            "ROOF ABV"
+            "ROOF ABV",
+            "ROOF EVEN"
           ]
         },
         {

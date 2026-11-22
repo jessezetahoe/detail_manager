@@ -45,9 +45,24 @@ class TestChipRules(unittest.TestCase):
         self.assertEqual(w("TJI Pa Cont Hyd No Wall"), ["no-wall"])
         for unrelated in ("Grade Beam Blw Frame", "HD Abv & Blw 2 Ply Bm", "Pe2Pa Abv", "Stem Conc. w/ Wall Int Slab"):
             self.assertEqual(w(unrelated), [], unrelated)
-        self.assertIn("other:roof-outside", dm.compute_chips("x.layout", ["Wall Abv SJ Roof Abv"]))
+        c = dm.compute_chips("x.layout", ["Wall Abv SJ Roof Abv"])
+        self.assertTrue({"other:roof-above", "other:roof-any"} <= c and "other:roof-even" not in c)
         # each word counts once, longest code first
         self.assertEqual(dm._codes_found(["WALL", "ABV", "BLW"], {("WALL", "ABV"), ("WALL", "ABV", "BLW")}), {("WALL", "ABV", "BLW")})
+
+    def test_review_answers_2026_11_22(self):
+        f = lambda scene: dm.compute_chips("x.layout", [scene])
+        c = f("Pa Hang 2 Pe Top Hyd Ins")
+        self.assertIn("joist-direction:para-perp", c)
+        self.assertFalse({"joist-direction:parallel", "joist-direction:perpendicular"} & c)
+        self.assertIn("other:sits-on-top-not-hung", c)            # groups read on their own
+        self.assertIn("joist-direction:perp-para", f("Pe Hang 2 Pa Top Hyd Ins"))
+        self.assertIn("joist-direction:perp-perp", f("Pe Hang 2 Pe Top Hyd Ins"))
+        c = f("Pa2Pa 2 Ply Bm Wall Abv Blw SJ Roof Even Shear Hyd")
+        self.assertTrue({"other:roof-even", "other:roof-any"} <= c and "other:roof-above" not in c)
+        self.assertIn("other:roof-any", f("TJI Pa2Pe Roof - Hyd"))
+        self.assertNotIn("joist-at-beam:flush", f("2 Ply Hdr Flush"))   # Flush from file names only
+        self.assertIn("joist-at-beam:flush", dm.compute_chips("(04) FLR TO 2PLY BEAM HYD FLSH EXT SJ.layout", []))
 
     def test_scene_names_when_the_file_name_says_nothing(self):
         c = dm.compute_chips("1757 S0.1.layout", ["TJI Pa2Pe Hyd Wall Blw"])
