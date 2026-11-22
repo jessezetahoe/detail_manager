@@ -1,6 +1,6 @@
 {
   "_how_to_edit": [
-    "Search chips (the Filters panel). Each chip lists the codes that switch it on: 'file' = words in the master file name, 'scene' = words in the SketchUp scene names. Codes are whole words; capitals do not matter.",
+    "Search chips (the Filters panel). Each chip lists the codes that switch it on: 'file' = words in the master file name, 'scene' = words in the SketchUp scene names. A code can be one word or several (\"NW ABV\"); the longest code wins and each word counts once. Capitals do not matter.",
     "exclusive: true = the file name decides (scene names count only when the file name has none of the group's codes). Use it for either-or groups such as joist type.",
     "Chips never look at the notes on a detail. After saving this file, reload the Detail Manager page.",
     "If this file has a mistake, Detail Manager uses its built-in list and notes it under Diagnostics."
@@ -162,6 +162,20 @@
           "file": [],
           "scene": [
             "BLW"
+          ]
+        },
+        {
+          "label": "No wall above",
+          "file": [],
+          "scene": [
+            "NW ABV"
+          ]
+        },
+        {
+          "label": "No wall below",
+          "file": [],
+          "scene": [
+            "NW BLW"
           ]
         },
         {

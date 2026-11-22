@@ -150,7 +150,7 @@ Without the toolkit: <span class="ui">Extensions</span> &gt; <span class="ui">De
 <p>Three small files in the program folder (<code>C:\sketchup_dev\detail_manager_release</code>), editable with Notepad:</p>
 <ul>
 <li><code>categories.json</code>: the categories in the left panel and which scrapbook numbers <code>(01)</code>, <code>(02)</code> ... belong to each. Save, then reload the Detail Manager page.</li>
-<li><code>chips.json</code>: the Filters chips and the codes that switch each one on (from the file name or the scene names). Save, then reload the Detail Manager page.</li>
+<li><code>chips.json</code>: the Filters chips and the codes that switch each one on (from the file name or the scene names). A code can be several words, like <code>NW ABV</code> (No wall above); the longest code wins, so that ABV does not also count as Wall above. Save, then reload the Detail Manager page.</li>
 <li><code>abbreviations.json</code>: what shorthand means (<code>"TJI": "I-Joist"</code>). Only add words the detail really has (no brackets or "e.g."). Save, then <span class="ui">Refresh Index</span>.</li>
 </ul>
 <p>A mistake in either file never stops the program: it uses its built-in list and says so in Diagnostics. Note: a new program version replaces these files, so tell whoever maintains Detail Manager about changes you want kept.</p>

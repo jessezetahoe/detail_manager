@@ -6,7 +6,8 @@ gets a new number and an entry here; the git tag (vX.Y.Z) is set once it is veri
 
 ## 0.3.0 (2026-11-22)
 - Filters (chips) under the search box: Joist, Floor system, Beam, Joist at beam, Location,
-  Wall, Joist direction, Foundation, Other. Click once = must have, twice = must NOT have.
+  Wall (incl. No wall above / below / plain No wall), Joist direction, Foundation, Other.
+  Click once = must have, twice = must NOT have. Codes can be several words ("NW ABV").
   Live counts per chip; set from master file names and scene names only (never notes);
   editable in chips.json.
 - The result count says "80 of 1,234" when there are more matches than shown.

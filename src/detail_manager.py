@@ -1482,7 +1482,11 @@ DEFAULT_CHIP_GROUPS = [
     {"name": "Beam", "exclusive": True, "chips": [_chip("Double ply", ["2PLY"]), _chip("Triple ply", ["3PLY"]), _chip("Solid", ["SOLD"]), _chip("Steel", ["STL"], ["STL"])]},
     {"name": "Joist at beam", "exclusive": True, "chips": [_chip("Flush", ["FLSH"], ["FLSH", "FLUSH"]), _chip("Bearing", ["BEAR"])]},
     {"name": "Location", "exclusive": True, "chips": [_chip("Exterior", ["EXT"], ["EXT"]), _chip("Interior", ["INT"], ["INT"])]},
-    {"name": "Wall", "exclusive": False, "chips": [_chip("Wall above", scene=["ABV"]), _chip("Wall below", scene=["BLW"]), _chip("No wall", scene=["NW"])]},
+    # "NW ABV" / "NW BLW" are two-word codes: the longest code wins and each word counts once,
+    # so their ABV / BLW never switch on "Wall above" / "Wall below". "NW" alone (beams) = No wall.
+    {"name": "Wall", "exclusive": False, "chips": [_chip("Wall above", scene=["ABV"]), _chip("Wall below", scene=["BLW"]),
+                                                  _chip("No wall above", scene=["NW ABV"]), _chip("No wall below", scene=["NW BLW"]),
+                                                  _chip("No wall", scene=["NW"])]},
     {"name": "Joist direction", "exclusive": False, "chips": [_chip("Parallel", scene=["PA", "PARA"]), _chip("Perpendicular", scene=["PE", "PERP"]),
                                                              _chip("Para → Para", scene=["PA2PA"]), _chip("Para → Perp", scene=["PA2PE"]),
                                                              _chip("Perp → Para", scene=["PE2PA"]), _chip("Perp → Perp", scene=["PE2PE"])]},
@@ -1518,8 +1522,9 @@ def _validate_chips(raw) -> List[dict]:
             if not isinstance(c, dict) or not str(c.get("label", "")).strip():
                 raise ValueError(f'group "{name}" chip {ci} has no label')
             label = str(c["label"]).strip()
-            file = {str(x).strip().upper() for x in (c.get("file") or []) if str(x).strip()}
-            scene = {str(x).strip().upper() for x in (c.get("scene") or []) if str(x).strip()}
+            # A code is one word or several ("NW ABV"), stored as a tuple of upper-case words.
+            file = {tuple(re.findall(r"[A-Za-z0-9]+", str(x).upper())) for x in (c.get("file") or []) if re.search(r"[A-Za-z0-9]", str(x))}
+            scene = {tuple(re.findall(r"[A-Za-z0-9]+", str(x).upper())) for x in (c.get("scene") or []) if re.search(r"[A-Za-z0-9]", str(x))}
             if not file and not scene:
                 raise ValueError(f'chip "{label}" has no codes')
             cid = f"{_slug(name)}:{_slug(label)}"
@@ -1560,20 +1565,43 @@ def chips_for_ui() -> List[dict]:
     return [{"name": g["name"], "chips": [{"id": c["id"], "label": c["label"]} for c in g["chips"]]} for g in chips_config()]
 
 
-def _name_tokens(filename: str) -> set:
+def _words(text: str) -> List[str]:
+    return [t.upper() for t in re.findall(r"[A-Za-z0-9]+", text or "")]
+
+
+def _name_words(filename: str) -> List[str]:
     stem = re.sub(r"\.layout$", "", filename or "", flags=re.I)
     stem = re.sub(r"^\s*\(\d+\)\s*", "", stem)
-    return {t.upper() for t in re.findall(r"[A-Za-z0-9]+", stem)}
+    return _words(stem)
+
+
+def _codes_found(words: Sequence[str], codes: set) -> set:
+    """Codes present in a run of words, read left to right, longest code first;
+    each word belongs to one code only ("NW ABV" leaves no ABV for "Wall above")."""
+    by_len = sorted({len(c) for c in codes}, reverse=True)
+    found, i = set(), 0
+    while i < len(words):
+        for n in by_len:
+            if tuple(words[i:i + n]) in codes:
+                found.add(tuple(words[i:i + n])); i += n
+                break
+        else:
+            i += 1
+    return found
 
 
 def compute_chips(filename: str, scenes: Sequence[str], groups: Optional[List[dict]] = None) -> set:
     groups = groups if groups is not None else chips_config()
-    ft = _name_tokens(filename)
-    st = {t.upper() for sc in scenes for t in re.findall(r"[A-Za-z0-9]+", sc or "")}
+    file_codes = set().union(*[c["file"] for g in groups for c in g["chips"]]) if groups else set()
+    scene_codes = set().union(*[c["scene"] for g in groups for c in g["chips"]]) if groups else set()
+    in_file = _codes_found(_name_words(filename), file_codes)
+    in_scenes = set()
+    for sc in scenes:
+        in_scenes |= _codes_found(_words(sc), scene_codes)
     found = set()
     for g in groups:
-        by_file = {c["id"] for c in g["chips"] if c["file"] & ft}
-        by_scene = {c["id"] for c in g["chips"] if c["scene"] & st}
+        by_file = {c["id"] for c in g["chips"] if c["file"] & in_file}
+        by_scene = {c["id"] for c in g["chips"] if c["scene"] & in_scenes}
         found |= (by_file or by_scene) if g["exclusive"] else (by_file | by_scene)
     return found
 

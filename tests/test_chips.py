@@ -27,8 +27,20 @@ class TestChipRules(unittest.TestCase):
         c = dm.compute_chips("(03) FLR TO FLR TRAD EXT SJ WSW (New Details!).layout", ["TJI Para NW ABV WSW"])
         self.assertIn("joist:solid-joist", c)
         self.assertNotIn("joist:i-joist", c)
-        for want in ("floor-system:traditional", "location:exterior", "wall:wall-above", "wall:no-wall", "other:strong-wall", "joist-direction:parallel"):
+        for want in ("floor-system:traditional", "location:exterior", "wall:no-wall-above", "other:strong-wall", "joist-direction:parallel"):
             self.assertIn(want, c)
+        self.assertNotIn("wall:wall-above", c)   # the ABV belongs to "NW ABV"
+        self.assertNotIn("wall:no-wall", c)
+
+    def test_no_wall_above_below_and_plain(self):
+        w = lambda scene: sorted(c for c in dm.compute_chips("x.layout", [scene]) if c.startswith("wall:"))
+        self.assertEqual(w("TJI Pa2Pe NW ABV"), ["wall:no-wall-above"])
+        self.assertEqual(w("TJI Pa2Pe nw blw"), ["wall:no-wall-below"])
+        self.assertEqual(w("Pa Top Cont NW Hyd"), ["wall:no-wall"])          # beams: plain no wall
+        self.assertEqual(w("Pe2Pe Wd Bm Wall Blw Hyd"), ["wall:wall-below"])
+        self.assertEqual(w("Wall Abv NW"), ["wall:no-wall", "wall:wall-above"])
+        # each word counts once, also for the codes list itself
+        self.assertEqual(dm._codes_found(["NW", "ABV", "ABV"], {("NW", "ABV"), ("ABV",), ("NW",)}), {("NW", "ABV"), ("ABV",)})
 
     def test_scene_names_when_the_file_name_says_nothing(self):
         c = dm.compute_chips("1757 S0.1.layout", ["TJI Pa2Pe Hyd Wall Blw"])
