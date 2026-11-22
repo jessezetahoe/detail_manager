@@ -100,6 +100,17 @@ class TestIncremental(unittest.TestCase):
         con.close()
         self.assertNotIn("Backup of " + self.copy.name, names)
 
+    def test_files_not_read_yet(self):
+        self.run_index()
+        dm.DB.save_config({"library_root": str(self.lib), "projects_root": ""})
+        self.assertEqual(dm.files_not_read_yet(), 0)
+        shutil.copy2(self.copy, self.lib / ("NEW " + self.copy.name))
+        shutil.copy2(self.copy, self.lib / ("Backup of " + self.copy.name))  # never counts
+        self.assertEqual(dm.files_not_read_yet(), 1)
+        self.assertEqual(dm.prepare_thumbnail_queue()["not_read_yet"], 1)
+        self.run_index()
+        self.assertEqual(dm.files_not_read_yet(), 0)
+
     def test_older_database_gets_the_version_column(self):
         con = dm.DB.connect()
         cols = {r[1] for r in con.execute("PRAGMA table_info(layout_files)")}

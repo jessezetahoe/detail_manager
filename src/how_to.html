@@ -94,7 +94,7 @@ table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid va
 <h3>Setting it up (once per computer)</h3>
 <ol>
 <li>Open <span class="ui">Library and admin tools</span> (left panel) &gt; <span class="ui">Choose Non-Library Details Folder</span>, and pick the folder where job-specific details are kept.</li>
-<li>Click <span class="ui">Refresh Index</span>. The <span class="ui">Library | Non-Library | Both</span> switch then appears.</li>
+<li>Detail Manager reads the folder straight away (a Refresh Index starts by itself). The <span class="ui">Library | Non-Library | Both</span> switch then appears.</li>
 </ol>
 <h3>Adding a job</h3>
 <ul>
@@ -127,7 +127,7 @@ table{border-collapse:collapse;width:100%;margin:8px 0}td,th{border:1px solid va
 <h2 id="thumbs">Full thumbnails (admin task)</h2>
 <p>Full thumbnails show the whole detail with labels and callouts. Until a master has them, its cards show the plain SketchUp view (badge <span class="ui">Viewport Cache</span>). Only new and changed masters (and new job files) are rendered, so after the first time a render is quick. The line above the buttons says how many masters need rendering. Do it after a <a href="#refresh">Refresh Index</a> that found new or changed files.</p>
 <ol>
-<li>In Detail Manager: <span class="ui">Library and admin tools</span> &gt; <span class="ui">1. Prepare Render Queue</span>. It queues only the masters that need it (or says there is nothing to render). The layer to hide, normally <code>GUIDES</code>, is listed above it.</li>
+<li>In Detail Manager: <span class="ui">Library and admin tools</span> &gt; <span class="ui">1. Prepare Render Queue</span>. It queues only the masters that need it (or says there is nothing to render). If files were added or changed since the last <span class="ui">Refresh Index</span>, it says so: refresh first, then prepare again. The layer to hide, normally <code>GUIDES</code>, is listed above it.</li>
 <li>In SketchUp: <span class="ui">Extensions</span> &gt; <span class="ui">Zachary Engineering Toolkit</span> &gt; <span class="ui">Detail Manager</span> &gt; <span class="ui">Admin</span> &gt; <span class="ui">Render Thumbnails...</span> and confirm. SketchUp opens each queued master read-only, makes a PDF of it and never saves it; the status bar shows the progress and a message says when it is done.<br>
 Without the toolkit: <span class="ui">Extensions</span> &gt; <span class="ui">Developer</span> &gt; <span class="ui">Ruby Console</span>, then type <code>load 'C:/sketchup_dev/detail_manager_release/thumbnail_worker.rb'</code> and press Enter.</li>
 <li>Back in Detail Manager: <span class="ui">3. Process Rendered Thumbnails</span>.</li>
