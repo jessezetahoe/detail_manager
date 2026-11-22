@@ -16,7 +16,7 @@ if [ -f "$OUT/VERSION.txt" ] && [ "${FORCE:-}" != "1" ]; then
     echo "Version $VERSION was already published from $OLD_COMMIT: bump APP_VERSION first (or FORCE=1)"; exit 1
   fi
 fi
-for f in detail_manager.py abbreviations.json categories.json thumbnail_worker.rb how_to.html; do git show "HEAD:src/$f" > "$OUT/$f"; done
+for f in detail_manager.py abbreviations.json categories.json chips.json thumbnail_worker.rb how_to.html; do git show "HEAD:src/$f" > "$OUT/$f"; done
 cp tools/START_DETAIL_MANAGER.bat "$OUT/START_DETAIL_MANAGER.bat"
 printf 'Detail Manager release copy\r\nVersion: %s\r\nBuilt from: %s (%s)\r\nCommit date: %s\r\nPublished: %s\r\n' \
   "$VERSION" "$(git rev-parse --abbrev-ref HEAD)" "$(git rev-parse --short HEAD)" "$(git log -1 --format=%ci)" "$(date '+%Y-%m-%d %H:%M')" > "$OUT/VERSION.txt"

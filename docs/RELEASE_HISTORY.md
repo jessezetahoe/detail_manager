@@ -4,6 +4,13 @@ Version numbers: the last digit for fixes, the middle digit for new features. Th
 shows at the top left of the program and in Diagnostics. Each publish to the daily copy
 gets a new number and an entry here; the git tag (vX.Y.Z) is set once it is verified.
 
+## 0.3.0 (2026-11-22)
+- Filters (chips) under the search box: Joist, Floor system, Beam, Joist at beam, Location,
+  Wall, Joist direction, Foundation, Other. Click once = must have, twice = must NOT have.
+  Live counts per chip; set from master file names and scene names only (never notes);
+  editable in chips.json.
+- The result count says "80 of 1,234" when there are more matches than shown.
+
 ## 0.2.1 (2026-11-22)
 - Fix: a LayOut file containing characters XML does not allow (e.g. an invisible control
   character inside a SketchUp tag name, found in job 1827 S0.3) is now read instead of being

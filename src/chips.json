@@ -1,0 +1,359 @@
+{
+  "_how_to_edit": [
+    "Search chips (the Filters panel). Each chip lists the codes that switch it on: 'file' = words in the master file name, 'scene' = words in the SketchUp scene names. Codes are whole words; capitals do not matter.",
+    "exclusive: true = the file name decides (scene names count only when the file name has none of the group's codes). Use it for either-or groups such as joist type.",
+    "Chips never look at the notes on a detail. After saving this file, reload the Detail Manager page.",
+    "If this file has a mistake, Detail Manager uses its built-in list and notes it under Diagnostics."
+  ],
+  "groups": [
+    {
+      "name": "Joist",
+      "exclusive": true,
+      "chips": [
+        {
+          "label": "Solid Joist",
+          "file": [
+            "SJ"
+          ],
+          "scene": [
+            "SJ"
+          ]
+        },
+        {
+          "label": "Truss Joist",
+          "file": [
+            "TJ"
+          ],
+          "scene": [
+            "TJ"
+          ]
+        },
+        {
+          "label": "I-Joist",
+          "file": [
+            "TJI"
+          ],
+          "scene": [
+            "TJI"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Floor system",
+      "exclusive": true,
+      "chips": [
+        {
+          "label": "Hydronics",
+          "file": [
+            "HYD"
+          ],
+          "scene": [
+            "HYD"
+          ]
+        },
+        {
+          "label": "Traditional",
+          "file": [
+            "TRAD"
+          ],
+          "scene": [
+            "TRAD"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Beam",
+      "exclusive": true,
+      "chips": [
+        {
+          "label": "Double ply",
+          "file": [
+            "2PLY"
+          ],
+          "scene": []
+        },
+        {
+          "label": "Triple ply",
+          "file": [
+            "3PLY"
+          ],
+          "scene": []
+        },
+        {
+          "label": "Solid",
+          "file": [
+            "SOLD"
+          ],
+          "scene": []
+        },
+        {
+          "label": "Steel",
+          "file": [
+            "STL"
+          ],
+          "scene": [
+            "STL"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Joist at beam",
+      "exclusive": true,
+      "chips": [
+        {
+          "label": "Flush",
+          "file": [
+            "FLSH"
+          ],
+          "scene": [
+            "FLSH",
+            "FLUSH"
+          ]
+        },
+        {
+          "label": "Bearing",
+          "file": [
+            "BEAR"
+          ],
+          "scene": []
+        }
+      ]
+    },
+    {
+      "name": "Location",
+      "exclusive": true,
+      "chips": [
+        {
+          "label": "Exterior",
+          "file": [
+            "EXT"
+          ],
+          "scene": [
+            "EXT"
+          ]
+        },
+        {
+          "label": "Interior",
+          "file": [
+            "INT"
+          ],
+          "scene": [
+            "INT"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wall",
+      "exclusive": false,
+      "chips": [
+        {
+          "label": "Wall above",
+          "file": [],
+          "scene": [
+            "ABV"
+          ]
+        },
+        {
+          "label": "Wall below",
+          "file": [],
+          "scene": [
+            "BLW"
+          ]
+        },
+        {
+          "label": "No wall",
+          "file": [],
+          "scene": [
+            "NW"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Joist direction",
+      "exclusive": false,
+      "chips": [
+        {
+          "label": "Parallel",
+          "file": [],
+          "scene": [
+            "PA",
+            "PARA"
+          ]
+        },
+        {
+          "label": "Perpendicular",
+          "file": [],
+          "scene": [
+            "PE",
+            "PERP"
+          ]
+        },
+        {
+          "label": "Para → Para",
+          "file": [],
+          "scene": [
+            "PA2PA"
+          ]
+        },
+        {
+          "label": "Para → Perp",
+          "file": [],
+          "scene": [
+            "PA2PE"
+          ]
+        },
+        {
+          "label": "Perp → Para",
+          "file": [],
+          "scene": [
+            "PE2PA"
+          ]
+        },
+        {
+          "label": "Perp → Perp",
+          "file": [],
+          "scene": [
+            "PE2PE"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Foundation",
+      "exclusive": false,
+      "chips": [
+        {
+          "label": "Concrete",
+          "file": [
+            "CONC"
+          ],
+          "scene": [
+            "CONC"
+          ]
+        },
+        {
+          "label": "CMU",
+          "file": [
+            "CMU"
+          ],
+          "scene": [
+            "CMU"
+          ]
+        },
+        {
+          "label": "Retaining",
+          "file": [
+            "RET"
+          ],
+          "scene": [
+            "RET"
+          ]
+        },
+        {
+          "label": "Slab",
+          "file": [],
+          "scene": [
+            "SLAB"
+          ]
+        },
+        {
+          "label": "Insulation",
+          "file": [],
+          "scene": [
+            "INS"
+          ]
+        },
+        {
+          "label": "Pony wall",
+          "file": [],
+          "scene": [
+            "PONY"
+          ]
+        },
+        {
+          "label": "Stem",
+          "file": [],
+          "scene": [
+            "STEM"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Other",
+      "exclusive": false,
+      "chips": [
+        {
+          "label": "Strong Wall",
+          "file": [
+            "WSW"
+          ],
+          "scene": [
+            "WSW"
+          ]
+        },
+        {
+          "label": "Deck",
+          "file": [],
+          "scene": [
+            "DECK"
+          ]
+        },
+        {
+          "label": "Skewed",
+          "file": [],
+          "scene": [
+            "SKEW"
+          ]
+        },
+        {
+          "label": "Sits on top (not hung)",
+          "file": [],
+          "scene": [
+            "TOP"
+          ]
+        },
+        {
+          "label": "Even elevation",
+          "file": [],
+          "scene": [
+            "EVEN"
+          ]
+        },
+        {
+          "label": "Continuous",
+          "file": [],
+          "scene": [
+            "CONT"
+          ]
+        },
+        {
+          "label": "Sealed",
+          "file": [],
+          "scene": [
+            "SE"
+          ]
+        },
+        {
+          "label": "Roof outside",
+          "file": [],
+          "scene": [
+            "ROOF"
+          ]
+        },
+        {
+          "label": "Knife plate",
+          "file": [],
+          "scene": [
+            "KP"
+          ]
+        }
+      ]
+    }
+  ]
+}
