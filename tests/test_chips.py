@@ -27,28 +27,25 @@ class TestChipRules(unittest.TestCase):
         c = dm.compute_chips("(03) FLR TO FLR TRAD EXT SJ WSW (New Details!).layout", ["TJI Para NW ABV WSW"])
         self.assertIn("joist:solid-joist", c)
         self.assertNotIn("joist:i-joist", c)
-        for want in ("floor-system:traditional", "location:exterior", "wall:no-wall-above", "other:strong-wall", "joist-direction:parallel"):
+        for want in ("floor-system:traditional", "location:exterior", "other:strong-wall", "joist-direction:parallel"):
             self.assertIn(want, c)
         self.assertNotIn("wall:wall-above", c)   # "NW ABV" means no wall above
-        self.assertNotIn("wall:no-wall", c)
 
     def test_wall_phrases(self):
-        # Real patterns from the library scan (2026-11-22).
+        # Real patterns from the library scan (2026-11-22). Two chips only: no-wall cases are
+        # "must NOT have" (user, 2026-11-22).
         w = lambda scene: sorted(c.split(":")[1] for c in dm.compute_chips("x.layout", [scene]) if c.startswith("wall:"))
-        self.assertEqual(w("Pa 2 Ply Bm Wall Abv Hyd"), ["no-wall-below", "wall-above"])
+        self.assertEqual(w("Pa 2 Ply Bm Wall Abv Hyd"), ["wall-above"])
         self.assertEqual(w("Pa 2 Ply Bm Wall Abv Blw Shear Hyd"), ["wall-above", "wall-below"])
-        self.assertEqual(w("Pa2Pa 2 Ply Bm Wall Abv SJ Roof Abv Shear Hyd"), ["no-wall-below", "wall-above"])  # Roof Abv is not a wall
-        self.assertEqual(w("Pa 2 Ply Bm Wall Blw Hyd"), ["no-wall-above", "wall-below"])
-        self.assertEqual(w("TJI Para NW ABV Hyd"), ["no-wall-above"])
-        self.assertEqual(w("TJI Pa2Pe nw blw"), ["no-wall-below"])
-        self.assertEqual(w("Pa Top Cont NW Hyd"), ["no-wall"])
-        self.assertEqual(w("TJI Pa Cont Hyd No Wall"), ["no-wall"])
-        for unrelated in ("Grade Beam Blw Frame", "HD Abv & Blw 2 Ply Bm", "Pe2Pa Abv", "Stem Conc. w/ Wall Int Slab"):
-            self.assertEqual(w(unrelated), [], unrelated)
+        self.assertEqual(w("Pa2Pa 2 Ply Bm Wall Abv SJ Roof Abv Shear Hyd"), ["wall-above"])  # Roof Abv is not a wall
+        self.assertEqual(w("Pa 2 Ply Bm Wall Blw Hyd"), ["wall-below"])
+        for none in ("TJI Para NW ABV Hyd", "Pa Top Cont NW Hyd", "TJI Pa Cont Hyd No Wall", "Grade Beam Blw Frame",
+                     "HD Abv & Blw 2 Ply Bm", "Pe2Pa Abv", "Stem Conc. w/ Wall Int Slab"):
+            self.assertEqual(w(none), [], none)
         c = dm.compute_chips("x.layout", ["Wall Abv SJ Roof Abv"])
         self.assertTrue({"other:roof-above", "other:roof-any"} <= c and "other:roof-even" not in c)
-        # each word counts once, longest code first
         self.assertEqual(dm._codes_found(["WALL", "ABV", "BLW"], {("WALL", "ABV"), ("WALL", "ABV", "BLW")}), {("WALL", "ABV", "BLW")})
+        self.assertEqual([c["label"] for g in dm.chips_config() if g["name"] == "Wall" for c in g["chips"]], ["Wall above", "Wall below"])
 
     def test_review_answers_2026_11_22(self):
         f = lambda scene: dm.compute_chips("x.layout", [scene])

@@ -1490,9 +1490,7 @@ DEFAULT_CHIP_GROUPS = [
     # are not wall codes ("Roof Abv", "Grade Beam Blw Frame", "HD Abv & Blw").
     {"name": "Wall", "exclusive": False, "chips": [_chip("Wall above", scene=["WALL ABV", "WALL ABV BLW"]),
                                                   _chip("Wall below", scene=["WALL BLW", "WALL ABV BLW"]),
-                                                  _chip("No wall above", scene=["WALL BLW", "NW ABV"]),
-                                                  _chip("No wall below", scene=["WALL ABV", "NW BLW"]),
-                                                  _chip("No wall", scene=["NW", "NO WALL"])]},
+]},   # no-wall cases: click a chip twice ("must NOT have"), user 2026-11-22
     # "Pa Hang 2 Pe Top" = one side parallel and hung, the other perpendicular on top: Para → Perp (user, 2026-11-22).
     {"name": "Joist direction", "exclusive": False, "chips": [_chip("Parallel", scene=["PA", "PARA"]), _chip("Perpendicular", scene=["PE", "PERP"]),
                                                              _chip("Para → Para", scene=["PA2PA", "PA HANG 2 PA TOP"]), _chip("Para → Perp", scene=["PA2PE", "PA HANG 2 PE TOP"]),

@@ -162,30 +162,6 @@
             "WALL BLW",
             "WALL ABV BLW"
           ]
-        },
-        {
-          "label": "No wall above",
-          "file": [],
-          "scene": [
-            "WALL BLW",
-            "NW ABV"
-          ]
-        },
-        {
-          "label": "No wall below",
-          "file": [],
-          "scene": [
-            "WALL ABV",
-            "NW BLW"
-          ]
-        },
-        {
-          "label": "No wall",
-          "file": [],
-          "scene": [
-            "NW",
-            "NO WALL"
-          ]
         }
       ]
     },
