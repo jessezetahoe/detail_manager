@@ -24,6 +24,13 @@ Read `docs/handoff/CLAUDE_CODE_HANDOFF.md` before modifying code.
   How To in the SAME branch/commit (add, change or remove the text). Not a later task.
 - Before merging a feature, check the How To still describes it correctly.
 
+## Version number (user, 2026-11-22)
+- `APP_VERSION` in `src/detail_manager.py`. Bump it on EVERY publish to the daily copy:
+  last digit for fixes, middle digit for new features. Add an entry to `docs/RELEASE_HISTORY.md`.
+- Tag `vX.Y.Z` on `main` once the user has verified that version.
+- `tools/publish_local_release.sh` refuses to publish a different commit under a version
+  that was already published.
+
 ## Git
 - First commit is the untouched original; never rewrite history on `main`.
 - One branch per feature (`feature/...`); merge after the user tests.

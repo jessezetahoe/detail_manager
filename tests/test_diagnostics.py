@@ -117,6 +117,9 @@ class TestHttp(unittest.TestCase):
             for needle in ('id="diagbtn"', 'id="diagback"', "openDiag", "/api/open-log-folder"):
                 self.assertIn(needle, page)
             self.assertIn("window.open('/help'", page)
+            self.assertIn(f">{dm.APP_VERSION}</span>", page)          # version at the top left
+            self.assertNotIn("%APP_VERSION%", page)
+            self.assertIn(dm.APP_VERSION, d["app"])                   # and in Diagnostics
             helppage = urllib.request.urlopen(base + "/help", timeout=10).read().decode("utf-8")
             for needle in ("When to Refresh Index", "Getting a detail into your project", "Open All in LayOut", "Non-Library Details", "thumbnail_worker.rb"):
                 self.assertIn(needle, helppage)

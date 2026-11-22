@@ -147,11 +147,11 @@ Without the toolkit: <span class="ui">Extensions</span> &gt; <span class="ui">De
 <p>A mistake in either file never stops the program: it uses its built-in list and says so in Diagnostics. Note: a new program version replaces these files, so tell whoever maintains Detail Manager about changes you want kept.</p>
 
 <h2 id="diag">Diagnostics and problems</h2>
-<p><span class="ui">Diagnostics</span> (bottom of the left panel) shows a red number when something needs a look: master files that could not be read, the Z: drive or job folder not reachable, what was left out (views not inside a detail group, details parked off the sheet), and the last thumbnail render. <span class="ui">Open Log Folder</span> opens the log, which helps when reporting a problem.</p>
+<p><span class="ui">Diagnostics</span> (bottom of the left panel) shows a red number when something needs a look: master files that could not be read, the Z: drive or job folder not reachable, what was left out (views not inside a detail group, details parked off the sheet), and the last thumbnail render. <span class="ui">Open Log Folder</span> opens the log, which helps when reporting a problem. The version number is at the top left (and in Diagnostics): mention it when reporting a problem.</p>
 <table><tr><th>What you see</th><th>What to do</th></tr>
 <tr><td>Black window: port already in use</td><td>Detail Manager is already running; close the other black window</td></tr>
 <tr><td>No results at all</td><td>Clear the category or source filter (All Details), or switch Library / Non-Library / Both</td></tr>
-<tr><td>A detail you expected is missing</td><td>Refresh Index (its master may be new or changed)</td></tr>
+<tr><td>A detail you expected is missing</td><td>Refresh Index (its master may be new or changed). If Diagnostics lists its file as not indexed, report the file and the message</td></tr>
 <tr><td>Open Detail shows an error</td><td>Check that Z: is reachable; then look in Diagnostics</td></tr>
 <tr><td>Open in SketchUp opens the model but not at the scene</td><td>The Zachary Engineering Toolkit is not installed or not loaded in that SketchUp (check Extensions &gt; Zachary Engineering Toolkit &gt; Detail Manager &gt; Helper Status), or the scene was renamed in the model</td></tr>
 <tr><td>A card has only the plain SketchUp view</td><td>Normal for new or changed masters until the next <a href="#thumbs">thumbnail render</a></td></tr>

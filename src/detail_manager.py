@@ -30,7 +30,10 @@ from typing import Dict, List, Optional, Sequence, Tuple
 import xml.etree.ElementTree as ET
 from xml.dom import minidom, Node
 
-APP_NAME = "ZE Detail Manager Prototype 0.1"
+# Bump on every publish to the daily copy (last digit: fixes; middle digit: new features)
+# and add an entry to docs/RELEASE_HISTORY.md. The data folder name never changes with it.
+APP_VERSION = "0.2.1"
+APP_NAME = f"ZE Detail Manager {APP_VERSION}"
 APP_DIR_NAME = "ZE Detail Manager Prototype 0.1"
 PORT_DEFAULT = 8768
 # Raise this whenever the rules for reading a master change (titles, text...).
@@ -275,6 +278,36 @@ def app_data_dir() -> Path:
     return (Path(base) / APP_DIR_NAME) if base else (Path.home() / ".ze_detail_manager_poc07")
 
 
+# Characters XML 1.0 forbids (controls other than tab, newline, carriage return).
+# LayOut sometimes writes them anyway (e.g. inside a SketchUp tag name), and strict XML
+# reading then rejects the whole file. Such bytes are swapped for private placeholder
+# characters while reading and, for staging files, swapped back byte-for-byte.
+# Control bytes never occur inside multi-byte UTF-8 sequences, so this is safe.
+XML_ILLEGAL = re.compile(rb"[\x00-\x08\x0b\x0c\x0e-\x1f]")
+_PLACEHOLDER_RE = re.compile("[\ue000-\ue01f]")
+
+
+def _hide_illegal(raw: bytes) -> bytes:
+    return XML_ILLEGAL.sub(lambda m: chr(0xE000 + m.group(0)[0]).encode("utf-8"), raw)
+
+
+def _restore_illegal(raw: bytes) -> bytes:
+    for b in range(0x20):
+        ph = chr(0xE000 + b).encode("utf-8")
+        if ph in raw:
+            raw = raw.replace(ph, bytes([b]))
+    return raw
+
+
+def _et_parse(raw: bytes):
+    """ElementTree parse that tolerates XML-illegal control characters (read only)."""
+    return ET.fromstring(_hide_illegal(raw) if XML_ILLEGAL.search(raw) else raw)
+
+
+def _dom_parse(raw: bytes):
+    return minidom.parseString(_hide_illegal(raw) if XML_ILLEGAL.search(raw) else raw)
+
+
 def localname(tag: str) -> str:
     return tag.split("}", 1)[-1]
 
@@ -360,7 +393,7 @@ def rtf_to_text(rtf: str) -> str:
 def text_from_group(group: ET.Element) -> List[str]:
     texts = []
     for rep in group.iter(f"{{{NS['e']}}}rtfTextRep"):
-        txt = rtf_to_text(rep.text or "")
+        txt = _PLACEHOLDER_RE.sub("", rtf_to_text(rep.text or ""))
         if txt: texts.append(txt)
     return texts
 
@@ -645,7 +678,9 @@ def parse_layout(layout_path: Path, preview_dir: Path) -> Tuple[dict, List[dict]
     with zipfile.ZipFile(layout_path, "r") as z:
         names = set(z.namelist())
         if not {"document.xml", "references.xml"}.issubset(names): raise ValueError("Not a recognized LayOut package")
-        doc_root = ET.fromstring(z.read("document.xml")); ref_root = ET.fromstring(z.read("references.xml"))
+        doc_raw, ref_raw = z.read("document.xml"), z.read("references.xml")
+        read_tolerantly = bool(XML_ILLEGAL.search(doc_raw) or XML_ILLEGAL.search(ref_raw))
+        doc_root = _et_parse(doc_raw); ref_root = _et_parse(ref_raw)
         page_meta = {}
         for pr in doc_root.findall(".//ld:pageRef", NS):
             page_meta[pr.get(R_ID, "")] = {"page_name": pr.get("name", ""), "page_id": pr.get("id", "")}
@@ -671,7 +706,8 @@ def parse_layout(layout_path: Path, preview_dir: Path) -> Tuple[dict, List[dict]
             if not pref: continue
             page_xml = pref.get("internalTarget", "")
             if not page_xml or page_xml not in names: continue
-            page_root = ET.fromstring(z.read(page_xml)); page_name = page_meta.get(page_ref_id, {}).get("page_name", "")
+            page_raw = z.read(page_xml); read_tolerantly = read_tolerantly or bool(XML_ILLEGAL.search(page_raw))
+            page_root = _et_parse(page_raw); page_name = page_meta.get(page_ref_id, {}).get("page_name", "")
             top_list = page_root.find("p:layerEntityManager/p:entityList", NS)
             if top_list is None: continue
             group_index = 0
@@ -719,7 +755,7 @@ def parse_layout(layout_path: Path, preview_dir: Path) -> Tuple[dict, List[dict]
                 else: dup_key = "u" + hashlib.sha1(f"{layout_file}|{page_ref_id}|{primary['viewport_id']}".encode("utf-8", errors="surrogatepass")).hexdigest()[:19]
                 searchable = "\n".join(filter(None, [layout_path.stem, master_title, page_name, expand_abbreviations(page_name), title, expanded_title, *scene_names, *(expand_abbreviations(x) for x in scene_names), *clean]))
                 details.append({"detail_key": detail_key, "layout_file": layout_file, "layout_filename": layout_path.name, "page_ref_id": page_ref_id, "page_xml": page_xml, "page_name": page_name, "page_index": page_index, "group_index": group_index, "viewport_count": len(viewports), "primary_viewport_id": primary["viewport_id"], "primary_scene_name": primary["scene_name"], "primary_scene_pid": primary["scene_pid"], "display_title": title, "expanded_title": expanded_title, "master_title": master_title, "skp_paths_exact": skp_paths, "bounds": group_bounds(entity), "full_preview_relpath": "", "searchable_text": searchable, "raw_text": "\n".join(texts), "clean_text": "\n".join(clean), "ms_key": ms_key, "dup_key": dup_key, "viewports": viewports})
-        return ({"layout_file": layout_file, "layout_filename": layout_path.name, "size_bytes": stat.st_size, "mtime_ns": stat.st_mtime_ns, "page_count": len(ordered_pages), "detail_count": len(details), "skp_reference_count": len(skp_refs), "skp_references": skp_refs, "skipped_viewports": skipped_viewports, "off_sheet_details": off_sheet}, details)
+        return ({"layout_file": layout_file, "layout_filename": layout_path.name, "size_bytes": stat.st_size, "mtime_ns": stat.st_mtime_ns, "page_count": len(ordered_pages), "detail_count": len(details), "skp_reference_count": len(skp_refs), "skp_references": skp_refs, "skipped_viewports": skipped_viewports, "off_sheet_details": off_sheet, "read_tolerantly": read_tolerantly}, details)
 
 
 SOURCE_LIBRARY, SOURCE_PROJECTS = "library", "projects"
@@ -801,6 +837,8 @@ def _index_root(con: sqlite3.Connection, root_str: str, kind: str, other_root: s
                 shutil.rmtree(DB.full_preview_root / path_key(path_str), ignore_errors=True)
                 shutil.rmtree(DB.render_root / path_key(path_str), ignore_errors=True)
             with INDEX_LOCK: INDEX_STATE["reread" if file_same else "changed"] += 1
+            if summary.get("read_tolerantly"):
+                log_warning(f"Read tolerantly: {path_str} contains characters XML does not allow (indexed normally; kept as they are in staging files)")
         except Exception as exc:
             con.rollback(); shutil.rmtree(temp_preview, ignore_errors=True); msg = f"{type(exc).__name__}: {exc}"
             if not old:
@@ -902,7 +940,7 @@ def validate_staging_package(path: Path) -> List[str]:
             if errors:
                 return errors
 
-            refs_doc = minidom.parseString(z.read("references.xml"))
+            refs_doc = _dom_parse(z.read("references.xml"))
             ref_ids = {}
             for ref in _dom_element_children(refs_doc.documentElement):
                 rid = ref.getAttributeNS(NS["r"], "id")
@@ -912,7 +950,7 @@ def validate_staging_package(path: Path) -> List[str]:
                     if internal and internal not in names:
                         errors.append(f"{ref.localName} {rid} points to missing payload {internal}")
 
-            doc = minidom.parseString(z.read("document.xml"))
+            doc = _dom_parse(z.read("document.xml"))
             for pr in _dom_desc(doc.documentElement, "pageRef"):
                 rid = pr.getAttributeNS(NS["r"], "id")
                 if rid and rid not in ref_ids:
@@ -923,7 +961,7 @@ def validate_staging_package(path: Path) -> List[str]:
                 errors.append(f"Expected 1 page XML in staging file; found {len(page_files)}")
 
             for page_name in page_files:
-                page_doc = minidom.parseString(z.read(page_name))
+                page_doc = _dom_parse(z.read(page_name))
                 for el in _dom_desc(page_doc.documentElement):
                     if el.localName in {"skpFileReference", "imageFileReference", "vectorFileReference"}:
                         rid = el.getAttributeNS(NS["r"], "id")
@@ -951,7 +989,14 @@ def build_staging(detail_key: str) -> Path:
     if page_xml not in data:
         raise ValueError(f"Indexed page payload missing: {page_xml}")
 
-    page_doc = minidom.parseString(data[page_xml])
+    # Files with XML-illegal control characters: placeholders while editing, restored on write.
+    tolerant = any(XML_ILLEGAL.search(v) for k, v in data.items() if k.endswith(".xml"))
+
+    def out_bytes(dom_doc) -> bytes:
+        raw = _dom_bytes(dom_doc)
+        return _restore_illegal(raw) if tolerant else raw
+
+    page_doc = _dom_parse(data[page_xml])
     page_root = page_doc.documentElement
     page_mgr = _dom_first_direct(page_root, "layerEntityManager")
     top_list = _dom_first_direct(page_mgr, "entityList")
@@ -1003,9 +1048,9 @@ def build_staging(detail_key: str) -> Path:
                 if _dom_attr_by_local(er, "ref") not in keep_entity_ids:
                     ent_list.removeChild(er)
 
-    data[page_xml] = _dom_bytes(page_doc)
+    data[page_xml] = out_bytes(page_doc)
 
-    doc = minidom.parseString(data["document.xml"])
+    doc = _dom_parse(data["document.xml"])
     root = doc.documentElement
     page_manager = next(iter(_dom_desc(root, "pageManager")), None)
     if page_manager is not None:
@@ -1045,15 +1090,15 @@ def build_staging(detail_key: str) -> Path:
             if not refs or not refs.issubset(keep_entity_ids):
                 connection_manager.removeChild(conn)
 
-    data["document.xml"] = _dom_bytes(doc)
+    data["document.xml"] = out_bytes(doc)
 
     if "documentProperties.xml" in data:
-        props = minidom.parseString(data["documentProperties.xml"])
+        props = _dom_parse(data["documentProperties.xml"])
         for stat in _dom_desc(props.documentElement, "documentStatistic"):
             stat.setAttribute("pageCount", "1")
-        data["documentProperties.xml"] = _dom_bytes(props)
+        data["documentProperties.xml"] = out_bytes(props)
 
-    refs_doc = minidom.parseString(data["references.xml"])
+    refs_doc = _dom_parse(data["references.xml"])
     refs_root = refs_doc.documentElement
     removed_payloads = set()
     for ref in _dom_element_children(refs_root):
@@ -1073,7 +1118,7 @@ def build_staging(detail_key: str) -> Path:
                 removed_payloads.add(internal)
             refs_root.removeChild(ref)
 
-    data["references.xml"] = _dom_bytes(refs_doc)
+    data["references.xml"] = out_bytes(refs_doc)
 
     keep_names = {
         n for n in data
@@ -1837,11 +1882,11 @@ def diagnostics(max_lines: int = 300) -> dict:
 
 
 INDEX_HTML = r'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Detail Manager Prototype 0.1</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Detail Manager %APP_VERSION%</title>
 <style>
 :root{--card-w:420px;--bg:#f4f5f7;--panel:#fff;--border:#d7dbe0;--text:#20242a;--muted:#67717e;--accent:#315b86;--shadow:0 2px 10px rgba(0,0,0,.08)}*{box-sizing:border-box}body{margin:0;font:14px/1.35 "Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden}header{height:74px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:12px 18px}.brand{font-weight:700;font-size:19px;white-space:nowrap}.search{flex:1;min-width:280px;height:42px;border:1px solid #aeb6c0;border-radius:7px;padding:0 14px;font-size:17px}button{border:1px solid #aab2bc;background:#fff;border-radius:6px;padding:8px 12px;cursor:pointer;font-weight:600}button:hover{background:#f2f5f8}button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.sizebox{display:flex;align-items:center;gap:8px;white-space:nowrap;color:var(--muted)}.app{display:grid;grid-template-columns:285px 1fr;height:calc(100vh - 74px)}aside{background:#fff;border-right:1px solid var(--border);overflow:auto;padding:14px}.aside-title{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:5px 0 8px}.pathbox{font-size:12px;word-break:break-all;background:#f8f9fb;border:1px solid var(--border);border-radius:5px;padding:8px;margin-bottom:8px}.source,.cat{display:block;width:100%;text-align:left;border:0;border-radius:4px;padding:7px 8px;font-weight:400}.source.active,.cat.active{background:#e8eef5;font-weight:600}.cat{font-size:14px}.cat.sub{padding-left:24px;font-size:13px;color:#3d4753}.source{font-size:12px}.adv{margin-top:14px;border-top:1px solid var(--border);padding-top:10px}.adv>summary{cursor:pointer;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}.adv[open]>summary{margin-bottom:10px}#filterlabel{color:var(--text);font-weight:600}.srcswitch{display:flex;border:1px solid #aab2bc;border-radius:7px;overflow:hidden;margin:0 0 14px}.srcswitch button{flex:1;border:0;border-radius:0;padding:7px 4px;font-size:12px;background:#fff}.srcswitch button+button{border-left:1px solid #aab2bc}.srcswitch button.on{background:var(--accent);color:#fff}.jobbadge{position:absolute;left:7px;top:7px;background:#9a4b00;color:#fff;border-radius:4px;padding:3px 7px;font-size:11px;font-weight:700;letter-spacing:.03em;pointer-events:none}.jobtags{color:#9a4b00;font-size:12px;margin-bottom:3px}.tally{font-size:12px;font-weight:700;color:#3d4753;margin-bottom:3px}.cartbar{position:fixed;left:285px;right:0;bottom:0;background:#fff;border-top:2px solid var(--accent);box-shadow:0 -3px 12px rgba(0,0,0,.08);display:none;align-items:center;gap:12px;padding:8px 14px;z-index:40}.cartbar .ctitle{font-weight:700;white-space:nowrap}.cartitems{display:flex;gap:8px;overflow-x:auto;flex:1;padding:2px}.citem{position:relative;flex:0 0 auto;width:92px;height:70px;border:1px solid var(--border);border-radius:5px;background:#fff;overflow:hidden}.citem img{width:100%;height:100%;object-fit:contain}.citem .ct{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.88);font-size:10px;line-height:1.15;padding:1px 3px;max-height:24px;overflow:hidden}.citem .cx{position:absolute;right:2px;top:2px;border:0;background:rgba(32,36,42,.75);color:#fff;border-radius:3px;padding:0 5px;font-size:12px;line-height:16px}.cartbtn.incart{background:#e7f1e9;border-color:#7aa886;color:#235c31}main.hascart{padding-bottom:120px}.smallbtn{padding:2px 7px;font-size:11px;margin:2px 0 2px 6px}#sortsel{border:1px solid #aab2bc;border-radius:5px;padding:3px 6px;font-size:12px}.count{float:right;color:var(--muted)}.thumbtools{border:1px solid var(--border);border-radius:7px;padding:10px;background:#f8f9fb}.thumbtools input[type=text]{width:100%;padding:7px 8px;border:1px solid #b9c0c8;border-radius:5px;margin:4px 0 8px}.thumbtools button{width:100%;margin-top:6px}.smallnote{font-size:11px;color:var(--muted);margin-top:7px}.thumbstatus{font-size:12px;margin:7px 0;color:#45515e}main{overflow:auto;padding:16px 18px 50px}.statusline{display:flex;gap:16px;align-items:center;color:var(--muted);margin:0 0 13px}.notice{background:#edf4fb;border:1px solid #b8cee3;border-radius:6px;padding:8px 10px;color:#2f4d69}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(var(--card-w),100%),1fr));gap:16px;align-items:start}.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);overflow:hidden;min-width:0}.thumb{height:calc(var(--card-w)*.72);min-height:250px;max-height:485px;background:#e9ebee;display:grid;grid-template-columns:1fr;grid-auto-rows:minmax(0,1fr);gap:2px;align-items:stretch;justify-content:stretch;overflow:hidden;cursor:pointer;position:relative}.thumb.fallback.count-2,.thumb.fallback.count-3,.thumb.fallback.count-4{grid-template-columns:repeat(2,minmax(0,1fr))}.thumb.fallback.count-5,.thumb.fallback.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}.thumb img{width:100%;height:100%;min-width:0;min-height:0;object-fit:contain;background:white}.thumb.full{background:white;padding:10px}.thumb.full img{max-width:100%;max-height:100%}.previewbadge{position:absolute;right:7px;bottom:7px;background:rgba(30,36,43,.78);color:#fff;border-radius:4px;padding:3px 6px;font-size:10px;pointer-events:none}.meta{padding:11px 12px}.title{font-size:16px;font-weight:700;margin:0 0 4px}.rawtitle{color:#4e5966;font-size:12px;margin-bottom:4px}.mastertitle{color:var(--muted);font-size:12px;margin-bottom:3px}.sub{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.actions button{padding:6px 9px;font-size:12px}.empty{padding:50px;text-align:center;color:var(--muted);font-size:17px}#progress{height:4px;background:#e2e6eb;position:fixed;left:285px;right:0;top:74px;z-index:10;display:none}#progress>div{height:100%;background:var(--accent);width:0}.modalback{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;z-index:50;padding:25px}.modal{width:min(1600px,97vw);height:min(960px,95vh);background:#fff;border-radius:9px;box-shadow:0 15px 50px rgba(0,0,0,.3);display:grid;grid-template-columns:minmax(720px,1.8fr) minmax(370px,.62fr);overflow:hidden}.modalview{background:#eceff2;padding:16px;overflow:auto;display:flex;align-items:center;justify-content:center}.modalimgs{display:grid;grid-template-columns:1fr;grid-auto-rows:minmax(280px,1fr);gap:8px;width:100%;height:100%}.modalimgs.fallback.count-2,.modalimgs.fallback.count-3,.modalimgs.fallback.count-4{grid-template-columns:repeat(2,minmax(0,1fr))}.modalimgs.fallback.count-5,.modalimgs.fallback.count-6{grid-template-columns:repeat(3,minmax(0,1fr))}.modalimgs img{width:100%;height:100%;min-width:0;min-height:280px;object-fit:contain;background:white;border:1px solid #c8cdd3}.modalimgs.full{background:white;padding:14px}.modalinfo{padding:18px;overflow:auto;position:relative}.close{position:absolute;right:12px;top:10px;font-size:22px;border:0}.modalinfo h2{padding-right:35px;margin-top:3px;margin-bottom:3px}.detailtext{white-space:pre-wrap;background:#f7f8fa;border:1px solid var(--border);padding:10px;border-radius:5px;max-height:300px;overflow:auto;font-size:12px}.kv{margin:8px 0}.kv b{display:block;font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}.badge{display:inline-block;min-width:18px;padding:1px 6px;border-radius:9px;background:#b3261e;color:#fff;font-size:11px;margin-left:6px}.diag{width:min(1100px,95vw);height:min(820px,92vh);background:#fff;border-radius:9px;box-shadow:0 15px 50px rgba(0,0,0,.3);padding:18px;overflow:auto;position:relative}.diag h2{margin:2px 0 10px}.diag h3{margin:16px 0 6px;font-size:14px}.diag table{border-collapse:collapse;width:100%;font-size:12px}.diag td,.diag th{border-bottom:1px solid var(--border);padding:4px 6px;text-align:left;vertical-align:top}.diag .ok{color:#1e6b34}.diag .bad{color:#b3261e;font-weight:600}.diag .lvl-ERROR td{color:#b3261e}.diag .lvl-WARNING td{color:#8a5a00}.diag .path{word-break:break-all}.toast{position:fixed;right:24px;bottom:24px;background:#20242a;color:#fff;padding:12px 16px;border-radius:7px;display:none;max-width:680px;z-index:80;box-shadow:var(--shadow)}@media(max-width:1100px){.cartbar{left:230px}.app{grid-template-columns:230px 1fr}#progress{left:230px}.modal{grid-template-columns:1fr}.modalinfo{display:none}}
 </style></head><body>
-<header><div class="brand">Detail Manager <span style="font-weight:400;color:#788391">Prototype 0.1</span></div><input id="search" class="search" placeholder="Search: floor, FLR, retaining wall, RET, I-joist, TJI..." autofocus><div class="sizebox"><span>Thumbnail</span><input id="size" type="range" min="320" max="640" value="420" step="20"><span id="sizeval">420</span></div><button id="refresh">Refresh Index</button></header><div id="progress"><div></div></div>
+<header><div class="brand">Detail Manager <span style="font-weight:400;color:#788391" title="Version">%APP_VERSION%</span></div><input id="search" class="search" placeholder="Search: floor, FLR, retaining wall, RET, I-joist, TJI..." autofocus><div class="sizebox"><span>Thumbnail</span><input id="size" type="range" min="320" max="640" value="420" step="20"><span id="sizeval">420</span></div><button id="refresh">Refresh Index</button></header><div id="progress"><div></div></div>
 <div class="app"><aside><div id="srcswitch" class="srcswitch" style="display:none"><button data-src="library" class="on">Library</button><button data-src="projects">Non-Library</button><button data-src="both">Both</button></div><div id="catbox"><div class="aside-title">Categories</div><button class="cat active" data-cat="">All Details <span id="allcount" class="count"></span></button><div id="cats"></div></div><div id="jobsbox" style="display:none;margin-top:10px"><div class="aside-title">Non-Library Details: Jobs</div><button class="cat" data-job="">All Jobs <span id="alljobs" class="count"></span></button><div id="jobs"></div></div><details class="adv"><summary>Source files (advanced)</summary><div id="sources"></div></details><details class="adv"><summary>Library and admin tools</summary><div class="aside-title">Library</div><div id="libpath" class="pathbox">No library selected</div><button id="choose" style="width:100%;margin-bottom:12px">Choose Library Folder</button><div class="aside-title">Non-Library Details folder</div><div id="projpath" class="pathbox">Not set</div><button id="chooseproj" style="width:100%;margin-bottom:12px">Choose Non-Library Details Folder</button><div class="aside-title" style="margin-top:12px">Full Thumbnails</div><div class="thumbtools"><label style="font-size:11px;color:#67717e">Hide exact LayOut layer name(s)</label><input id="hiddenlayers" type="text" value="GUIDES" title="Comma-separated exact layer names"><div id="thumbstatus" class="thumbstatus"></div><div class="smallnote"><b>07A:</b> Tight crop uses 0.01&quot; top and 0.025&quot; left/right/bottom margins; white padding is added in the card instead of capturing adjacent page content.</div><label style="display:block;font-size:12px;margin:4px 0"><input type="checkbox" id="renderall"> Re-render everything (normally only new or changed masters)</label><button id="preparethumbs" class="primary">1. Prepare Render Queue</button><div class="smallnote">2. In SketchUp Ruby Console, load <b>thumbnail_worker.rb</b>. It renders the queued masters read-only with these layers hidden.</div><button id="processthumbs">3. Process Rendered Thumbnails</button></div><div class="aside-title" style="margin-top:18px">Temp</div><button id="cleanup" style="width:100%">Clean Staging Files</button></details><button id="helpbtn" style="width:100%;margin-top:14px" onclick="window.open('/help','_blank')">How To</button><button id="diagbtn" style="width:100%;margin-top:8px">Diagnostics<span id="diagbadge" class="badge" style="display:none"></span></button></aside>
 <main><div class="statusline"><span id="resultcount"></span><span id="filterlabel"></span><span id="indexstatus"></span><select id="sortsel" style="display:none;margin-left:auto"><option value="">Best match</option><option value="most_used">Most used in jobs</option></select></div><div id="grid" class="grid"></div></main></div>
 <div id="modalback" class="modalback"><div class="modal"><div class="modalview"><div id="modalimgs" class="modalimgs"></div></div><div class="modalinfo"><button id="close" class="close">×</button><h2 id="modaltitle"></h2><div id="modalraw" class="rawtitle"></div><div id="modalmeta"></div><h3>Notes on the detail</h3><div id="modaltext" class="detailtext"></div><details style="margin-top:8px"><summary style="cursor:pointer;color:var(--muted);font-size:12px">Everything read from the LayOut file (raw)</summary><div id="modalrawtext" class="detailtext" style="margin-top:6px"></div></details><div class="actions" style="margin-top:14px"><button id="modalopen" class="primary">Open Detail</button><button id="modalcart" class="cartbtn">+ Cart</button><button id="modalmaster">Open Master LayOut</button><button id="modalskp" title="Opens the SketchUp model at this detail's scene (needs the Zachary Engineering Toolkit)">Open in SketchUp</button></div></div></div></div><div id="diagback" class="modalback"><div class="diag"><button id="diagclose" class="close">×</button><h2>Diagnostics</h2><div id="diagbody"></div></div></div><div id="cartbar" class="cartbar"><div class="ctitle">Cart <span id="cartcount"></span></div><div id="cartitems" class="cartitems"></div><button id="cartsend" class="primary">Open All in LayOut</button><button id="cartclear">Clear Cart</button></div><div id="toast" class="toast"></div>
@@ -1881,8 +1926,11 @@ q('#diagbtn').onclick=openDiag;q('#diagclose').onclick=()=>q('#diagback').style.
 </script></body></html>
 '''
 
+INDEX_HTML = INDEX_HTML.replace("%APP_VERSION%", APP_VERSION)
+
+
 class Handler(BaseHTTPRequestHandler):
-    server_version = "DetailManagerPOC07A/0.71"
+    server_version = f"DetailManager/{APP_VERSION}"
     def log_message(self, fmt, *args): return
     def send_json(self, obj, status=200):
         b = json.dumps(obj, ensure_ascii=False).encode("utf-8"); self.send_response(status); self.send_header("Content-Type", "application/json; charset=utf-8"); self.send_header("Content-Length", str(len(b))); self.end_headers(); self.wfile.write(b)
