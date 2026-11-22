@@ -4,6 +4,7 @@ Updated 2026-11-18. Tags (M3, U1 ...) match `docs/BACKLOG.md`.
 Size: S = under an hour, M = a few hours, L = open ended.
 
 ## Where things stand
+**Daily copy: version 0.2.1 (2026-11-22)** (see docs/RELEASE_HISTORY.md).
 **Daily copy has (2026-11-19):** titles, clean notes, categories, Non-Library Details (switch shows once its folder is set), tally, backups skipped.
 **In daily use:** `C:\sketchup_dev\detail_manager_release` (desktop shortcut), built from `main` at the sidebar release.
 Its data: `%LOCALAPPDATA%\ZE Detail Manager`. It only changes when Claude publishes a tested version.
@@ -18,7 +19,6 @@ clean notes (raw text kept), category sidebar.
 | # | Tag | Item | Size | What I need from you |
 |---|---|---|---|---|
 | 0 | M3 | **Tighter search ranking** once you have noted 3 to 5 searches that felt off | M | Your example searches |
-| 0b | F4 | Job file that would not index (XML reading error) | S | Access to that file |
 | 1 | M3 | **Tighter search.** Rank title first, then scene, then notes; stop the master file name from matching every detail the same; fewer loose matches from notes | M | 3 to 5 real searches where the results felt too broad or in the wrong order |
 | 2 | U1, U3 | **Slim cards and fuller detail window.** Card: thumbnail, title, scene line, framing type with Hydronics. Everything else (source, page, all scenes, paths, notes, raw text) in the detail window | M | Look at it and say what to trim |
 | 3 | U4 | More than 80 results (load more as you scroll) | S | nothing |
